@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AKUY | Part 1</title>
+<title>AKUY</title>
 
 <style>
 * {
@@ -23,12 +23,16 @@ body {
     transition: background .25s ease, color .25s ease;
 }
 
+button {
+    font: inherit;
+}
+
 #progress {
     position: fixed;
     top: 0;
     left: 0;
     height: 4px;
-    width: 0%;
+    width: 0;
     background: #111;
     z-index: 9999;
 }
@@ -72,7 +76,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(244, 241, 234, .95);
+    background: rgba(244,241,234,.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid #d8d3c9;
@@ -92,9 +96,7 @@ body {
 .site-version {
     margin-top: 2px;
     font-size: 10px;
-    font-weight: 400;
     color: #888;
-    letter-spacing: .03em;
 }
 
 .topbar-buttons {
@@ -112,10 +114,66 @@ body {
     cursor: pointer;
 }
 
+.cover-section {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 42px 24px 20px;
+}
+
+.cover-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 18px 55px rgba(0,0,0,.2);
+}
+
+.cover-info {
+    padding: 28px 2px 50px;
+}
+
+.cover-label {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.cover-info h1 {
+    margin: 0;
+    font-size: 36px;
+}
+
+.cover-description {
+    margin: 14px 0 0;
+    color: #69655e;
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+.start-reading {
+    margin-top: 24px;
+    border: 0;
+    background: #1d1d1d;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 .chapter {
+    display: none;
     max-width: 720px;
     margin: auto;
     padding: 70px 24px 120px;
+}
+
+.chapter.active {
+    display: block;
 }
 
 .part {
@@ -127,7 +185,7 @@ body {
     margin-bottom: 10px;
 }
 
-h1 {
+.chapter h1 {
     font-size: clamp(38px, 9vw, 64px);
     line-height: 1;
     margin: 0 0 14px;
@@ -152,12 +210,18 @@ h1 {
 
 .story p:first-of-type::first-letter {
     float: left;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 4.3em;
-    line-height: .78;
-    font-weight: 700;
-    padding-right: 9px;
-    padding-top: 8px;
+    font-family:
+        "Snell Roundhand",
+        "Apple Chancery",
+        "Segoe Script",
+        "Brush Script MT",
+        cursive;
+    font-size: 5.2em;
+    line-height: .68;
+    font-weight: 500;
+    padding-right: 10px;
+    padding-top: 12px;
+    margin-bottom: -4px;
 }
 
 .story p.dialogue {
@@ -196,12 +260,12 @@ h1 {
     margin-bottom: 8px;
 }
 
-#countdown {
+.countdown {
     margin-top: 8px;
     color: #666;
 }
 
-#continueBox {
+.continue-box {
     display: none;
     margin-bottom: 50px;
     padding: 18px;
@@ -211,13 +275,13 @@ h1 {
     background: #ebe7de;
 }
 
-#savedText {
+.saved-text {
     margin-top: 6px;
     color: #666;
     line-height: 1.5;
 }
 
-#continueBox button {
+.continue-box button {
     margin-top: 12px;
     border: none;
     background: #111;
@@ -279,8 +343,23 @@ h1 {
 }
 
 .part-row {
-    padding: 18px 0;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: 0;
     border-bottom: 1px solid #d1cbc0;
+    padding: 18px 0;
+    color: inherit;
+    cursor: pointer;
+}
+
+.part-row.locked {
+    cursor: default;
+    opacity: .55;
+}
+
+.part-row strong {
+    font-size: 15px;
 }
 
 .muted {
@@ -351,7 +430,6 @@ h1 {
     color: #777;
     font-size: 12px;
     margin-top: 3px;
-    line-height: 1.4;
 }
 
 .switch {
@@ -403,7 +481,6 @@ h1 {
     border-radius: 10px;
     padding: 13px;
     font-weight: 600;
-    font-size: 14px;
     cursor: pointer;
 }
 
@@ -413,7 +490,7 @@ body.dark {
 }
 
 body.dark #progress {
-    background: #f3f3f3;
+    background: white;
 }
 
 body.dark .topbar {
@@ -426,10 +503,6 @@ body.dark .topbar button {
     border-color: #444;
 }
 
-body.dark .site-version {
-    color: #777;
-}
-
 body.dark .story p,
 body.dark .chapter {
     color: #e4e4e4;
@@ -438,8 +511,9 @@ body.dark .chapter {
 body.dark .subtitle,
 body.dark .part,
 body.dark .muted,
-body.dark #savedText,
-body.dark #countdown {
+body.dark .saved-text,
+body.dark .countdown,
+body.dark .cover-description {
     color: #929292;
 }
 
@@ -469,18 +543,18 @@ body.dark .next {
     border-color: #35363b;
 }
 
-body.dark #continueBox {
+body.dark .continue-box {
     background: #1e1f23;
     border-color: #35363b;
 }
 
-body.dark #continueBox button {
-    background: #eee;
-    color: #111;
-}
-
 body.dark .resume {
     background: #34343b;
+}
+
+body.dark .start-reading {
+    background: #eee;
+    color: #111;
 }
 
 body.dark .settings-close,
@@ -489,20 +563,9 @@ body.dark .menu-close {
     border-color: #444;
 }
 
-body.dark .reset-button {
-    background: #2a1718;
-    border-color: #583234;
-    color: #ff8d8d;
-}
-
 body.motion-blur.scrolling .story {
     filter: blur(1.15px);
     transform: translateY(1px);
-}
-
-body.motion-blur.scrolling .topbar {
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -517,7 +580,8 @@ body.motion-blur.scrolling .topbar {
         font-size: 18px;
     }
 
-    .chapter {
+    .chapter,
+    .cover-section {
         padding-left: 20px;
         padding-right: 20px;
     }
@@ -526,93 +590,9 @@ body.motion-blur.scrolling .topbar {
         padding: 12px 14px;
     }
 
-    .topbar .title {
-        font-size: 14px;
-    }
-
     .topbar button {
         font-size: 13px;
-        padding: 7px 10px;
-    }
-}
-/* COVER */
-
-.cover-section {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 55px 24px 20px;
-}
-
-.cover-image {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-    box-shadow: 0 18px 55px rgba(0, 0, 0, .18);
-}
-
-.cover-info {
-    padding: 28px 2px 45px;
-}
-
-.cover-label {
-    font-family: Arial, sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .18em;
-    color: #888;
-    margin-bottom: 10px;
-}
-
-.cover-info h2 {
-    margin: 0;
-    font-size: 32px;
-    line-height: 1.15;
-}
-
-.cover-description {
-    margin: 15px 0 0;
-    font-size: 17px;
-    line-height: 1.7;
-    color: #69655e;
-}
-
-.start-reading {
-    margin-top: 24px;
-    border: 0;
-    background: #1d1d1d;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-body.dark .cover-description {
-    color: #999;
-}
-
-body.dark .cover-label {
-    color: #777;
-}
-
-body.dark .start-reading {
-    background: #eee;
-    color: #111;
-}
-
-body.dark .cover-image {
-    box-shadow: 0 18px 55px rgba(0, 0, 0, .5);
-}
-
-@media (max-width: 600px) {
-    .cover-section {
-        padding: 35px 20px 10px;
-    }
-
-    .cover-info h2 {
-        font-size: 28px;
+        padding: 7px 9px;
     }
 }
 </style>
@@ -635,7 +615,7 @@ body.dark .cover-image {
 
 <div class="topbar">
     <div>
-        <div class="title">AKUY | Part 1</div>
+        <div class="title" id="topTitle">AKUY</div>
         <div class="site-version" id="siteVersion">Loading version...</div>
     </div>
 
@@ -645,49 +625,49 @@ body.dark .cover-image {
     </div>
 </div>
 
-<main class="chapter" id="chapter">
-    
-<section class="cover-section">
+<section class="cover-section" id="cover">
     <img
-        src="Untitled23_20260807194657.png"
-        alt="AKUY Part 1 — Yet a Distortion"
+        src="cover.jpg"
+        alt="AKUY cover"
         class="cover-image"
     >
 
     <div class="cover-info">
-        <div class="cover-label">AKUY — PART 1</div>
+        <div class="cover-label">AKUY</div>
 
-        <h2>Yet a Distortion</h2>
+        <h1>Yet a Distortion</h1>
 
         <p class="cover-description">
             She woke up among the graves.<br>
             But nothing—and no one—made sense.
         </p>
 
-        <button class="start-reading" onclick="startReading()">
+        <button class="start-reading" onclick="showPart(1)">
             Start Reading
         </button>
     </div>
 </section>
 
+<main class="chapter" id="part1">
+
 <div class="part">Part 1</div>
 <h1>Yet a Distortion</h1>
 <div class="subtitle">Laduxiana Eris</div>
 
-<div id="continueBox">
+<div class="continue-box" id="continue1">
     <div>You stopped around:</div>
-    <div id="savedText"></div>
-    <button onclick="continueReading()">Continue reading</button>
+    <div class="saved-text" id="savedText1"></div>
+    <button onclick="continueReading(1)">Continue reading</button>
 </div>
 
-<div class="story" id="story">
+<div class="story" id="story1">
 
 <p>
 Eris was walking along a road in 제천시 (Jecheon), South Korea, distracted, when a hitman aimed for a lethal shot. Just as he fired, someone unexpectedly crossed into his line of fire. He instinctively adjusted his aim at the last moment, causing the bullet to miss its intended location and strike Eris in the upper arm instead.
 </p>
 
 <p>
-Eris’s sister had hired the hitman. Eris had inherited ¥95,000,000 in her uncle’s company assets 65% of them. Eris had saved her uncle in a house fire a few years earlier, and he deeply appreciated that.
+Eris’s sister had hired the hitman. Eris had inherited ¥95,000,000 in her uncle’s company assets—65% of them. Eris had saved her uncle in a house fire a few years earlier, and he deeply appreciated that.
 </p>
 
 <p>
@@ -747,7 +727,7 @@ During the emergency transport, Eris briefly regains consciousness. Through her 
 </p>
 
 <p class="dialogue">
-“No. What I gave you should keep your consciousness ”
+“No. What I gave you should keep your consciousness—”
 </p>
 
 <p>
@@ -945,9 +925,671 @@ For the first time since opening her eyes, Eris feels that something isn’t rig
 </div>
 
 <div class="next">
-    <div class="next-title">Part 2</div>
-    <div>August 9, 2026   12:00 Netherlands time</div>
-    <div id="countdown"></div>
+    <div class="next-title">Part 2 — Who am I?</div>
+    <div>Available now</div>
+    <button class="start-reading" onclick="showPart(2)">
+        Read Part 2
+    </button>
+</div>
+
+</main>
+
+<main class="chapter" id="part2">
+
+<div class="part">Part 2</div>
+<h1>Who am I?</h1>
+<div class="subtitle">Laduxiana Eris</div>
+
+<div class="continue-box" id="continue2">
+    <div>You stopped around:</div>
+    <div class="saved-text" id="savedText2"></div>
+    <button onclick="continueReading(2)">Continue reading</button>
+</div>
+
+<div class="story" id="story2">
+
+<p>
+The man near the grave speaks again. Eris watches him carefully. She understands that he is trying to communicate with her, but every sound that leaves his mouth is meaningless.
+</p>
+
+<p>
+The man points toward Eris, then toward the ground beneath them. He raises his eyebrows slightly.
+</p>
+
+<p>Eris stares at him.</p>
+
+<p>
+The man repeats the gesture. He points at her, then at the ground.
+</p>
+
+<p>
+Eris looks down. There is nothing unusual there. Just grass. She looks back at him.
+</p>
+
+<p>
+The man sighs and points toward a wooden sign near the edge of the graveyard. Several unfamiliar symbols are carved into it. Among them are two symbols:
+</p>
+
+<p class="dialogue">٤٥</p>
+
+<p>
+Beside them are two more characters.
+</p>
+
+<p class="dialogue">DV</p>
+
+<p>
+Eris looks at the sign. She cannot read any of it.
+</p>
+
+<p>
+The man points at the sign again, then gestures toward the dirt path leading away from the graveyard. Eris walks toward the sign. She looks at its front, then behind it. Nothing. She places a hand against the wooden post and looks back at him.
+</p>
+
+<p>
+The man stares at her for a moment before shaking his head.
+</p>
+
+<p>
+He tries again. He points at Eris, then toward the ground, then toward the distant lights beyond the graveyard. Finally, he points at Eris once more and tilts his head questioningly.
+</p>
+
+<p>
+This time, Eris thinks she understands.
+</p>
+
+<p class="dialogue">
+Are you from here?
+</p>
+
+<p>
+She looks toward the distant lights and then back at him. She nods.
+</p>
+
+<p>
+The man’s expression changes. He had expected almost anything except that. He says something else, but Eris gives him the same blank stare. He asks another question. Nothing.
+</p>
+
+<p>
+The man looks at her for several seconds. His expression softens slightly as he glances at the graves surrounding them and then back at Eris. Whatever conclusion he reaches, it seems enough for him.
+</p>
+
+<p>
+He doesn’t ask anything else.
+</p>
+
+<p>
+Instead, he picks up the tools he had left near one of the graves and returns to his work.
+</p>
+
+<p>
+Eris watches him leave. She doesn’t follow. She doesn’t know where else she would go.
+</p>
+
+<p>
+Hours pass. The grey sky darkens until the graveyard becomes difficult to see beyond a few rows of stones. Eris eventually sits beneath a large tree near its edge.
+</p>
+
+<p>
+The cold bothers her. She pulls her knees closer to herself and, for the first time, properly looks down at her body.
+</p>
+
+<p>
+She isn’t wearing anything.
+</p>
+
+<p>
+She knows what clothing is. She knows people normally wear it. But she doesn’t remember ever owning any.
+</p>
+
+<p>
+The thought bothers her for only a moment. She looks toward the path again. Nobody is there.
+</p>
+
+<p>
+Eventually, exhaustion becomes stronger than the cold.
+</p>
+
+<p>
+Eris closes her eyes.
+</p>
+
+<div class="gap">…</div>
+
+<p>
+Voices wake her.
+</p>
+
+<p>
+Eris opens her eyes. It’s still dark.
+</p>
+
+<p>
+Three figures stand several meters away. Travelers. One of them carries a covered lantern while another has a large bag strapped across his back. They’re talking among themselves.
+</p>
+
+<p>
+Eris doesn’t understand them either.
+</p>
+
+<p>
+But she notices something almost immediately. Their words don’t sound like the graveyard worker’s words. The language is different.
+</p>
+
+<p>
+One of the travelers notices that Eris is awake and says something sharply.
+</p>
+
+<p>
+Eris sits up.
+</p>
+
+<p>
+The traveler gestures toward her body, then toward the graveyard. His expression makes it obvious that he isn’t happy.
+</p>
+
+<p>
+Eris looks at herself, then at him. She doesn’t respond.
+</p>
+
+<p>
+The travelers exchange a few words. One steps closer and speaks again. Eris remains where she is.
+</p>
+
+<p>
+Nothing.
+</p>
+
+<p>
+His frustration grows. He reaches down and grabs Eris by the wrist.
+</p>
+
+<p>
+The moment his hand touches her, his entire body freezes.
+</p>
+
+<p>
+Something moves through his mana gate. It isn’t pain. It is something deeper and instantly recognizable: a pulse from Eris’s mana interacting with his own.
+</p>
+
+<p>
+Normal mana flows evenly. Stable. Parallel.
+</p>
+
+<p>
+Hers doesn’t.
+</p>
+
+<p>
+It shifts, bends, returns and shifts again.
+</p>
+
+<p>
+The traveler immediately releases her.
+</p>
+
+<p>
+Eris looks down at her wrist and then back at him. She doesn’t understand why he suddenly stopped.
+</p>
+
+<p>
+The other two travelers notice his expression. One asks him something, but he doesn’t answer immediately. He keeps looking at Eris.
+</p>
+
+<p>
+Then he reaches forward again, this time carefully, and places two fingers against her arm.
+</p>
+
+<p>
+The pulse returns.
+</p>
+
+<p>
+His eyes narrow.
+</p>
+
+<p>
+He says something quietly.
+</p>
+
+<p>
+The mood between the three changes almost immediately. The irritation they had shown before is gone. They begin talking quickly among themselves while occasionally looking toward Eris.
+</p>
+
+<p>
+Eris watches them.
+</p>
+
+<p>
+She understands none of it.
+</p>
+
+<p>
+Eventually, one of the travelers removes part of his outer clothing and throws it toward her. Eris catches it awkwardly.
+</p>
+
+<p>
+He gestures for her to cover herself.
+</p>
+
+<p>
+She does.
+</p>
+
+<p>
+Then he points toward the road, at himself, at the other travelers, and finally at Eris before pointing down the road again.
+</p>
+
+<p>
+Eris understands enough.
+</p>
+
+<p class="dialogue">
+Come with us.
+</p>
+
+<p>
+She stands.
+</p>
+
+<p>
+She doesn’t know these people. She doesn’t know where they’re going. But she doesn’t know anywhere else either.
+</p>
+
+<p>
+So she follows.
+</p>
+
+<p>
+They walk for hours.
+</p>
+
+<p>
+The graveyard eventually disappears behind them. Eris watches everything around her as they travel: the roads, the lanterns, the travelers’ clothing and the distant structures she can barely make out in the darkness.
+</p>
+
+<p>
+Occasionally, the travelers speak to her.
+</p>
+
+<p>
+Eventually, they stop trying.
+</p>
+
+<p>
+Eris doesn’t find any of this impossible. There is no remembered world for her to compare it to. No home she thinks she has lost. No family she thinks she should return to.
+</p>
+
+<p>
+No Jecheon.
+</p>
+
+<p>
+No hospital.
+</p>
+
+<p>
+No gunshot.
+</p>
+
+<p>
+No Dr. Surm.
+</p>
+
+<p>
+There are only fragments of knowledge without memories attached to them.
+</p>
+
+<p>
+She knows what a road is. She knows what a tree is. She knows what a person is. She knows that she herself is a person.
+</p>
+
+<p>
+But as they continue walking, something begins bothering her.
+</p>
+
+<p>
+She notices that each traveler responds when another calls to them. Different sounds seem to correspond to different people.
+</p>
+
+<p>
+Names.
+</p>
+
+<p>
+Eris understands the concept.
+</p>
+
+<p>
+She slows slightly.
+</p>
+
+<p>
+She knows people have names.
+</p>
+
+<p>
+Then what is hers?
+</p>
+
+<p>
+Eris searches her memory.
+</p>
+
+<p>
+Nothing.
+</p>
+
+<p>
+She tries again, concentrating harder this time.
+</p>
+
+<p>
+Nothing.
+</p>
+
+<p>
+For the first time since waking in the graveyard, she deliberately attempts to remember something about herself.
+</p>
+
+<p>
+Her expression tightens.
+</p>
+
+<p>
+Nothing comes.
+</p>
+
+<p>
+One of the travelers notices she has stopped. He calls out to her and gestures for her to continue.
+</p>
+
+<p>
+Eris follows.
+</p>
+
+<p>
+But the question doesn’t leave her.
+</p>
+
+<p class="dialogue">
+What is my name?
+</p>
+
+<p>
+By morning, they reach a settlement.
+</p>
+
+<p>
+Eris notices people staring at her as the travelers lead her through the streets. They keep her between them.
+</p>
+
+<p>
+One traveler speaks to a guard. The guard looks at Eris, then back at him. A longer conversation follows before they’re eventually allowed through.
+</p>
+
+<p>
+They don’t take Eris toward the markets. They don’t stop somewhere to eat. Instead, they lead her farther into the settlement toward an old stone building.
+</p>
+
+<p>
+People nearby seem to avoid standing directly in front of its entrance.
+</p>
+
+<p>
+Above the doorway is a symbol Eris doesn’t recognize.
+</p>
+
+<p>
+One of the travelers knocks.
+</p>
+
+<p>
+Nothing happens.
+</p>
+
+<p>
+He knocks again.
+</p>
+
+<p>
+The door opens.
+</p>
+
+<p>
+A woman stands inside.
+</p>
+
+<p>
+The travelers begin speaking immediately. The woman listens without much reaction until her eyes move toward Eris.
+</p>
+
+<p>
+For a moment, neither does anything.
+</p>
+
+<p>
+Then Eris feels something strange.
+</p>
+
+<p>
+Not the pulse from earlier.
+</p>
+
+<p>
+Something different.
+</p>
+
+<p>
+The woman looks directly into her eyes.
+</p>
+
+<p>
+A voice speaks.
+</p>
+
+<p>
+Not through Eris’s ears.
+</p>
+
+<p>
+Inside her mind.
+</p>
+
+<p class="dialogue">
+“You cannot understand them.”
+</p>
+
+<p>
+Eris’s eyes widen and she instinctively steps backward. The travelers react, but the woman raises one hand and they stop.
+</p>
+
+<p>
+The voice returns.
+</p>
+
+<p class="dialogue">
+“Do not be frightened.”
+</p>
+
+<p>
+Eris stares at her. For the first time since waking in the graveyard, somebody has spoken words she can understand.
+</p>
+
+<p class="dialogue">
+“…You can understand me?”
+</p>
+
+<p>
+The woman’s mouth doesn’t move.
+</p>
+
+<p class="dialogue">
+“No.”
+</p>
+
+<p>
+Eris freezes.
+</p>
+
+<p class="dialogue">
+“I cannot understand your language.”
+</p>
+
+<p>
+There is a short pause.
+</p>
+
+<p class="dialogue">
+“I am making your mind understand mine.”
+</p>
+
+<p>
+Eris looks toward the travelers and then back at the woman.
+</p>
+
+<p class="dialogue">
+“Where am I?”
+</p>
+
+<p>
+The woman doesn’t answer the question.
+</p>
+
+<p>
+Her attention shifts toward something Eris cannot see.
+</p>
+
+<p>
+Something inside her.
+</p>
+
+<p>
+Eris feels pressure in her chest, then somewhere deeper. It isn’t physical.
+</p>
+
+<p>
+The woman is examining her mana.
+</p>
+
+<p>
+Her expression changes slightly.
+</p>
+
+<p>
+She sees the unstable flow.
+</p>
+
+<p>
+Then she sees something beneath it.
+</p>
+
+<p>
+An engraving.
+</p>
+
+<p>
+Something that has belonged to Eris from the moment she first existed.
+</p>
+
+<p>
+Birth.
+</p>
+
+<p>
+Lineage.
+</p>
+
+<p>
+A sigil.
+</p>
+
+<p>
+And finally—
+</p>
+
+<p>
+A name.
+</p>
+
+<p>
+The woman stops.
+</p>
+
+<p>
+Eris notices immediately.
+</p>
+
+<p class="dialogue">
+“What?”
+</p>
+
+<p>
+No response.
+</p>
+
+<p>
+Eris takes a step closer.
+</p>
+
+<p class="dialogue">
+“What did you see?”
+</p>
+
+<p>
+The woman looks directly at her.
+</p>
+
+<p class="dialogue">
+“You do not know your own name.”
+</p>
+
+<p>
+Eris says nothing.
+</p>
+
+<p>
+The travelers glance between the two of them, unable to hear the conversation taking place inside Eris’s mind.
+</p>
+
+<p>
+Eris slowly shakes her head.
+</p>
+
+<p class="dialogue">
+“No.”
+</p>
+
+<p>
+The woman looks into her mana once more and then back into Eris’s eyes.
+</p>
+
+<p class="dialogue">
+“I do.”
+</p>
+
+<p>
+Eris’s breathing stops for a moment.
+</p>
+
+<p>
+The woman begins to speak.
+</p>
+
+<p class="dialogue">
+“Your name is…”
+</p>
+
+</div>
+
+<div class="end">
+    <small>End of Part 2</small>
+</div>
+
+<div class="next">
+    <div class="next-title">Part 3</div>
+    <div>August 10, 2026 — 12:00 Netherlands time</div>
+    <div class="countdown" id="countdown3"></div>
 </div>
 
 </main>
@@ -960,20 +1602,22 @@ For the first time since opening her eyes, Eris feels that something isn’t rig
             <button class="menu-close" onclick="closeParts()">×</button>
         </div>
 
-        <div class="part-row">
-            <strong>Part 1   Yet a Distortion</strong>
+        <button class="part-row" onclick="showPart(1)">
+            <strong>Part 1 — Yet a Distortion</strong>
             <div class="muted">Available</div>
-        </div>
+        </button>
 
-        <div class="part-row">
-            <strong>Part 2</strong>
-            <div class="muted">Coming August 9</div>
-        </div>
+        <button class="part-row" onclick="showPart(2)">
+            <strong>Part 2 — Who am I?</strong>
+            <div class="muted">Available</div>
+        </button>
 
-        <div class="part-row">
+        <button class="part-row locked" id="part3Menu">
             <strong>Part 3</strong>
-            <div class="muted">TBA</div>
-        </div>
+            <div class="muted" id="part3MenuStatus">
+                Coming August 10
+            </div>
+        </button>
 
     </div>
 </div>
@@ -993,9 +1637,7 @@ For the first time since opening her eyes, Eris feels that something isn’t rig
         <div class="setting-row">
             <div>
                 <div class="setting-title">Dark mode</div>
-                <div class="setting-description">
-                    Use a darker reading theme.
-                </div>
+                <div class="setting-description">Use a darker reading theme.</div>
             </div>
 
             <label class="switch">
@@ -1011,9 +1653,7 @@ For the first time since opening her eyes, Eris feels that something isn’t rig
         <div class="setting-row">
             <div>
                 <div class="setting-title">Motion blur</div>
-                <div class="setting-description">
-                    Slightly blurs the story while scrolling.
-                </div>
+                <div class="setting-description">Slightly blurs the story while scrolling.</div>
             </div>
 
             <label class="switch">
@@ -1026,11 +1666,8 @@ For the first time since opening her eyes, Eris feels that something isn’t rig
             </label>
         </div>
 
-        <button
-            class="reset-button"
-            onclick="resetReadingProgress()"
-        >
-            Reset Last Read Position
+        <button class="reset-button" onclick="resetReadingProgress()">
+            Reset Last Read Positions
         </button>
 
     </div>
@@ -1038,12 +1675,11 @@ For the first time since opening her eyes, Eris feels that something isn’t rig
 
 <script>
 const progress = document.getElementById("progress");
-const paragraphs = [...document.querySelectorAll(".story p")];
-const continueBox = document.getElementById("continueBox");
-const savedTextElement = document.getElementById("savedText");
+const notice = document.getElementById("displayNotice");
 const darkToggle = document.getElementById("darkModeToggle");
 const motionToggle = document.getElementById("motionBlurToggle");
-const notice = document.getElementById("displayNotice");
+
+let currentPart = null;
 
 if (localStorage.getItem("akuyDarkMode") === "true") {
     document.body.classList.add("dark");
@@ -1059,21 +1695,66 @@ if (localStorage.getItem("akuyNoticeDismissed") === "true") {
     notice.classList.add("hidden");
 }
 
-function updateProgressBar() {
-    const max =
-        document.documentElement.scrollHeight -
-        window.innerHeight;
+function showPart(part) {
+    currentPart = part;
 
-    if (max <= 0) {
+    document.getElementById("cover").style.display = "none";
+
+    document.querySelectorAll(".chapter").forEach(chapter => {
+        chapter.classList.remove("active");
+    });
+
+    const chapter = document.getElementById(`part${part}`);
+    chapter.classList.add("active");
+
+    document.getElementById("topTitle").textContent =
+        `AKUY | Part ${part}`;
+
+    closeParts();
+
+    loadSavedPosition(part);
+
+    window.scrollTo({
+        top: chapter.offsetTop - 55,
+        behavior: "smooth"
+    });
+
+    localStorage.setItem("akuyCurrentPart", part);
+}
+
+function showCover() {
+    currentPart = null;
+
+    document.querySelectorAll(".chapter").forEach(chapter => {
+        chapter.classList.remove("active");
+    });
+
+    document.getElementById("cover").style.display = "block";
+    document.getElementById("topTitle").textContent = "AKUY";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+function updateProgressBar() {
+    if (!currentPart) {
         progress.style.width = "0%";
         return;
     }
 
-    const percent =
-        Math.min(
-            100,
-            Math.max(0, (window.scrollY / max) * 100)
-        );
+    const chapter = document.getElementById(`part${currentPart}`);
+    const rect = chapter.getBoundingClientRect();
+
+    const chapterTop = window.scrollY + rect.top;
+    const chapterHeight = chapter.offsetHeight - window.innerHeight;
+
+    const amount = window.scrollY - chapterTop;
+
+    const percent = chapterHeight > 0
+        ? Math.max(0, Math.min(100, (amount / chapterHeight) * 100))
+        : 0;
 
     progress.style.width = percent + "%";
 }
@@ -1082,66 +1763,73 @@ window.addEventListener("scroll", updateProgressBar, {
     passive: true
 });
 
-updateProgressBar();
+[1, 2].forEach(part => {
+    const paragraphs =
+        [...document.querySelectorAll(`#story${part} p`)];
 
-paragraphs.forEach((p, i) => {
-    p.dataset.id = i;
-});
+    paragraphs.forEach((paragraph, index) => {
+        paragraph.dataset.readId = index;
 
-const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
 
-        const rect = entry.target.getBoundingClientRect();
-        const middle = window.innerHeight * .5;
+                const rect = entry.target.getBoundingClientRect();
+                const middle = window.innerHeight * .5;
 
-        if (rect.top < middle && rect.bottom > middle) {
-            localStorage.setItem(
-                "akuyLastParagraph",
-                entry.target.dataset.id
-            );
+                if (rect.top < middle && rect.bottom > middle) {
+                    localStorage.setItem(
+                        `akuyPart${part}LastParagraph`,
+                        entry.target.dataset.readId
+                    );
 
-            localStorage.setItem(
-                "akuyLastText",
-                entry.target.innerText.trim()
-            );
-        }
+                    localStorage.setItem(
+                        `akuyPart${part}LastText`,
+                        entry.target.innerText.trim()
+                    );
+                }
+            });
+        }, {
+            threshold: [0, .25, .5, .75, 1]
+        });
+
+        observer.observe(paragraph);
     });
-}, {
-    threshold: [0, .25, .5, .75, 1]
 });
 
-paragraphs.forEach(p => observer.observe(p));
+function loadSavedPosition(part) {
+    const id =
+        localStorage.getItem(`akuyPart${part}LastParagraph`);
 
-function loadSavedPosition() {
-    const savedId =
-        localStorage.getItem("akuyLastParagraph");
+    const text =
+        localStorage.getItem(`akuyPart${part}LastText`);
 
-    const savedText =
-        localStorage.getItem("akuyLastText");
+    const box =
+        document.getElementById(`continue${part}`);
 
-    if (savedId !== null && savedText) {
-        continueBox.style.display = "block";
+    const textBox =
+        document.getElementById(`savedText${part}`);
 
-        savedTextElement.innerText =
-            `"${savedText.slice(0, 140)}${
-                savedText.length > 140 ? "..." : ""
-            }"`;
+    if (id !== null && text) {
+        box.style.display = "block";
+
+        textBox.textContent =
+            `"${text.slice(0, 140)}${text.length > 140 ? "..." : ""}"`;
     } else {
-        continueBox.style.display = "none";
+        box.style.display = "none";
     }
 }
 
-loadSavedPosition();
-
-function continueReading() {
+function continueReading(part) {
     const id =
-        localStorage.getItem("akuyLastParagraph");
+        localStorage.getItem(`akuyPart${part}LastParagraph`);
 
     if (id === null) return;
 
     const target =
-        document.querySelector(`[data-id="${id}"]`);
+        document.querySelector(
+            `#story${part} [data-read-id="${id}"]`
+        );
 
     if (!target) return;
 
@@ -1158,35 +1846,29 @@ function continueReading() {
 }
 
 function resetReadingProgress() {
-    localStorage.removeItem("akuyLastParagraph");
-    localStorage.removeItem("akuyLastText");
+    [1, 2].forEach(part => {
+        localStorage.removeItem(`akuyPart${part}LastParagraph`);
+        localStorage.removeItem(`akuyPart${part}LastText`);
 
-    continueBox.style.display = "none";
-    savedTextElement.innerText = "";
-
-    closeSettings();
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+        const box = document.getElementById(`continue${part}`);
+        if (box) box.style.display = "none";
     });
 
-    alert("Last read position has been reset.");
+    localStorage.removeItem("akuyCurrentPart");
+
+    closeSettings();
+    showCover();
+
+    alert("Reading positions have been reset.");
 }
 
 function openParts() {
-    document
-        .getElementById("partsMenu")
-        .classList.add("open");
-
+    document.getElementById("partsMenu").classList.add("open");
     document.body.style.overflow = "hidden";
 }
 
 function closeParts() {
-    document
-        .getElementById("partsMenu")
-        .classList.remove("open");
-
+    document.getElementById("partsMenu").classList.remove("open");
     document.body.style.overflow = "";
 }
 
@@ -1197,18 +1879,12 @@ function closePartsOutside(event) {
 }
 
 function openSettings() {
-    document
-        .getElementById("settingsOverlay")
-        .classList.add("open");
-
+    document.getElementById("settingsOverlay").classList.add("open");
     document.body.style.overflow = "hidden";
 }
 
 function closeSettings() {
-    document
-        .getElementById("settingsOverlay")
-        .classList.remove("open");
-
+    document.getElementById("settingsOverlay").classList.remove("open");
     document.body.style.overflow = "";
 }
 
@@ -1221,10 +1897,7 @@ function settingsOutside(event) {
 function toggleDarkMode() {
     const enabled = darkToggle.checked;
 
-    document.body.classList.toggle(
-        "dark",
-        enabled
-    );
+    document.body.classList.toggle("dark", enabled);
 
     localStorage.setItem(
         "akuyDarkMode",
@@ -1246,14 +1919,10 @@ function toggleMotionBlur() {
     );
 }
 
-let scrollTimer = null;
+let scrollTimer;
 
 window.addEventListener("scroll", () => {
-    if (
-        !document.body.classList.contains(
-            "motion-blur"
-        )
-    ) {
+    if (!document.body.classList.contains("motion-blur")) {
         return;
     }
 
@@ -1277,40 +1946,60 @@ function dismissNotice() {
     );
 }
 
-const release =
-    new Date("2026-08-09T12:00:00+02:00");
+const part3Release =
+    new Date("2026-08-10T12:00:00+02:00");
 
-function updateCountdown() {
-    let diff =
-        release.getTime() -
-        Date.now();
+function updatePart3Countdown() {
+    let difference =
+        part3Release.getTime() - Date.now();
 
     const countdown =
-        document.getElementById("countdown");
+        document.getElementById("countdown3");
 
-    if (diff <= 0) {
-        countdown.innerText =
-            "Part 2 release time reached";
+    const menuStatus =
+        document.getElementById("part3MenuStatus");
+
+    if (difference <= 0) {
+        countdown.textContent =
+            "Part 3 release time reached";
+
+        menuStatus.textContent =
+            "Release time reached";
+
         return;
     }
 
-    const d = Math.floor(diff / 86400000);
-    diff %= 86400000;
+    const days =
+        Math.floor(difference / 86400000);
 
-    const h = Math.floor(diff / 3600000);
-    diff %= 3600000;
+    difference %= 86400000;
 
-    const m = Math.floor(diff / 60000);
-    diff %= 60000;
+    const hours =
+        Math.floor(difference / 3600000);
 
-    const s = Math.floor(diff / 1000);
+    difference %= 3600000;
 
-    countdown.innerText =
-        `${d}d ${h}h ${m}m ${s}s`;
+    const minutes =
+        Math.floor(difference / 60000);
+
+    difference %= 60000;
+
+    const seconds =
+        Math.floor(difference / 1000);
+
+    const text =
+        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+    countdown.textContent = text;
+    menuStatus.textContent = text;
 }
 
-updateCountdown();
-setInterval(updateCountdown, 1000);
+updatePart3Countdown();
+
+setInterval(
+    updatePart3Countdown,
+    1000
+);
 
 async function loadSiteVersion() {
     const versionElement =
@@ -1324,11 +2013,10 @@ async function loadSiteVersion() {
             }
         );
 
-        if (!response.ok) {
-            throw new Error();
-        }
+        if (!response.ok) throw new Error();
 
-        const commit = await response.json();
+        const commit =
+            await response.json();
 
         const shortHash =
             commit.sha.substring(0, 7);
@@ -1338,27 +2026,16 @@ async function loadSiteVersion() {
                 commit.commit.committer.date
             );
 
-        const formattedDate =
-            date.toLocaleDateString(
-                "en-GB",
-                {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric"
-                }
-            );
-
-        const formattedTime =
-            date.toLocaleTimeString(
-                "en-GB",
-                {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }
-            );
+        const formatted =
+            date.toLocaleString("en-GB", {
+                day: "numeric",
+                month: "short",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
 
         versionElement.textContent =
-            `${shortHash} · ${formattedDate} · ${formattedTime}`;
+            `${shortHash} · ${formatted}`;
 
     } catch {
         versionElement.textContent =
@@ -1368,11 +2045,13 @@ async function loadSiteVersion() {
 
 loadSiteVersion();
 
-function startReading() {
-    document.getElementById("chapter").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
+const savedPart =
+    Number(localStorage.getItem("akuyCurrentPart"));
+
+if (savedPart === 1 || savedPart === 2) {
+    showPart(savedPart);
+} else {
+    showCover();
 }
 </script>
 
