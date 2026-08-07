@@ -535,6 +535,86 @@ body.motion-blur.scrolling .topbar {
         padding: 7px 10px;
     }
 }
+/* COVER */
+
+.cover-section {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 55px 24px 20px;
+}
+
+.cover-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 18px 55px rgba(0, 0, 0, .18);
+}
+
+.cover-info {
+    padding: 28px 2px 45px;
+}
+
+.cover-label {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.cover-info h2 {
+    margin: 0;
+    font-size: 32px;
+    line-height: 1.15;
+}
+
+.cover-description {
+    margin: 15px 0 0;
+    font-size: 17px;
+    line-height: 1.7;
+    color: #69655e;
+}
+
+.start-reading {
+    margin-top: 24px;
+    border: 0;
+    background: #1d1d1d;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+body.dark .cover-description {
+    color: #999;
+}
+
+body.dark .cover-label {
+    color: #777;
+}
+
+body.dark .start-reading {
+    background: #eee;
+    color: #111;
+}
+
+body.dark .cover-image {
+    box-shadow: 0 18px 55px rgba(0, 0, 0, .5);
+}
+
+@media (max-width: 600px) {
+    .cover-section {
+        padding: 35px 20px 10px;
+    }
+
+    .cover-info h2 {
+        font-size: 28px;
+    }
+}
 </style>
 </head>
 
@@ -565,7 +645,30 @@ body.motion-blur.scrolling .topbar {
     </div>
 </div>
 
-<main class="chapter">
+<main class="chapter" id="chapter">
+    
+<section class="cover-section">
+    <img
+        src="cover.jpg"
+        alt="AKUY Part 1 — Yet a Distortion"
+        class="cover-image"
+    >
+
+    <div class="cover-info">
+        <div class="cover-label">AKUY — PART 1</div>
+
+        <h2>Yet a Distortion</h2>
+
+        <p class="cover-description">
+            She woke up among the graves.<br>
+            But nothing—and no one—made sense.
+        </p>
+
+        <button class="start-reading" onclick="startReading()">
+            Start Reading
+        </button>
+    </div>
+</section>
 
 <div class="part">Part 1</div>
 <h1>Yet a Distortion</h1>
@@ -1264,6 +1367,13 @@ async function loadSiteVersion() {
 }
 
 loadSiteVersion();
+
+function startReading() {
+    document.getElementById("chapter").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
 </script>
 
 </body>
