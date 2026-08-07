@@ -540,6 +540,17 @@
             padding: 7px 10px;
         }
     }
+    .site-version {
+    margin-top: 2px;
+    font-size: 10px;
+    font-weight: 400;
+    color: #888;
+    letter-spacing: 0.03em;
+}
+
+body.dark .site-version {
+    color: #777;
+}
 </style>
 </head>
 
@@ -564,9 +575,10 @@
 <div id="progress"></div>
 
 <div class="topbar">
-    <div class="title">
-        AKUY | Part 1
-    </div>
+<div>
+    <div class="title">AKUY | Part 1</div>
+    <div class="site-version" id="siteVersion">Loading version...</div>
+</div>
 
     <div class="topbar-buttons">
         <button onclick="openSettings()">
@@ -1571,7 +1583,43 @@ setInterval(
     updateCountdown,
     1000
 );
+async function loadSiteVersion() {
+    const versionElement = document.getElementById("siteVersion");
 
+    try {
+        const response = await fetch(
+            "https://api.github.com/repos/Essrzp/yes/commits/main"
+        );
+
+        if (!response.ok) {
+            throw new Error("GitHub request failed");
+        }
+
+        const commit = await response.json();
+
+        const shortHash = commit.sha.substring(0, 7);
+        const date = new Date(commit.commit.committer.date);
+
+        const formattedDate = date.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        });
+
+        const formattedTime = date.toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+        versionElement.textContent =
+            `${shortHash} · ${formattedDate} · ${formattedTime}`;
+
+    } catch (error) {
+        versionElement.textContent = "AKUY";
+    }
+}
+
+loadSiteVersion();
 </script>
 
 </body>
