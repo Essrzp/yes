@@ -208,16 +208,313 @@
             padding-right: 20px;
         }
     }
+    
+    /* ==========================================
+   DISPLAY NOTICE
+========================================== */
+
+.display-notice {
+    background: #deddd9;
+    color: #676767;
+    padding: 16px 18px 18px;
+    font-family: Arial, sans-serif;
+    border-bottom: 1px solid #cbc9c4;
+}
+
+.display-notice.hidden {
+    display: none;
+}
+
+.notice-text {
+    font-size: 15px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+}
+
+.notice-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.notice-buttons button {
+    border: 0;
+    border-radius: 999px;
+    padding: 11px;
+    font-weight: 600;
+    font-size: 15px;
+    background: #efefef;
+    color: #222;
+}
+
+
+/* ==========================================
+   SETTINGS
+========================================== */
+
+.settings-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: none;
+    background: rgba(0,0,0,.4);
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.settings-overlay.open {
+    display: flex;
+}
+
+.settings-panel {
+    background: #f4f1ea;
+    color: #1d1d1d;
+    width: 100%;
+    max-width: 720px;
+    padding: 24px 22px 35px;
+    border-radius: 22px 22px 0 0;
+    font-family: Arial, sans-serif;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.settings-header h2 {
+    margin: 0;
+}
+
+.settings-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background: transparent;
+    font-size: 20px;
+}
+
+.setting-row {
+    min-height: 65px;
+    border-bottom: 1px solid #d4d0c7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.setting-title {
+    font-weight: 600;
+}
+
+.setting-description {
+    color: #777;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+
+/* SWITCH */
+
+.switch {
+    position: relative;
+    width: 49px;
+    height: 29px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #bdbdbd;
+    border-radius: 99px;
+    transition: .2s;
+}
+
+.slider::after {
+    content: "";
+    position: absolute;
+    height: 23px;
+    width: 23px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: .2s;
+}
+
+.switch input:checked + .slider {
+    background: #222;
+}
+
+.switch input:checked + .slider::after {
+    transform: translateX(20px);
+}
+
+
+/* RESET BUTTON */
+
+.reset-button {
+    margin-top: 20px;
+    width: 100%;
+    border: 1px solid #d8aaa7;
+    background: #fff1ef;
+    color: #a62c28;
+    border-radius: 10px;
+    padding: 13px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+
+/* ==========================================
+   DARK MODE
+========================================== */
+
+body.dark {
+    background: #101113;
+    color: #e9e9e9;
+}
+
+body.dark .topbar {
+    background: rgba(16,17,19,.94);
+    border-color: #292a2d;
+}
+
+body.dark .topbar button {
+    color: #eee;
+    border-color: #444;
+}
+
+body.dark .chapter {
+    color: #e4e4e4;
+}
+
+body.dark .story p {
+    color: #e4e4e4;
+}
+
+body.dark .subtitle,
+body.dark .part,
+body.dark .muted {
+    color: #929292;
+}
+
+body.dark .display-notice {
+    background: #27282b;
+    color: #aaa;
+    border-color: #393a3e;
+}
+
+body.dark .notice-buttons button {
+    background: #3a3b3f;
+    color: #eee;
+}
+
+body.dark .menu,
+body.dark .settings-panel {
+    background: #17181b;
+    color: #eee;
+}
+
+body.dark .setting-row,
+body.dark .part-row {
+    border-color: #303136;
+}
+
+body.dark .next {
+    border-color: #35363b;
+}
+
+body.dark #continueBox {
+    background: #1e1f23;
+    border-color: #35363b;
+}
+
+body.dark .resume {
+    background: #34343b;
+}
+
+
+/* ==========================================
+   MOTION BLUR WHILE SCROLLING
+========================================== */
+
+.chapter,
+.topbar {
+    transition:
+        filter .14s ease,
+        transform .14s ease;
+}
+
+body.motion-blur.scrolling .story {
+    filter: blur(1.15px);
+    transform: translateY(1px);
+}
+
+body.motion-blur.scrolling .topbar {
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+
+/* Reduce motion accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+    body.motion-blur.scrolling .story {
+        filter: none;
+        transform: none;
+    }
+}
 </style>
 </head>
 
 <body>
+<div class="display-notice" id="displayNotice">
 
+    <div class="notice-text">
+        If this page is not displaying as expected, you can adjust reader display settings which may resolve issues.
+    </div>
+
+    <div class="notice-buttons">
+
+        <button onclick="dismissNotice()">
+            Dismiss
+        </button>
+
+        <button onclick="openSettings()">
+            Reader Settings
+        </button>
+
+    </div>
+
+</div>
 <div id="progress"></div>
 
 <div class="topbar">
-    <div class="title">AKUY — Part 1</div>
-    <button onclick="openParts()">Parts</button>
+
+    <div class="title">
+        AKUY | Part 1
+    </div>
+
+    <div style="display:flex; gap:8px;">
+
+        <button onclick="openSettings()">
+            Settings
+        </button>
+
+        <button onclick="openParts()">
+            Parts
+        </button>
+
+    </div>
+
 </div>
 
 <main class="chapter">
@@ -722,7 +1019,292 @@ function updateCountdown() {
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+/* ==========================================
+   READER SETTINGS
+========================================== */
+
+const darkToggle =
+    document.getElementById("darkModeToggle");
+
+const motionToggle =
+    document.getElementById("motionBlurToggle");
+
+
+/* LOAD SAVED SETTINGS */
+
+if (localStorage.getItem("akuyDarkMode") === "true") {
+    document.body.classList.add("dark");
+    darkToggle.checked = true;
+}
+
+
+if (localStorage.getItem("akuyMotionBlur") === "true") {
+    document.body.classList.add("motion-blur");
+    motionToggle.checked = true;
+}
+
+
+/* DARK MODE */
+
+function toggleDarkMode() {
+
+    const enabled = darkToggle.checked;
+
+    document.body.classList.toggle(
+        "dark",
+        enabled
+    );
+
+    localStorage.setItem(
+        "akuyDarkMode",
+        enabled
+    );
+
+}
+
+
+/* MOTION BLUR */
+
+function toggleMotionBlur() {
+
+    const enabled = motionToggle.checked;
+
+    document.body.classList.toggle(
+        "motion-blur",
+        enabled
+    );
+
+    localStorage.setItem(
+        "akuyMotionBlur",
+        enabled
+    );
+
+}
+
+
+/* ==========================================
+   SCROLL MOTION BLUR
+========================================== */
+
+let scrollTimer;
+
+window.addEventListener(
+    "scroll",
+    () => {
+
+        if (
+            !document.body.classList.contains(
+                "motion-blur"
+            )
+        ) {
+            return;
+        }
+
+        document.body.classList.add(
+            "scrolling"
+        );
+
+        clearTimeout(scrollTimer);
+
+        scrollTimer = setTimeout(
+            () => {
+
+                document.body.classList.remove(
+                    "scrolling"
+                );
+
+            },
+            110
+        );
+
+    },
+    { passive: true }
+);
+
+
+/* ==========================================
+   SETTINGS PANEL
+========================================== */
+
+function openSettings() {
+
+    document
+        .getElementById("settingsOverlay")
+        .classList.add("open");
+
+}
+
+
+function closeSettings() {
+
+    document
+        .getElementById("settingsOverlay")
+        .classList.remove("open");
+
+}
+
+
+function settingsOutside(event) {
+
+    if (
+        event.target.id ===
+        "settingsOverlay"
+    ) {
+        closeSettings();
+    }
+
+}
+
+
+/* ==========================================
+   RESET LAST READ
+========================================== */
+
+function resetReadingProgress() {
+
+    localStorage.removeItem(
+        "akuyLastParagraph"
+    );
+
+    localStorage.removeItem(
+        "akuyLastText"
+    );
+
+    const box =
+        document.getElementById(
+            "continueBox"
+        );
+
+    if (box) {
+        box.style.display = "none";
+    }
+
+    alert(
+        "Last read position has been reset."
+    );
+
+}
+
+
+/* ==========================================
+   TOP DISPLAY NOTICE
+========================================== */
+
+const notice =
+    document.getElementById(
+        "displayNotice"
+    );
+
+
+if (
+    localStorage.getItem(
+        "akuyNoticeDismissed"
+    ) === "true"
+) {
+
+    notice.classList.add("hidden");
+
+}
+
+
+function dismissNotice() {
+
+    notice.classList.add("hidden");
+
+    localStorage.setItem(
+        "akuyNoticeDismissed",
+        "true"
+    );
+
+}
 </script>
 
+<div
+    class="settings-overlay"
+    id="settingsOverlay"
+    onclick="settingsOutside(event)"
+>
+
+    <div class="settings-panel">
+
+        <div class="settings-header">
+
+            <h2>Reader Settings</h2>
+
+            <button
+                class="settings-close"
+                onclick="closeSettings()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+                <div class="setting-title">
+                    Dark mode
+                </div>
+
+                <div class="setting-description">
+                    Use a darker reading theme.
+                </div>
+            </div>
+
+            <label class="switch">
+
+                <input
+                    type="checkbox"
+                    id="darkModeToggle"
+                    onchange="toggleDarkMode()"
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+                <div class="setting-title">
+                    Motion blur
+                </div>
+
+                <div class="setting-description">
+                    Adds slight blur while scrolling.
+                </div>
+            </div>
+
+            <label class="switch">
+
+                <input
+                    type="checkbox"
+                    id="motionBlurToggle"
+                    onchange="toggleMotionBlur()"
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <button
+            class="reset-button"
+            onclick="resetReadingProgress()"
+        >
+            Reset Last Read Position
+        </button>
+
+    </div>
+
+</div>
 </body>
 </html>
