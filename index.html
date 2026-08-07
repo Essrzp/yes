@@ -1,19 +1,1430 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NLVAY Test</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AKUY — Yet a Distortion</title>
+
+<meta name="description" content="AKUY — Part 1: Yet a Distortion">
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --bg: #090a0d;
+        --bg-soft: #101116;
+        --panel: rgba(20, 21, 28, 0.92);
+        --text: #ececf0;
+        --muted: #9696a1;
+        --line: rgba(255,255,255,0.09);
+        --accent: #c6c2ff;
+        --accent2: #7d76ff;
+        --danger: #ff6978;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background:
+            radial-gradient(circle at top, rgba(69, 61, 126, 0.13), transparent 38%),
+            var(--bg);
+        color: var(--text);
+        font-family: Georgia, "Times New Roman", serif;
+        min-height: 100vh;
+        line-height: 1.85;
+    }
+
+    body.menu-open {
+        overflow: hidden;
+    }
+
+    /* PROGRESS */
+
+    #progressBar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px;
+        background: linear-gradient(90deg, #8d86ff, #d0cdff);
+        z-index: 9999;
+        transition: width 0.08s linear;
+    }
+
+    /* INTRO */
+
+    #intro {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        background: #050506;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .intro-content {
+        text-align: center;
+        opacity: 0;
+        transform: scale(0.94);
+        animation: introAppear 1.2s forwards;
+    }
+
+    .intro-title {
+        font-family: Arial, sans-serif;
+        font-size: clamp(4rem, 18vw, 9rem);
+        letter-spacing: 0.16em;
+        font-weight: 900;
+        margin-left: 0.16em;
+        color: white;
+        text-shadow:
+            3px 0 rgba(120, 110, 255, 0.5),
+            -3px 0 rgba(255, 85, 110, 0.25);
+        animation: glitch 0.18s 4 alternate;
+    }
+
+    .intro-part {
+        margin-top: 14px;
+        font-family: Arial, sans-serif;
+        font-size: 0.76rem;
+        letter-spacing: 0.5em;
+        color: #85858f;
+        text-transform: uppercase;
+    }
+
+    @keyframes introAppear {
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes glitch {
+        0% {
+            transform: translateX(-2px);
+        }
+        100% {
+            transform: translateX(2px);
+        }
+    }
+
+    #intro.fade-out {
+        animation: introFade 0.75s forwards;
+    }
+
+    @keyframes introFade {
+        to {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+
+    /* HEADER */
+
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(9,10,13,0.78);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+        max-width: 900px;
+        height: 64px;
+        padding: 0 22px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .logo {
+        font-family: Arial, sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 0.22em;
+        font-weight: 800;
+    }
+
+    .menu-button {
+        font-family: Arial, sans-serif;
+        background: transparent;
+        color: white;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 9px 15px;
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+
+    /* HERO */
+
+    .hero {
+        max-width: 760px;
+        margin: 0 auto;
+        min-height: 76vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 80px 25px 60px;
+    }
+
+    .eyebrow {
+        font-family: Arial, sans-serif;
+        color: var(--accent);
+        font-size: 0.72rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+    }
+
+    h1 {
+        font-family: Arial, sans-serif;
+        font-size: clamp(3rem, 12vw, 6rem);
+        line-height: 0.95;
+        letter-spacing: -0.055em;
+        margin-bottom: 20px;
+    }
+
+    .episode-name {
+        font-size: clamp(1.3rem, 5vw, 2rem);
+        color: #babac3;
+        font-style: italic;
+        margin-bottom: 24px;
+    }
+
+    .hero-description {
+        max-width: 570px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+
+    .scroll-hint {
+        font-family: Arial, sans-serif;
+        margin-top: 45px;
+        font-size: 0.74rem;
+        color: #686873;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+    }
+
+    /* CONTINUE BOX */
+
+    #continueBox {
+        display: none;
+        max-width: 720px;
+        margin: 0 auto 45px;
+        padding: 0 24px;
+    }
+
+    .continue-inner {
+        background: linear-gradient(
+            135deg,
+            rgba(112, 103, 255, 0.12),
+            rgba(255,255,255,0.025)
+        );
+        border: 1px solid rgba(156,149,255,0.26);
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .continue-label {
+        font-family: Arial, sans-serif;
+        font-size: 0.72rem;
+        color: var(--accent);
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    #savedSentencePreview {
+        font-size: 0.94rem;
+        color: #c7c7ce;
+        line-height: 1.55;
+        margin-bottom: 16px;
+        max-height: 4.7em;
+        overflow: hidden;
+    }
+
+    .continue-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .action-button {
+        border: 0;
+        border-radius: 999px;
+        padding: 11px 18px;
+        font-family: Arial, sans-serif;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .primary {
+        background: #e9e7ff;
+        color: #111117;
+    }
+
+    .secondary {
+        background: rgba(255,255,255,0.07);
+        color: white;
+    }
+
+    /* STORY */
+
+    .story {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 20px 25px 130px;
+    }
+
+    .chapter-divider {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin: 30px 0 70px;
+    }
+
+    .chapter-divider span {
+        height: 1px;
+        flex: 1;
+        background: var(--line);
+    }
+
+    .chapter-divider b {
+        font-family: Arial, sans-serif;
+        font-size: 0.67rem;
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        color: #686873;
+    }
+
+    .story p {
+        font-size: clamp(1.08rem, 4.3vw, 1.24rem);
+        margin-bottom: 1.55em;
+        color: #dddde2;
+    }
+
+    .story p.dialogue {
+        margin-left: 14px;
+        color: white;
+    }
+
+    .story .ellipsis {
+        text-align: center;
+        letter-spacing: 0.65em;
+        color: #70707a;
+        margin: 65px 0;
+    }
+
+    .sentence {
+        transition:
+            background 0.35s ease,
+            color 0.35s ease;
+        border-radius: 4px;
+    }
+
+    .sentence.resume-highlight {
+        background: rgba(137, 128, 255, 0.19);
+        color: #fff;
+    }
+
+    /* END */
+
+    .chapter-end {
+        text-align: center;
+        padding: 100px 0 20px;
+    }
+
+    .chapter-end .small {
+        font-family: Arial, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.3em;
+        font-size: 0.67rem;
+        color: #686873;
+        margin-bottom: 15px;
+    }
+
+    .chapter-end h2 {
+        font-family: Arial, sans-serif;
+        font-size: 2rem;
+    }
+
+    /* NEXT PART */
+
+    .next-part {
+        max-width: 720px;
+        margin: 0 auto 130px;
+        padding: 0 24px;
+    }
+
+    .next-card {
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(114,104,255,0.13),
+                transparent 45%
+            ),
+            var(--bg-soft);
+        padding: 28px;
+    }
+
+    .next-label {
+        font-family: Arial, sans-serif;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.23em;
+        color: var(--accent);
+    }
+
+    .next-card h3 {
+        font-family: Arial, sans-serif;
+        margin-top: 9px;
+        font-size: 1.65rem;
+    }
+
+    .date {
+        font-family: Arial, sans-serif;
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 0.85rem;
+    }
+
+    #countdown {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-top: 25px;
+    }
+
+    .time-box {
+        background: rgba(255,255,255,0.045);
+        padding: 15px 5px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .time-num {
+        font-family: Arial, sans-serif;
+        font-size: 1.4rem;
+        font-weight: bold;
+    }
+
+    .time-label {
+        font-family: Arial, sans-serif;
+        color: #71717d;
+        font-size: 0.59rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    /* MENU */
+
+    #partsMenu {
+        position: fixed;
+        inset: 0;
+        z-index: 5000;
+        background: rgba(4,4,6,0.8);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        display: none;
+        justify-content: center;
+        align-items: flex-end;
+    }
+
+    #partsMenu.open {
+        display: flex;
+    }
+
+    .parts-panel {
+        width: 100%;
+        max-width: 760px;
+        max-height: 87vh;
+        overflow-y: auto;
+        background: #111218;
+        border: 1px solid var(--line);
+        border-radius: 26px 26px 0 0;
+        padding: 26px 22px 40px;
+        animation: menuUp 0.28s ease;
+    }
+
+    @keyframes menuUp {
+        from {
+            transform: translateY(100%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    .parts-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 28px;
+    }
+
+    .parts-top h2 {
+        font-family: Arial, sans-serif;
+    }
+
+    .close {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .part-item {
+        font-family: Arial, sans-serif;
+        padding: 20px 3px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .part-number {
+        color: #70707b;
+        font-size: 0.67rem;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+    }
+
+    .part-title {
+        margin-top: 4px;
+        font-size: 1.08rem;
+    }
+
+    .part-status {
+        margin-top: 6px;
+        font-size: 0.72rem;
+        color: var(--accent);
+    }
+
+    .locked {
+        color: #74747c;
+    }
+
+    footer {
+        text-align: center;
+        border-top: 1px solid var(--line);
+        padding: 35px 20px;
+        color: #565660;
+        font-family: Arial, sans-serif;
+        font-size: 0.72rem;
+    }
+
+    @media (min-width: 760px) {
+        #partsMenu {
+            align-items: center;
+        }
+
+        .parts-panel {
+            border-radius: 26px;
+        }
+    }
+</style>
 </head>
 
-<body style="background:#0b0b0b; color:white; font-family:Arial; text-align:center; padding-top:100px;">
+<body>
 
-    <h1>NLVAY IS WORKING 🔥</h1>
-    <p>If you can see this, GitHub Pages successfully deployed the HTML.</p>
+<div id="progressBar"></div>
 
-    <button onclick="alert('JavaScript works too!')">
-        Test JavaScript
-    </button>
+<!-- INTRO -->
+<div id="intro">
+    <div class="intro-content">
+        <div class="intro-title">AKUY</div>
+        <div class="intro-part">Part I · Yet a Distortion</div>
+    </div>
+</div>
+
+<!-- HEADER -->
+<header>
+    <div class="nav">
+        <div class="logo">AKUY</div>
+
+        <button class="menu-button" onclick="openParts()">
+            Parts
+        </button>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+    <div class="eyebrow">Part I</div>
+
+    <h1>Yet a<br>Distortion</h1>
+
+    <div class="episode-name">
+        Laduxiana Eris
+    </div>
+
+    <div class="hero-description">
+        AKUY — Part 1
+    </div>
+
+    <div class="scroll-hint">
+        Scroll to begin ↓
+    </div>
+</section>
+
+<!-- CONTINUE -->
+<div id="continueBox">
+    <div class="continue-inner">
+        <div class="continue-label">
+            Welcome back
+        </div>
+
+        <div id="savedSentencePreview"></div>
+
+        <div class="continue-actions">
+            <button
+                class="action-button primary"
+                onclick="continueReading()"
+            >
+                Continue Reading
+            </button>
+
+            <button
+                class="action-button secondary"
+                onclick="startBeginning()"
+            >
+                Start From Beginning
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- STORY -->
+<main class="story" id="story">
+
+<div class="chapter-divider">
+    <span></span>
+    <b>Yet a Distortion</b>
+    <span></span>
+</div>
+
+<p>
+Eris was walking along a road in 제천시 (Jecheon), South Korea, distracted, when a hitman aimed for a lethal shot. Just as he fired, someone unexpectedly crossed into his line of fire. He instinctively adjusted his aim at the last moment, causing the bullet to miss its intended location and strike Eris in the upper arm instead.
+</p>
+
+<p>
+Eris’s sister had hired the hitman. Eris had inherited ¥95,000,000 in her uncle’s company assets—65% of them. Eris had saved her uncle in a house fire a few years earlier, and he deeply appreciated that.
+</p>
+
+<p>
+Eris quickly begins losing blood from the wound and eventually loses consciousness.
+</p>
+
+<p>
+An unknown man whose nickname is Dr. Surm happens to be nearby and witnesses the shooting.
+</p>
+
+<p>
+Dr. Surm realizes that her condition is rapidly deteriorating. After helping her in the usual way, he realizes she needs urgent medical attention. Emergency services are called while Dr. Surm continues trying to stabilize her.
+</p>
+
+<p>
+Dr. Surm reaches into his cape pocket and takes out a small sealed bag. He opens it and takes out an ERY-tab containing a small crystal.
+</p>
+
+<p>
+He looks at it for a moment and mumbles,
+</p>
+
+<p class="dialogue">
+“ERY-tab 3007… Damn it, I swore I would never use this again…”
+</p>
+
+<p>
+He hesitates and looks back at Eris. Realizing the situation, he continues,
+</p>
+
+<p class="dialogue">
+“…Lord forgive me.”
+</p>
+
+<p>
+Despite his hesitation, Dr. Surm decides that keeping his promise is not worth letting someone die when he may still have a way to save her.
+</p>
+
+<p>
+He carefully places the ERY-tab underneath her tongue, making sure it remains there instead of being swallowed.
+</p>
+
+<p>
+He watches closely for the response he expects from it while continuing to help her, but nothing obvious happens.
+</p>
+
+<p>
+The ambulance arrives, and Eris is rushed to the hospital.
+</p>
+
+<p>
+During the emergency transport, Eris briefly regains consciousness. Through her fading vision, she can barely make out Dr. Surm nearby.
+</p>
+
+<p class="dialogue">
+“Am I dead?”
+</p>
+
+<p class="dialogue">
+“No. What I gave you should keep your consciousness—”
+</p>
+
+<p>
+Before Dr. Surm can finish, Eris loses consciousness again.
+</p>
+
+<p>
+At the hospital, doctors immediately attempt to stabilize her.
+</p>
+
+<p>
+Eris survives, but she does not regain consciousness. She is declared to be in a coma.
+</p>
+
+<p>
+Dr. Surm stays long enough to see that she survived. He knows the ERY-tab has been given to her, but he cannot know exactly how her body will react to it.
+</p>
+
+<p>
+Eventually, he disappears from the hospital without explanation.
+</p>
+
+<p>
+Her friends and family are informed and begin visiting her. Her sister comes too, acting like she truly loved Eris and is devastated by what happened.
+</p>
+
+<p>
+Two days later, Dr. Surm returns to the hospital as a visitor. At first, the receptionist refuses to let him see Eris because he has no known relationship with her.
+</p>
+
+<p>
+However, an older member of the hospital staff recognizes him from his past as a doctor.
+</p>
+
+<p>
+After a short private conversation between them, Dr. Surm is granted permission to visit Eris.
+</p>
+
+<p>
+What exactly was said, and why his former connection to the hospital was enough to grant him access, remains unknown.
+</p>
+
+<p>
+During a moment when he is able to examine her without her family around, he walks into her room.
+</p>
+
+<p>
+He approaches Eris and checks the ERY-tab he had already placed underneath her tongue during the shooting.
+</p>
+
+<p>
+The crystal is no longer simply sitting there like before.
+</p>
+
+<p>
+Her body has begun absorbing and slowly breaking it down.
+</p>
+
+<p>
+Dr. Surm looks at Eris for a moment.
+</p>
+
+<p>
+He doesn’t seem relieved.
+</p>
+
+<p>
+But he doesn’t seem surprised either.
+</p>
+
+<p>
+He turns around and leaves the room.
+</p>
+
+<div class="ellipsis">…</div>
+
+<p>
+Eris opens her eyes.
+</p>
+
+<p>
+Above her is a grey sky.
+</p>
+
+<p>
+She remains still for a few seconds.
+</p>
+
+<p>
+Cold air brushes against her face.
+</p>
+
+<p>
+She sits up.
+</p>
+
+<p>
+There is grass beneath her hands. It is slightly wet.
+</p>
+
+<p>
+Around her are rows of stones rising from the ground.
+</p>
+
+<p>
+Some stand straight. Others lean to one side. A few have fallen completely and are partly covered by grass and dirt.
+</p>
+
+<p>
+There are markings carved into them.
+</p>
+
+<p>
+Eris looks at one.
+</p>
+
+<p>
+She cannot read it.
+</p>
+
+<p>
+She doesn’t find this particularly strange.
+</p>
+
+<p>
+She stands up and brushes some of the dirt from her clothes.
+</p>
+
+<p>
+There is no gunshot wound on her arm.
+</p>
+
+<p>
+She doesn’t check for one.
+</p>
+
+<p>
+She doesn’t remember having one.
+</p>
+
+<p>
+She looks around the grave field.
+</p>
+
+<p>
+She understands what the stones are.
+</p>
+
+<p>
+Graves.
+</p>
+
+<p>
+She knows what graves are.
+</p>
+
+<p>
+She knows people are buried beneath them.
+</p>
+
+<p>
+She knows how to walk. How to breathe. How to eat and drink. She knows Korean. She understands ordinary objects and basic things about being human.
+</p>
+
+<p>
+But she doesn’t wonder how she arrived here.
+</p>
+
+<p>
+There is no other place in her mind that she believes she should be.
+</p>
+
+<p>
+For Eris, this is simply where she woke up.
+</p>
+
+<p>
+She begins walking between the graves.
+</p>
+
+<p>
+Some are old enough that their markings have nearly disappeared. Others look much newer.
+</p>
+
+<p>
+At the edge of the grave field is a narrow dirt path.
+</p>
+
+<p>
+Eris follows it.
+</p>
+
+<p>
+She hasn’t gone far when she hears something behind her.
+</p>
+
+<p>
+A voice.
+</p>
+
+<p>
+She stops.
+</p>
+
+<p>
+Someone speaks again.
+</p>
+
+<p>
+Eris turns around.
+</p>
+
+<p>
+A person is standing several meters away from her near one of the graves.
+</p>
+
+<p>
+They say something to her.
+</p>
+
+<p>
+Eris stares at them.
+</p>
+
+<p>
+She heard every sound clearly.
+</p>
+
+<p>
+But none of it meant anything.
+</p>
+
+<p>
+The person speaks again, slower this time.
+</p>
+
+<p>
+Eris’s expression changes slightly.
+</p>
+
+<p>
+She knows what speaking is.
+</p>
+
+<p>
+She knows they’re trying to communicate with her.
+</p>
+
+<p>
+She knows Korean.
+</p>
+
+<p>
+So why can’t she understand them?
+</p>
+
+<p>
+The person waits for an answer.
+</p>
+
+<p>
+Eris opens her mouth.
+</p>
+
+<p class="dialogue">
+“…뭐라고?”
+</p>
+
+<p>
+The person stares back at her.
+</p>
+
+<p>
+Neither of them understands the other.
+</p>
+
+<p>
+For the first time since opening her eyes, Eris feels that something isn’t right.
+</p>
+
+<div class="chapter-end">
+    <div class="small">End of Part I</div>
+    <h2>Yet a Distortion</h2>
+</div>
+
+</main>
+
+<!-- NEXT PART -->
+<section class="next-part">
+    <div class="next-card">
+        <div class="next-label">Next release</div>
+
+        <h3>Part II</h3>
+
+        <div class="date">
+            August 9, 2026 · 12:00 CEST
+        </div>
+
+        <div id="countdown">
+
+            <div class="time-box">
+                <div class="time-num" id="days">00</div>
+                <div class="time-label">Days</div>
+            </div>
+
+            <div class="time-box">
+                <div class="time-num" id="hours">00</div>
+                <div class="time-label">Hours</div>
+            </div>
+
+            <div class="time-box">
+                <div class="time-num" id="minutes">00</div>
+                <div class="time-label">Minutes</div>
+            </div>
+
+            <div class="time-box">
+                <div class="time-num" id="seconds">00</div>
+                <div class="time-label">Seconds</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<footer>
+    AKUY
+</footer>
+
+<!-- PARTS MENU -->
+<div id="partsMenu" onclick="menuBackgroundClick(event)">
+    <div class="parts-panel">
+
+        <div class="parts-top">
+            <h2>Parts</h2>
+
+            <button class="close" onclick="closeParts()">
+                ×
+            </button>
+        </div>
+
+        <div class="part-item">
+            <div class="part-number">Part I</div>
+            <div class="part-title">Yet a Distortion</div>
+            <div class="part-status">Available</div>
+        </div>
+
+        <div class="part-item">
+            <div class="part-number">Part II</div>
+            <div class="part-title">Untitled</div>
+            <div class="part-status locked" id="menuCountdown">
+                Coming soon
+            </div>
+        </div>
+
+        <div class="part-item">
+            <div class="part-number">Part III</div>
+            <div class="part-title">Unknown</div>
+            <div class="part-status locked">
+                TBA
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+/* ==========================================
+   INTRO
+========================================== */
+
+const intro = document.getElementById("intro");
+
+if (sessionStorage.getItem("akuyIntroPlayed")) {
+    intro.style.display = "none";
+} else {
+    sessionStorage.setItem("akuyIntroPlayed", "true");
+
+    setTimeout(() => {
+        intro.classList.add("fade-out");
+    }, 1900);
+
+    setTimeout(() => {
+        intro.style.display = "none";
+    }, 2700);
+}
+
+
+/* ==========================================
+   TURN STORY TEXT INTO TRACKABLE SENTENCES
+========================================== */
+
+const storyParagraphs = document.querySelectorAll("#story p");
+
+let sentenceIndex = 0;
+
+storyParagraphs.forEach(paragraph => {
+
+    const text = paragraph.textContent.trim();
+
+    /*
+       Splits text at sentence endings while
+       keeping short dialogue lines intact.
+    */
+
+    const pieces = text.match(
+        /[^.!?…]+(?:[.!?…]+["”’']?|$)/g
+    ) || [text];
+
+    paragraph.innerHTML = "";
+
+    pieces.forEach(piece => {
+
+        const span = document.createElement("span");
+
+        span.className = "sentence";
+        span.dataset.sentenceId = sentenceIndex;
+
+        span.textContent = piece.trim();
+
+        paragraph.appendChild(span);
+        paragraph.appendChild(
+            document.createTextNode(" ")
+        );
+
+        sentenceIndex++;
+    });
+
+});
+
+
+/* ==========================================
+   SAVE LAST READ SENTENCE
+========================================== */
+
+const sentences = document.querySelectorAll(".sentence");
+
+let visibleSentences = new Map();
+
+const sentenceObserver = new IntersectionObserver(
+    entries => {
+
+        entries.forEach(entry => {
+
+            const id = Number(
+                entry.target.dataset.sentenceId
+            );
+
+            if (entry.isIntersecting) {
+                visibleSentences.set(id, entry.target);
+            } else {
+                visibleSentences.delete(id);
+            }
+
+        });
+
+        /*
+           Save the lowest visible sentence
+           around the middle of the screen.
+        */
+
+        if (visibleSentences.size > 0) {
+
+            const sorted = [...visibleSentences.keys()]
+                .sort((a,b) => a-b);
+
+            const targetID =
+                sorted[Math.floor(sorted.length / 2)];
+
+            const sentence =
+                document.querySelector(
+                    `[data-sentence-id="${targetID}"]`
+                );
+
+            if (sentence) {
+
+                localStorage.setItem(
+                    "akuyLastSentence",
+                    targetID
+                );
+
+                localStorage.setItem(
+                    "akuyLastSentenceText",
+                    sentence.textContent.trim()
+                );
+
+            }
+        }
+
+    },
+    {
+        threshold: 0.5
+    }
+);
+
+sentences.forEach(sentence => {
+    sentenceObserver.observe(sentence);
+});
+
+
+/* ==========================================
+   CONTINUE READING
+========================================== */
+
+const savedID =
+    localStorage.getItem("akuyLastSentence");
+
+const savedText =
+    localStorage.getItem("akuyLastSentenceText");
+
+const continueBox =
+    document.getElementById("continueBox");
+
+if (savedID !== null && savedText) {
+
+    continueBox.style.display = "block";
+
+    document.getElementById(
+        "savedSentencePreview"
+    ).textContent =
+        `You stopped around: “${savedText}”`;
+
+}
+
+
+function continueReading() {
+
+    const id =
+        localStorage.getItem("akuyLastSentence");
+
+    if (id === null) return;
+
+    const target =
+        document.querySelector(
+            `[data-sentence-id="${id}"]`
+        );
+
+    if (!target) return;
+
+    target.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    target.classList.add("resume-highlight");
+
+    setTimeout(() => {
+        target.classList.remove("resume-highlight");
+    }, 2500);
+}
+
+
+function startBeginning() {
+
+    localStorage.removeItem("akuyLastSentence");
+    localStorage.removeItem("akuyLastSentenceText");
+
+    continueBox.style.display = "none";
+
+    document
+        .getElementById("story")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+}
+
+
+/* ==========================================
+   READING PROGRESS BAR
+========================================== */
+
+window.addEventListener("scroll", () => {
+
+    const scrollTop =
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
+
+    const scrollHeight =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+
+    const progress =
+        (scrollTop / scrollHeight) * 100;
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        Math.min(progress, 100) + "%";
+
+});
+
+
+/* ==========================================
+   PARTS MENU
+========================================== */
+
+function openParts() {
+
+    document
+        .getElementById("partsMenu")
+        .classList.add("open");
+
+    document.body.classList.add("menu-open");
+}
+
+
+function closeParts() {
+
+    document
+        .getElementById("partsMenu")
+        .classList.remove("open");
+
+    document.body.classList.remove("menu-open");
+}
+
+
+function menuBackgroundClick(event) {
+
+    if (
+        event.target.id === "partsMenu"
+    ) {
+        closeParts();
+    }
+
+}
+
+
+/* ==========================================
+   PART II COUNTDOWN
+
+   Netherlands:
+   August 9, 2026
+   12:00 CEST
+   UTC +02:00
+========================================== */
+
+const partTwoRelease =
+    new Date("2026-08-09T12:00:00+02:00");
+
+function updateCountdown() {
+
+    const now = new Date();
+
+    let difference =
+        partTwoRelease.getTime() -
+        now.getTime();
+
+
+    if (difference <= 0) {
+
+        document.getElementById("days")
+            .textContent = "00";
+
+        document.getElementById("hours")
+            .textContent = "00";
+
+        document.getElementById("minutes")
+            .textContent = "00";
+
+        document.getElementById("seconds")
+            .textContent = "00";
+
+        document.getElementById(
+            "menuCountdown"
+        ).textContent = "Release time reached";
+
+        return;
+    }
+
+
+    const days =
+        Math.floor(
+            difference /
+            (1000 * 60 * 60 * 24)
+        );
+
+    difference %=
+        (1000 * 60 * 60 * 24);
+
+
+    const hours =
+        Math.floor(
+            difference /
+            (1000 * 60 * 60)
+        );
+
+    difference %=
+        (1000 * 60 * 60);
+
+
+    const minutes =
+        Math.floor(
+            difference /
+            (1000 * 60)
+        );
+
+    difference %=
+        (1000 * 60);
+
+
+    const seconds =
+        Math.floor(
+            difference / 1000
+        );
+
+
+    document.getElementById("days")
+        .textContent =
+        String(days).padStart(2, "0");
+
+    document.getElementById("hours")
+        .textContent =
+        String(hours).padStart(2, "0");
+
+    document.getElementById("minutes")
+        .textContent =
+        String(minutes).padStart(2, "0");
+
+    document.getElementById("seconds")
+        .textContent =
+        String(seconds).padStart(2, "0");
+
+
+    document.getElementById(
+        "menuCountdown"
+    ).textContent =
+        `${days}d ${hours}h ${minutes}m remaining`;
+
+}
+
+updateCountdown();
+
+setInterval(
+    updateCountdown,
+    1000
+);
+
+</script>
 
 </body>
 </html>
