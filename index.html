@@ -7,549 +7,533 @@
 <title>AKUY | Part 1</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
-
-    html {
-        scroll-behavior: smooth;
-    }
-
-    body {
-        margin: 0;
-        background: #f4f1ea;
-        color: #1d1d1d;
-        font-family: Georgia, "Times New Roman", serif;
-        transition:
-            background 0.25s ease,
-            color 0.25s ease;
-    }
-
-    #progress {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 4px;
-        width: 0%;
-        background: #111;
-        z-index: 9999;
-    }
-
-    .topbar {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: rgba(244, 241, 234, 0.95);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-bottom: 1px solid #d8d3c9;
-        padding: 14px 18px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        font-family: Arial, sans-serif;
-    }
-
-    .topbar .title {
-        font-weight: 700;
-        font-size: 15px;
-        white-space: nowrap;
-    }
-
-    .topbar-buttons {
-        display: flex;
-        gap: 8px;
-    }
-
-    .topbar button {
-        border: 1px solid #bbb4a8;
-        background: transparent;
-        color: #1d1d1d;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-    .chapter {
-        max-width: 720px;
-        margin: auto;
-        padding: 70px 24px 120px;
-    }
-
-    .part {
-        font-family: Arial, sans-serif;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        font-size: 12px;
-        color: #777;
-        margin-bottom: 10px;
-    }
-
-    h1 {
-        font-size: clamp(38px, 9vw, 64px);
-        line-height: 1;
-        margin: 0 0 14px;
-    }
-
-    .subtitle {
-        font-size: 20px;
-        color: #6b6760;
-        margin-bottom: 70px;
-        font-style: italic;
-    }
-
-    .story {
-        transition:
-            filter 0.12s ease,
-            transform 0.12s ease;
-    }
-
-    .story p {
-        font-size: 20px;
-        line-height: 1.9;
-        margin: 0 0 28px;
-    }
-
-    .story p.dialogue {
-        padding-left: 16px;
-    }
-
-    .gap {
-        text-align: center;
-        margin: 70px 0;
-        letter-spacing: 0.5em;
-        color: #888;
-    }
-
-    .end {
-        margin-top: 100px;
-        text-align: center;
-        font-family: Arial, sans-serif;
-    }
-
-    .end small {
-        color: #777;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-    }
-
-    .next {
-        margin-top: 60px;
-        padding: 22px;
-        border: 1px solid #d1cbc0;
-        border-radius: 12px;
-        font-family: Arial, sans-serif;
-    }
-
-    .next-title {
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
-
-    #countdown {
-        margin-top: 8px;
-        color: #666;
-    }
-
-    #continueBox {
-        display: none;
-        margin-bottom: 50px;
-        padding: 18px;
-        border: 1px solid #d1cbc0;
-        border-radius: 12px;
-        font-family: Arial, sans-serif;
-        background: #ebe7de;
-    }
-
-    #savedText {
-        margin-top: 6px;
-        color: #666;
-        line-height: 1.5;
-    }
-
-    #continueBox button {
-        margin-top: 12px;
-        border: none;
-        background: #111;
-        color: white;
-        padding: 10px 14px;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .resume {
-        background: #ddd6c9;
-        border-radius: 4px;
-        transition: background 0.25s ease;
-    }
-
-    /* =========================
-       TOP NOTICE
-    ========================= */
-
-    .display-notice {
-        background: #deddd9;
-        color: #676767;
-        padding: 16px 18px 18px;
-        font-family: Arial, sans-serif;
-        border-bottom: 1px solid #cbc9c4;
-    }
-
-    .display-notice.hidden {
-        display: none;
-    }
-
-    .notice-text {
-        font-size: 15px;
-        line-height: 1.45;
-        margin-bottom: 12px;
-    }
-
-    .notice-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-
-    .notice-buttons button {
-        border: 0;
-        border-radius: 999px;
-        padding: 11px;
-        font-weight: 600;
-        font-size: 15px;
-        background: #efefef;
-        color: #222;
-        cursor: pointer;
-    }
-
-    /* =========================
-       PARTS MENU
-    ========================= */
-
-    #partsMenu {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.35);
-        display: none;
-        justify-content: center;
-        align-items: flex-end;
-        z-index: 4000;
-    }
-
-    #partsMenu.open {
-        display: flex;
-    }
-
-    .menu {
-        width: 100%;
-        max-width: 720px;
-        background: #f4f1ea;
-        border-radius: 18px 18px 0 0;
-        padding: 24px;
-        font-family: Arial, sans-serif;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-
-    .menu-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .menu h2 {
-        margin: 0;
-    }
-
-    .menu-close {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        border: 1px solid #ccc;
-        background: transparent;
-        font-size: 20px;
-        cursor: pointer;
-    }
-
-    .part-row {
-        padding: 18px 0;
-        border-bottom: 1px solid #d1cbc0;
-    }
-
-    .muted {
-        color: #888;
-        font-size: 13px;
-        margin-top: 4px;
-    }
-
-    /* =========================
-       SETTINGS
-    ========================= */
-
-    .settings-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 5000;
-        display: none;
-        background: rgba(0, 0, 0, 0.4);
-        align-items: flex-end;
-        justify-content: center;
-    }
-
-    .settings-overlay.open {
-        display: flex;
-    }
-
-    .settings-panel {
-        background: #f4f1ea;
-        color: #1d1d1d;
-        width: 100%;
-        max-width: 720px;
-        padding: 24px 22px 35px;
-        border-radius: 22px 22px 0 0;
-        font-family: Arial, sans-serif;
-    }
-
-    .settings-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .settings-header h2 {
-        margin: 0;
-    }
-
-    .settings-close {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        border: 1px solid #ccc;
-        background: transparent;
-        font-size: 20px;
-        cursor: pointer;
-    }
-
-    .setting-row {
-        min-height: 72px;
-        border-bottom: 1px solid #d4d0c7;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .setting-title {
-        font-weight: 600;
-    }
-
-    .setting-description {
-        color: #777;
-        font-size: 12px;
-        margin-top: 3px;
-        line-height: 1.4;
-    }
-
-    /* SWITCH */
-
-    .switch {
-        position: relative;
-        width: 49px;
-        height: 29px;
-        flex-shrink: 0;
-    }
-
-    .switch input {
-        display: none;
-    }
-
-    .slider {
-        position: absolute;
-        inset: 0;
-        background: #bdbdbd;
-        border-radius: 99px;
-        transition: 0.2s;
-        cursor: pointer;
-    }
-
-    .slider::after {
-        content: "";
-        position: absolute;
-        height: 23px;
-        width: 23px;
-        left: 3px;
-        top: 3px;
-        background: white;
-        border-radius: 50%;
-        transition: 0.2s;
-    }
-
-    .switch input:checked + .slider {
-        background: #222;
-    }
-
-    .switch input:checked + .slider::after {
-        transform: translateX(20px);
-    }
-
-    .reset-button {
-        margin-top: 20px;
-        width: 100%;
-        border: 1px solid #d8aaa7;
-        background: #fff1ef;
-        color: #a62c28;
-        border-radius: 10px;
-        padding: 13px;
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-    /* =========================
-       DARK MODE
-    ========================= */
-
-    body.dark {
-        background: #101113;
-        color: #e9e9e9;
-    }
-
-    body.dark #progress {
-        background: #f3f3f3;
-    }
-
-    body.dark .topbar {
-        background: rgba(16, 17, 19, 0.94);
-        border-color: #292a2d;
-    }
-
-    body.dark .topbar button {
-        color: #eee;
-        border-color: #444;
-    }
-
-    body.dark .story p,
-    body.dark .chapter {
-        color: #e4e4e4;
-    }
-
-    body.dark .subtitle,
-    body.dark .part,
-    body.dark .muted,
-    body.dark #savedText,
-    body.dark #countdown {
-        color: #929292;
-    }
-
-    body.dark .display-notice {
-        background: #27282b;
-        color: #aaa;
-        border-color: #393a3e;
-    }
-
-    body.dark .notice-buttons button {
-        background: #3a3b3f;
-        color: #eee;
-    }
-
-    body.dark .menu,
-    body.dark .settings-panel {
-        background: #17181b;
-        color: #eee;
-    }
-
-    body.dark .setting-row,
-    body.dark .part-row {
-        border-color: #303136;
-    }
-
-    body.dark .next {
-        border-color: #35363b;
-    }
-
-    body.dark #continueBox {
-        background: #1e1f23;
-        border-color: #35363b;
-    }
-
-    body.dark #continueBox button {
-        background: #eee;
-        color: #111;
-    }
-
-    body.dark .resume {
-        background: #34343b;
-    }
-
-    body.dark .settings-close,
-    body.dark .menu-close {
-        color: white;
-        border-color: #444;
-    }
-
-    body.dark .reset-button {
-        background: #2a1718;
-        border-color: #583234;
-        color: #ff8d8d;
-    }
-
-    /* =========================
-       MOTION BLUR
-    ========================= */
-
-    body.motion-blur.scrolling .story {
-        filter: blur(1.15px);
-        transform: translateY(1px);
-    }
-
-    body.motion-blur.scrolling .topbar {
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        body.motion-blur.scrolling .story {
-            filter: none;
-            transform: none;
-        }
-    }
-
-    @media (max-width: 600px) {
-        .story p {
-            font-size: 18px;
-        }
-
-        .chapter {
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-
-        .topbar {
-            padding: 12px 14px;
-        }
-
-        .topbar .title {
-            font-size: 14px;
-        }
-
-        .topbar button {
-            font-size: 13px;
-            padding: 7px 10px;
-        }
-    }
-    .site-version {
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #f4f1ea;
+    color: #1d1d1d;
+    font-family: Georgia, "Times New Roman", serif;
+    transition: background .25s ease, color .25s ease;
+}
+
+#progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: #111;
+    z-index: 9999;
+}
+
+.display-notice {
+    background: #deddd9;
+    color: #676767;
+    padding: 16px 18px 18px;
+    font-family: Arial, sans-serif;
+    border-bottom: 1px solid #cbc9c4;
+}
+
+.display-notice.hidden {
+    display: none;
+}
+
+.notice-text {
+    font-size: 15px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+}
+
+.notice-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.notice-buttons button {
+    border: 0;
+    border-radius: 999px;
+    padding: 11px;
+    font-weight: 600;
+    font-size: 15px;
+    background: #efefef;
+    color: #222;
+    cursor: pointer;
+}
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(244, 241, 234, .95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid #d8d3c9;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-family: Arial, sans-serif;
+}
+
+.topbar .title {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.site-version {
     margin-top: 2px;
     font-size: 10px;
     font-weight: 400;
     color: #888;
-    letter-spacing: 0.03em;
+    letter-spacing: .03em;
+}
+
+.topbar-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.topbar button {
+    border: 1px solid #bbb4a8;
+    background: transparent;
+    color: #1d1d1d;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.chapter {
+    max-width: 720px;
+    margin: auto;
+    padding: 70px 24px 120px;
+}
+
+.part {
+    font-family: Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: clamp(38px, 9vw, 64px);
+    line-height: 1;
+    margin: 0 0 14px;
+}
+
+.subtitle {
+    font-size: 20px;
+    color: #6b6760;
+    margin-bottom: 70px;
+    font-style: italic;
+}
+
+.story {
+    transition: filter .12s ease, transform .12s ease;
+}
+
+.story p {
+    font-size: 20px;
+    line-height: 1.9;
+    margin: 0 0 28px;
+}
+
+.story p:first-of-type::first-letter {
+    float: left;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 4.3em;
+    line-height: .78;
+    font-weight: 700;
+    padding-right: 9px;
+    padding-top: 8px;
+}
+
+.story p.dialogue {
+    padding-left: 16px;
+}
+
+.gap {
+    text-align: center;
+    margin: 70px 0;
+    letter-spacing: .5em;
+    color: #888;
+}
+
+.end {
+    margin-top: 100px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.end small {
+    color: #777;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+}
+
+.next {
+    margin-top: 60px;
+    padding: 22px;
+    border: 1px solid #d1cbc0;
+    border-radius: 12px;
+    font-family: Arial, sans-serif;
+}
+
+.next-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+#countdown {
+    margin-top: 8px;
+    color: #666;
+}
+
+#continueBox {
+    display: none;
+    margin-bottom: 50px;
+    padding: 18px;
+    border: 1px solid #d1cbc0;
+    border-radius: 12px;
+    font-family: Arial, sans-serif;
+    background: #ebe7de;
+}
+
+#savedText {
+    margin-top: 6px;
+    color: #666;
+    line-height: 1.5;
+}
+
+#continueBox button {
+    margin-top: 12px;
+    border: none;
+    background: #111;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.resume {
+    background: #ddd6c9;
+    border-radius: 4px;
+    transition: background .25s ease;
+}
+
+#partsMenu {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    display: none;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 4000;
+}
+
+#partsMenu.open {
+    display: flex;
+}
+
+.menu {
+    width: 100%;
+    max-width: 720px;
+    background: #f4f1ea;
+    border-radius: 18px 18px 0 0;
+    padding: 24px;
+    font-family: Arial, sans-serif;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.menu-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu h2 {
+    margin: 0;
+}
+
+.menu-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.part-row {
+    padding: 18px 0;
+    border-bottom: 1px solid #d1cbc0;
+}
+
+.muted {
+    color: #888;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.settings-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: none;
+    background: rgba(0,0,0,.4);
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.settings-overlay.open {
+    display: flex;
+}
+
+.settings-panel {
+    background: #f4f1ea;
+    color: #1d1d1d;
+    width: 100%;
+    max-width: 720px;
+    padding: 24px 22px 35px;
+    border-radius: 22px 22px 0 0;
+    font-family: Arial, sans-serif;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.settings-header h2 {
+    margin: 0;
+}
+
+.settings-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.setting-row {
+    min-height: 72px;
+    border-bottom: 1px solid #d4d0c7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.setting-title {
+    font-weight: 600;
+}
+
+.setting-description {
+    color: #777;
+    font-size: 12px;
+    margin-top: 3px;
+    line-height: 1.4;
+}
+
+.switch {
+    position: relative;
+    width: 49px;
+    height: 29px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #bdbdbd;
+    border-radius: 99px;
+    transition: .2s;
+    cursor: pointer;
+}
+
+.slider::after {
+    content: "";
+    position: absolute;
+    height: 23px;
+    width: 23px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: .2s;
+}
+
+.switch input:checked + .slider {
+    background: #222;
+}
+
+.switch input:checked + .slider::after {
+    transform: translateX(20px);
+}
+
+.reset-button {
+    margin-top: 20px;
+    width: 100%;
+    border: 1px solid #d8aaa7;
+    background: #fff1ef;
+    color: #a62c28;
+    border-radius: 10px;
+    padding: 13px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+body.dark {
+    background: #101113;
+    color: #e9e9e9;
+}
+
+body.dark #progress {
+    background: #f3f3f3;
+}
+
+body.dark .topbar {
+    background: rgba(16,17,19,.94);
+    border-color: #292a2d;
+}
+
+body.dark .topbar button {
+    color: #eee;
+    border-color: #444;
 }
 
 body.dark .site-version {
     color: #777;
+}
+
+body.dark .story p,
+body.dark .chapter {
+    color: #e4e4e4;
+}
+
+body.dark .subtitle,
+body.dark .part,
+body.dark .muted,
+body.dark #savedText,
+body.dark #countdown {
+    color: #929292;
+}
+
+body.dark .display-notice {
+    background: #27282b;
+    color: #aaa;
+    border-color: #393a3e;
+}
+
+body.dark .notice-buttons button {
+    background: #3a3b3f;
+    color: #eee;
+}
+
+body.dark .menu,
+body.dark .settings-panel {
+    background: #17181b;
+    color: #eee;
+}
+
+body.dark .setting-row,
+body.dark .part-row {
+    border-color: #303136;
+}
+
+body.dark .next {
+    border-color: #35363b;
+}
+
+body.dark #continueBox {
+    background: #1e1f23;
+    border-color: #35363b;
+}
+
+body.dark #continueBox button {
+    background: #eee;
+    color: #111;
+}
+
+body.dark .resume {
+    background: #34343b;
+}
+
+body.dark .settings-close,
+body.dark .menu-close {
+    color: white;
+    border-color: #444;
+}
+
+body.dark .reset-button {
+    background: #2a1718;
+    border-color: #583234;
+    color: #ff8d8d;
+}
+
+body.motion-blur.scrolling .story {
+    filter: blur(1.15px);
+    transform: translateY(1px);
+}
+
+body.motion-blur.scrolling .topbar {
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.motion-blur.scrolling .story {
+        filter: none;
+        transform: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .story p {
+        font-size: 18px;
+    }
+
+    .chapter {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .topbar {
+        padding: 12px 14px;
+    }
+
+    .topbar .title {
+        font-size: 14px;
+    }
+
+    .topbar button {
+        font-size: 13px;
+        padding: 7px 10px;
+    }
 }
 </style>
 </head>
@@ -562,440 +546,319 @@ body.dark .site-version {
     </div>
 
     <div class="notice-buttons">
-        <button onclick="dismissNotice()">
-            Dismiss
-        </button>
-
-        <button onclick="openSettings()">
-            Reader Settings
-        </button>
+        <button onclick="dismissNotice()">Dismiss</button>
+        <button onclick="openSettings()">Reader Settings</button>
     </div>
 </div>
 
 <div id="progress"></div>
 
 <div class="topbar">
-<div>
-    <div class="title">AKUY | Part 1</div>
-    <div class="site-version" id="siteVersion">Loading version...</div>
-</div>
+    <div>
+        <div class="title">AKUY | Part 1</div>
+        <div class="site-version" id="siteVersion">Loading version...</div>
+    </div>
 
     <div class="topbar-buttons">
-        <button onclick="openSettings()">
-            Settings
-        </button>
-
-        <button onclick="openParts()">
-            Parts
-        </button>
+        <button onclick="openSettings()">Settings</button>
+        <button onclick="openParts()">Parts</button>
     </div>
 </div>
 
 <main class="chapter">
 
-    <div class="part">Part 1</div>
+<div class="part">Part 1</div>
+<h1>Yet a Distortion</h1>
+<div class="subtitle">Laduxiana Eris</div>
+
+<div id="continueBox">
+    <div>You stopped around:</div>
+    <div id="savedText"></div>
+    <button onclick="continueReading()">Continue reading</button>
+</div>
+
+<div class="story" id="story">
+
+<p>
+Eris was walking along a road in 제천시 (Jecheon), South Korea, distracted, when a hitman aimed for a lethal shot. Just as he fired, someone unexpectedly crossed into his line of fire. He instinctively adjusted his aim at the last moment, causing the bullet to miss its intended location and strike Eris in the upper arm instead.
+</p>
+
+<p>
+Eris’s sister had hired the hitman. Eris had inherited ¥95,000,000 in her uncle’s company assets—65% of them. Eris had saved her uncle in a house fire a few years earlier, and he deeply appreciated that.
+</p>
+
+<p>
+Eris quickly begins losing blood from the wound and eventually loses consciousness.
+</p>
+
+<p>
+An unknown man whose nickname is Dr. Surm happens to be nearby and witnesses the shooting.
+</p>
+
+<p>
+Dr. Surm realizes that her condition is rapidly deteriorating. After helping her in the usual way, he realizes she needs urgent medical attention. Emergency services are called while Dr. Surm continues trying to stabilize her.
+</p>
+
+<p>
+Dr. Surm reaches into his cape pocket and takes out a small sealed bag. He opens it and takes out an ERY-tab containing a small crystal.
+</p>
+
+<p>
+He looks at it for a moment and mumbles,
+</p>
+
+<p class="dialogue">
+“ERY-tab 3007… Damn it, I swore I would never use this again…”
+</p>
+
+<p>
+He hesitates and looks back at Eris. Realizing the situation, he continues,
+</p>
+
+<p class="dialogue">
+“…Lord forgive me.”
+</p>
+
+<p>
+Despite his hesitation, Dr. Surm decides that keeping his promise is not worth letting someone die when he may still have a way to save her.
+</p>
 
-    <h1>Yet a Distortion</h1>
+<p>
+He carefully places the ERY-tab underneath her tongue, making sure it remains there instead of being swallowed.
+</p>
 
-    <div class="subtitle">
-        Laduxiana Eris
-    </div>
+<p>
+He watches closely for the response he expects from it while continuing to help her, but nothing obvious happens.
+</p>
 
-    <div id="continueBox">
-        <div>You stopped around:</div>
+<p>
+The ambulance arrives, and Eris is rushed to the hospital.
+</p>
 
-        <div id="savedText"></div>
+<p>
+During the emergency transport, Eris briefly regains consciousness. Through her fading vision, she can barely make out Dr. Surm nearby.
+</p>
 
-        <button onclick="continueReading()">
-            Continue reading
-        </button>
-    </div>
+<p class="dialogue">
+“Am I dead?”
+</p>
 
-    <div class="story" id="story">
+<p class="dialogue">
+“No. What I gave you should keep your consciousness—”
+</p>
 
-        <p>
-            Eris was walking along a road in 제천시 (Jecheon), South Korea, distracted, when a hitman aimed for a lethal shot. Just as he fired, someone unexpectedly crossed into his line of fire. He instinctively adjusted his aim at the last moment, causing the bullet to miss its intended location and strike Eris in the upper arm instead.
-        </p>
+<p>
+Before Dr. Surm can finish, Eris loses consciousness again.
+</p>
 
-        <p>
-            Eris’s sister had hired the hitman. Eris had inherited ¥95,000,000 in her uncle’s company assets 65% of them. Eris had saved her uncle in a house fire a few years earlier, and he deeply appreciated that.
-        </p>
+<p>
+At the hospital, doctors immediately attempt to stabilize her.
+</p>
 
-        <p>
-            Eris quickly begins losing blood from the wound and eventually loses consciousness.
-        </p>
+<p>
+Eris survives, but she does not regain consciousness. She is declared to be in a coma.
+</p>
 
-        <p>
-            An unknown man whose nickname is Dr. Surm happens to be nearby and witnesses the shooting.
-        </p>
+<p>
+Dr. Surm stays long enough to see that she survived. He knows the ERY-tab has been given to her, but he cannot know exactly how her body will react to it.
+</p>
 
-        <p>
-            Dr. Surm realizes that her condition is rapidly deteriorating. After helping her in the usual way, he realizes she needs urgent medical attention. Emergency services are called while Dr. Surm continues trying to stabilize her.
-        </p>
+<p>
+Eventually, he disappears from the hospital without explanation.
+</p>
 
-        <p>
-            Dr. Surm reaches into his cape pocket and takes out a small sealed bag. He opens it and takes out an ERY-tab containing a small crystal.
-        </p>
+<p>
+Her friends and family are informed and begin visiting her. Her sister comes too, acting like she truly loved Eris and is devastated by what happened.
+</p>
 
-        <p>
-            He looks at it for a moment and mumbles,
-        </p>
+<p>
+Two days later, Dr. Surm returns to the hospital as a visitor. At first, the receptionist refuses to let him see Eris because he has no known relationship with her.
+</p>
 
-        <p class="dialogue">
-            “ERY-tab 3007… Damn it, I swore I would never use this again…”
-        </p>
+<p>
+However, an older member of the hospital staff recognizes him from his past as a doctor.
+</p>
 
-        <p>
-            He hesitates and looks back at Eris. Realizing the situation, he continues,
-        </p>
+<p>
+After a short private conversation between them, Dr. Surm is granted permission to visit Eris.
+</p>
 
-        <p class="dialogue">
-            “…Lord forgive me.”
-        </p>
+<p>
+What exactly was said, and why his former connection to the hospital was enough to grant him access, remains unknown.
+</p>
 
-        <p>
-            Despite his hesitation, Dr. Surm decides that keeping his promise is not worth letting someone die when he may still have a way to save her.
-        </p>
+<p>
+During a moment when he is able to examine her without her family around, he walks into her room.
+</p>
 
-        <p>
-            He carefully places the ERY-tab underneath her tongue, making sure it remains there instead of being swallowed.
-        </p>
+<p>
+He approaches Eris and checks the ERY-tab he had already placed underneath her tongue during the shooting.
+</p>
 
-        <p>
-            He watches closely for the response he expects from it while continuing to help her, but nothing obvious happens.
-        </p>
+<p>
+The crystal is no longer simply sitting there like before.
+</p>
 
-        <p>
-            The ambulance arrives, and Eris is rushed to the hospital.
-        </p>
+<p>
+Her body has begun absorbing and slowly breaking it down.
+</p>
 
-        <p>
-            During the emergency transport, Eris briefly regains consciousness. Through her fading vision, she can barely make out Dr. Surm nearby.
-        </p>
+<p>
+Dr. Surm looks at Eris for a moment.
+</p>
 
-        <p class="dialogue">
-            “Am I dead?”
-        </p>
+<p>
+He doesn’t seem relieved.
+</p>
 
-        <p class="dialogue">
-            “No. What I gave you should keep your consciousness-”
-        </p>
+<p>
+But he doesn’t seem surprised either.
+</p>
 
-        <p>
-            Before Dr. Surm can finish, Eris loses consciousness again.
-        </p>
+<p>
+He turns around and leaves the room.
+</p>
 
-        <p>
-            At the hospital, doctors immediately attempt to stabilize her.
-        </p>
+<div class="gap">…</div>
 
-        <p>
-            Eris survives, but she does not regain consciousness. She is declared to be in a coma.
-        </p>
+<p>Eris opens her eyes.</p>
 
-        <p>
-            Dr. Surm stays long enough to see that she survived. He knows the ERY-tab has been given to her, but he cannot know exactly how her body will react to it.
-        </p>
-
-        <p>
-            Eventually, he disappears from the hospital without explanation.
-        </p>
-
-        <p>
-            Her friends and family are informed and begin visiting her. Her sister comes too, acting like she truly loved Eris and is devastated by what happened.
-        </p>
-
-        <p>
-            Two days later, Dr. Surm returns to the hospital as a visitor. At first, the receptionist refuses to let him see Eris because he has no known relationship with her.
-        </p>
-
-        <p>
-            However, an older member of the hospital staff recognizes him from his past as a doctor.
-        </p>
-
-        <p>
-            After a short private conversation between them, Dr. Surm is granted permission to visit Eris.
-        </p>
-
-        <p>
-            What exactly was said, and why his former connection to the hospital was enough to grant him access, remains unknown.
-        </p>
-
-        <p>
-            During a moment when he is able to examine her without her family around, he walks into her room.
-        </p>
-
-        <p>
-            He approaches Eris and checks the ERY-tab he had already placed underneath her tongue during the shooting.
-        </p>
-
-        <p>
-            The crystal is no longer simply sitting there like before.
-        </p>
-
-        <p>
-            Her body has begun absorbing and slowly breaking it down.
-        </p>
-
-        <p>
-            Dr. Surm looks at Eris for a moment.
-        </p>
-
-        <p>
-            He doesn’t seem relieved.
-        </p>
-
-        <p>
-            But he doesn’t seem surprised either.
-        </p>
-
-        <p>
-            He turns around and leaves the room.
-        </p>
-
-        <div class="gap">
-            …
-        </div>
-
-        <p>
-            Eris opens her eyes.
-        </p>
-
-        <p>
-            Above her is a grey sky.
-        </p>
-
-        <p>
-            She remains still for a few seconds.
-        </p>
-
-        <p>
-            Cold air brushes against her face.
-        </p>
-
-        <p>
-            She sits up.
-        </p>
-
-        <p>
-            There is grass beneath her hands. It is slightly wet.
-        </p>
-
-        <p>
-            Around her are rows of stones rising from the ground.
-        </p>
-
-        <p>
-            Some stand straight. Others lean to one side. A few have fallen completely and are partly covered by grass and dirt.
-        </p>
-
-        <p>
-            There are markings carved into them.
-        </p>
-
-        <p>
-            Eris looks at one.
-        </p>
-
-        <p>
-            She cannot read it.
-        </p>
-
-        <p>
-            She doesn’t find this particularly strange.
-        </p>
-
-        <p>
-            She stands up and brushes some of the dirt from her clothes.
-        </p>
-
-        <p>
-            There is no gunshot wound on her arm.
-        </p>
-
-        <p>
-            She doesn’t check for one.
-        </p>
-
-        <p>
-            She doesn’t remember having one.
-        </p>
-
-        <p>
-            She looks around the grave field.
-        </p>
-
-        <p>
-            She understands what the stones are.
-        </p>
-
-        <p>
-            Graves.
-        </p>
-
-        <p>
-            She knows what graves are.
-        </p>
-
-        <p>
-            She knows people are buried beneath them.
-        </p>
-
-        <p>
-            She knows how to walk. How to breathe. How to eat and drink. She knows Korean. She understands ordinary objects and basic things about being human.
-        </p>
-
-        <p>
-            But she doesn’t wonder how she arrived here.
-        </p>
-
-        <p>
-            There is no other place in her mind that she believes she should be.
-        </p>
-
-        <p>
-            For Eris, this is simply where she woke up.
-        </p>
-
-        <p>
-            She begins walking between the graves.
-        </p>
-
-        <p>
-            Some are old enough that their markings have nearly disappeared. Others look much newer.
-        </p>
+<p>Above her is a grey sky.</p>
 
-        <p>
-            At the edge of the grave field is a narrow dirt path.
-        </p>
+<p>She remains still for a few seconds.</p>
 
-        <p>
-            Eris follows it.
-        </p>
+<p>Cold air brushes against her face.</p>
 
-        <p>
-            She hasn’t gone far when she hears something behind her.
-        </p>
+<p>She sits up.</p>
 
-        <p>
-            A voice.
-        </p>
-
-        <p>
-            She stops.
-        </p>
-
-        <p>
-            Someone speaks again.
-        </p>
-
-        <p>
-            Eris turns around.
-        </p>
-
-        <p>
-            A person is standing several meters away from her near one of the graves.
-        </p>
-
-        <p>
-            They say something to her.
-        </p>
-
-        <p>
-            Eris stares at them.
-        </p>
-
-        <p>
-            She heard every sound clearly.
-        </p>
-
-        <p>
-            But none of it meant anything.
-        </p>
-
-        <p>
-            The person speaks again, slower this time.
-        </p>
-
-        <p>
-            Eris’s expression changes slightly.
-        </p>
-
-        <p>
-            She knows what speaking is.
-        </p>
-
-        <p>
-            She knows they’re trying to communicate with her.
-        </p>
-
-        <p>
-            She knows Korean.
-        </p>
-
-        <p>
-            So why can’t she understand them?
-        </p>
-
-        <p>
-            The person waits for an answer.
-        </p>
-
-        <p>
-            Eris opens her mouth.
-        </p>
-
-        <p class="dialogue">
-            “…뭐라고?”
-        </p>
-
-        <p>
-            The person stares back at her.
-        </p>
-
-        <p>
-            Neither of them understands the other.
-        </p>
-
-        <p>
-            For the first time since opening her eyes, Eris feels that something isn’t right.
-        </p>
-
-    </div>
-
-    <div class="end">
-        <small>End of Part 1</small>
-    </div>
-
-    <div class="next">
-        <div class="next-title">
-            Part 2
-        </div>
-
-        <div>
-            August 9, 2026 $ 12:00 Netherlands time
-        </div>
-
-        <div id="countdown"></div>
-    </div>
+<p>There is grass beneath her hands. It is slightly wet.</p>
+
+<p>Around her are rows of stones rising from the ground.</p>
+
+<p>
+Some stand straight. Others lean to one side. A few have fallen completely and are partly covered by grass and dirt.
+</p>
+
+<p>There are markings carved into them.</p>
+
+<p>Eris looks at one.</p>
+
+<p>She cannot read it.</p>
+
+<p>She doesn’t find this particularly strange.</p>
+
+<p>She stands up and brushes some of the dirt from her clothes.</p>
+
+<p>There is no gunshot wound on her arm.</p>
+
+<p>She doesn’t check for one.</p>
+
+<p>She doesn’t remember having one.</p>
+
+<p>She looks around the grave field.</p>
+
+<p>She understands what the stones are.</p>
+
+<p>Graves.</p>
+
+<p>She knows what graves are.</p>
+
+<p>She knows people are buried beneath them.</p>
+
+<p>
+She knows how to walk. How to breathe. How to eat and drink. She knows Korean. She understands ordinary objects and basic things about being human.
+</p>
+
+<p>But she doesn’t wonder how she arrived here.</p>
+
+<p>There is no other place in her mind that she believes she should be.</p>
+
+<p>For Eris, this is simply where she woke up.</p>
+
+<p>She begins walking between the graves.</p>
+
+<p>
+Some are old enough that their markings have nearly disappeared. Others look much newer.
+</p>
+
+<p>At the edge of the grave field is a narrow dirt path.</p>
+
+<p>Eris follows it.</p>
+
+<p>She hasn’t gone far when she hears something behind her.</p>
+
+<p>A voice.</p>
+
+<p>She stops.</p>
+
+<p>Someone speaks again.</p>
+
+<p>Eris turns around.</p>
+
+<p>
+A person is standing several meters away from her near one of the graves.
+</p>
+
+<p>They say something to her.</p>
+
+<p>Eris stares at them.</p>
+
+<p>She heard every sound clearly.</p>
+
+<p>But none of it meant anything.</p>
+
+<p>The person speaks again, slower this time.</p>
+
+<p>Eris’s expression changes slightly.</p>
+
+<p>She knows what speaking is.</p>
+
+<p>She knows they’re trying to communicate with her.</p>
+
+<p>She knows Korean.</p>
+
+<p>So why can’t she understand them?</p>
+
+<p>The person waits for an answer.</p>
+
+<p>Eris opens her mouth.</p>
+
+<p class="dialogue">
+“…뭐라고?”
+</p>
+
+<p>The person stares back at her.</p>
+
+<p>Neither of them understands the other.</p>
+
+<p>
+For the first time since opening her eyes, Eris feels that something isn’t right.
+</p>
+
+</div>
+
+<div class="end">
+    <small>End of Part 1</small>
+</div>
+
+<div class="next">
+    <div class="next-title">Part 2</div>
+    <div>August 9, 2026 — 12:00 Netherlands time</div>
+    <div id="countdown"></div>
+</div>
 
 </main>
-
-<!-- PARTS MENU -->
 
 <div id="partsMenu" onclick="closePartsOutside(event)">
     <div class="menu">
 
         <div class="menu-head">
             <h2>Parts</h2>
-
-            <button class="menu-close" onclick="closeParts()">
-                ×
-            </button>
+            <button class="menu-close" onclick="closeParts()">×</button>
         </div>
 
         <div class="part-row">
-            <strong>Part 1 $ Yet a Distortion</strong>
+            <strong>Part 1 — Yet a Distortion</strong>
             <div class="muted">Available</div>
         </div>
 
@@ -1012,8 +875,6 @@ body.dark .site-version {
     </div>
 </div>
 
-<!-- SETTINGS PANEL -->
-
 <div
     class="settings-overlay"
     id="settingsOverlay"
@@ -1023,21 +884,12 @@ body.dark .site-version {
 
         <div class="settings-header">
             <h2>Reader Settings</h2>
-
-            <button
-                class="settings-close"
-                onclick="closeSettings()"
-            >
-                ×
-            </button>
+            <button class="settings-close" onclick="closeSettings()">×</button>
         </div>
 
         <div class="setting-row">
             <div>
-                <div class="setting-title">
-                    Dark mode
-                </div>
-
+                <div class="setting-title">Dark mode</div>
                 <div class="setting-description">
                     Use a darker reading theme.
                 </div>
@@ -1049,17 +901,13 @@ body.dark .site-version {
                     id="darkModeToggle"
                     onchange="toggleDarkMode()"
                 >
-
                 <span class="slider"></span>
             </label>
         </div>
 
         <div class="setting-row">
             <div>
-                <div class="setting-title">
-                    Motion blur
-                </div>
-
+                <div class="setting-title">Motion blur</div>
                 <div class="setting-description">
                     Slightly blurs the story while scrolling.
                 </div>
@@ -1071,7 +919,6 @@ body.dark .site-version {
                     id="motionBlurToggle"
                     onchange="toggleMotionBlur()"
                 >
-
                 <span class="slider"></span>
             </label>
         </div>
@@ -1087,64 +934,29 @@ body.dark .site-version {
 </div>
 
 <script>
+const progress = document.getElementById("progress");
+const paragraphs = [...document.querySelectorAll(".story p")];
+const continueBox = document.getElementById("continueBox");
+const savedTextElement = document.getElementById("savedText");
+const darkToggle = document.getElementById("darkModeToggle");
+const motionToggle = document.getElementById("motionBlurToggle");
+const notice = document.getElementById("displayNotice");
 
-/* =========================
-   ELEMENTS
-========================= */
-
-const progress =
-    document.getElementById("progress");
-
-const paragraphs =
-    [...document.querySelectorAll(".story p")];
-
-const continueBox =
-    document.getElementById("continueBox");
-
-const savedTextElement =
-    document.getElementById("savedText");
-
-const darkToggle =
-    document.getElementById("darkModeToggle");
-
-const motionToggle =
-    document.getElementById("motionBlurToggle");
-
-const notice =
-    document.getElementById("displayNotice");
-
-
-/* =========================
-   LOAD SETTINGS
-========================= */
-
-if (
-    localStorage.getItem("akuyDarkMode") === "true"
-) {
+if (localStorage.getItem("akuyDarkMode") === "true") {
     document.body.classList.add("dark");
     darkToggle.checked = true;
 }
 
-if (
-    localStorage.getItem("akuyMotionBlur") === "true"
-) {
+if (localStorage.getItem("akuyMotionBlur") === "true") {
     document.body.classList.add("motion-blur");
     motionToggle.checked = true;
 }
 
-if (
-    localStorage.getItem("akuyNoticeDismissed") === "true"
-) {
+if (localStorage.getItem("akuyNoticeDismissed") === "true") {
     notice.classList.add("hidden");
 }
 
-
-/* =========================
-   READING PROGRESS BAR
-========================= */
-
 function updateProgressBar() {
-
     const max =
         document.documentElement.scrollHeight -
         window.innerHeight;
@@ -1157,147 +969,78 @@ function updateProgressBar() {
     const percent =
         Math.min(
             100,
-            Math.max(
-                0,
-                (window.scrollY / max) * 100
-            )
+            Math.max(0, (window.scrollY / max) * 100)
         );
 
-    progress.style.width =
-        percent + "%";
+    progress.style.width = percent + "%";
 }
 
-window.addEventListener(
-    "scroll",
-    updateProgressBar,
-    { passive: true }
-);
+window.addEventListener("scroll", updateProgressBar, {
+    passive: true
+});
 
 updateProgressBar();
-
-
-/* =========================
-   LAST READ TRACKING
-========================= */
 
 paragraphs.forEach((p, i) => {
     p.dataset.id = i;
 });
 
-const observer =
-    new IntersectionObserver(
-        entries => {
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
 
-            entries.forEach(entry => {
+        const rect = entry.target.getBoundingClientRect();
+        const middle = window.innerHeight * .5;
 
-                if (!entry.isIntersecting) {
-                    return;
-                }
+        if (rect.top < middle && rect.bottom > middle) {
+            localStorage.setItem(
+                "akuyLastParagraph",
+                entry.target.dataset.id
+            );
 
-                const rect =
-                    entry.target.getBoundingClientRect();
-
-                const middle =
-                    window.innerHeight * 0.5;
-
-                if (
-                    rect.top < middle &&
-                    rect.bottom > middle
-                ) {
-
-                    localStorage.setItem(
-                        "akuyLastParagraph",
-                        entry.target.dataset.id
-                    );
-
-                    localStorage.setItem(
-                        "akuyLastText",
-                        entry.target.innerText.trim()
-                    );
-
-                }
-
-            });
-
-        },
-        {
-            threshold: [
-                0,
-                0.25,
-                0.5,
-                0.75,
-                1
-            ]
+            localStorage.setItem(
+                "akuyLastText",
+                entry.target.innerText.trim()
+            );
         }
-    );
-
-paragraphs.forEach(p => {
-    observer.observe(p);
+    });
+}, {
+    threshold: [0, .25, .5, .75, 1]
 });
 
-
-/* =========================
-   LOAD CONTINUE BOX
-========================= */
+paragraphs.forEach(p => observer.observe(p));
 
 function loadSavedPosition() {
-
     const savedId =
-        localStorage.getItem(
-            "akuyLastParagraph"
-        );
+        localStorage.getItem("akuyLastParagraph");
 
     const savedText =
-        localStorage.getItem(
-            "akuyLastText"
-        );
+        localStorage.getItem("akuyLastText");
 
-    if (
-        savedId !== null &&
-        savedText
-    ) {
-
-        continueBox.style.display =
-            "block";
+    if (savedId !== null && savedText) {
+        continueBox.style.display = "block";
 
         savedTextElement.innerText =
             `"${savedText.slice(0, 140)}${
-                savedText.length > 140
-                    ? "..."
-                    : ""
+                savedText.length > 140 ? "..." : ""
             }"`;
-
     } else {
-
-        continueBox.style.display =
-            "none";
-
+        continueBox.style.display = "none";
     }
-
 }
 
 loadSavedPosition();
 
-
 function continueReading() {
-
     const id =
-        localStorage.getItem(
-            "akuyLastParagraph"
-        );
+        localStorage.getItem("akuyLastParagraph");
 
-    if (id === null) {
-        return;
-    }
+    if (id === null) return;
 
     const target =
-        document.querySelector(
-            `[data-id="${id}"]`
-        );
+        document.querySelector(`[data-id="${id}"]`);
 
-    if (!target) {
-        return;
-    }
+    if (!target) return;
 
     target.scrollIntoView({
         behavior: "smooth",
@@ -1311,26 +1054,12 @@ function continueReading() {
     }, 2000);
 }
 
-
-/* =========================
-   RESET LAST READ
-========================= */
-
 function resetReadingProgress() {
+    localStorage.removeItem("akuyLastParagraph");
+    localStorage.removeItem("akuyLastText");
 
-    localStorage.removeItem(
-        "akuyLastParagraph"
-    );
-
-    localStorage.removeItem(
-        "akuyLastText"
-    );
-
-    continueBox.style.display =
-        "none";
-
-    savedTextElement.innerText =
-        "";
+    continueBox.style.display = "none";
+    savedTextElement.innerText = "";
 
     closeSettings();
 
@@ -1339,95 +1068,55 @@ function resetReadingProgress() {
         behavior: "smooth"
     });
 
-    alert(
-        "Last read position has been reset."
-    );
+    alert("Last read position has been reset.");
 }
-
-
-/* =========================
-   PARTS MENU
-========================= */
 
 function openParts() {
-
     document
         .getElementById("partsMenu")
         .classList.add("open");
 
-    document.body.style.overflow =
-        "hidden";
+    document.body.style.overflow = "hidden";
 }
-
 
 function closeParts() {
-
     document
         .getElementById("partsMenu")
         .classList.remove("open");
 
-    document.body.style.overflow =
-        "";
+    document.body.style.overflow = "";
 }
-
 
 function closePartsOutside(event) {
-
-    if (
-        event.target.id === "partsMenu"
-    ) {
+    if (event.target.id === "partsMenu") {
         closeParts();
     }
-
 }
 
-
-/* =========================
-   SETTINGS
-========================= */
-
 function openSettings() {
-
     document
         .getElementById("settingsOverlay")
         .classList.add("open");
 
-    document.body.style.overflow =
-        "hidden";
+    document.body.style.overflow = "hidden";
 }
 
-
 function closeSettings() {
-
     document
         .getElementById("settingsOverlay")
         .classList.remove("open");
 
-    document.body.style.overflow =
-        "";
+    document.body.style.overflow = "";
 }
-
 
 function settingsOutside(event) {
-
-    if (
-        event.target.id ===
-        "settingsOverlay"
-    ) {
+    if (event.target.id === "settingsOverlay") {
         closeSettings();
     }
-
 }
 
-
-/* =========================
-   DARK MODE
-========================= */
-
 function toggleDarkMode() {
-
-    const enabled =
-        darkToggle.checked;
+    const enabled = darkToggle.checked;
 
     document.body.classList.toggle(
         "dark",
@@ -1438,18 +1127,10 @@ function toggleDarkMode() {
         "akuyDarkMode",
         enabled
     );
-
 }
 
-
-/* =========================
-   MOTION BLUR
-========================= */
-
 function toggleMotionBlur() {
-
-    const enabled =
-        motionToggle.checked;
+    const enabled = motionToggle.checked;
 
     document.body.classList.toggle(
         "motion-blur",
@@ -1460,162 +1141,125 @@ function toggleMotionBlur() {
         "akuyMotionBlur",
         enabled
     );
-
 }
 
 let scrollTimer = null;
 
-window.addEventListener(
-    "scroll",
-    () => {
+window.addEventListener("scroll", () => {
+    if (
+        !document.body.classList.contains(
+            "motion-blur"
+        )
+    ) {
+        return;
+    }
 
-        if (
-            !document.body.classList.contains(
-                "motion-blur"
-            )
-        ) {
-            return;
-        }
+    document.body.classList.add("scrolling");
 
-        document.body.classList.add(
-            "scrolling"
-        );
+    clearTimeout(scrollTimer);
 
-        clearTimeout(scrollTimer);
-
-        scrollTimer =
-            setTimeout(
-                () => {
-
-                    document.body.classList.remove(
-                        "scrolling"
-                    );
-
-                },
-                110
-            );
-
-    },
-    { passive: true }
-);
-
-
-/* =========================
-   TOP NOTICE
-========================= */
+    scrollTimer = setTimeout(() => {
+        document.body.classList.remove("scrolling");
+    }, 110);
+}, {
+    passive: true
+});
 
 function dismissNotice() {
-
-    notice.classList.add(
-        "hidden"
-    );
+    notice.classList.add("hidden");
 
     localStorage.setItem(
         "akuyNoticeDismissed",
         "true"
     );
-
 }
 
-
-/* =========================
-   PART 2 COUNTDOWN
-========================= */
-
 const release =
-    new Date(
-        "2026-08-09T12:00:00+02:00"
-    );
+    new Date("2026-08-09T12:00:00+02:00");
 
 function updateCountdown() {
-
     let diff =
         release.getTime() -
         Date.now();
 
     const countdown =
-        document.getElementById(
-            "countdown"
-        );
+        document.getElementById("countdown");
 
     if (diff <= 0) {
-
         countdown.innerText =
             "Part 2 release time reached";
-
         return;
     }
 
-    const d =
-        Math.floor(
-            diff / 86400000
-        );
-
+    const d = Math.floor(diff / 86400000);
     diff %= 86400000;
 
-    const h =
-        Math.floor(
-            diff / 3600000
-        );
-
+    const h = Math.floor(diff / 3600000);
     diff %= 3600000;
 
-    const m =
-        Math.floor(
-            diff / 60000
-        );
-
+    const m = Math.floor(diff / 60000);
     diff %= 60000;
 
-    const s =#
-        Math.floor(
-            diff / 1000
-        );
+    const s = Math.floor(diff / 1000);
 
     countdown.innerText =
         `${d}d ${h}h ${m}m ${s}s`;
-
 }
 
 updateCountdown();
+setInterval(updateCountdown, 1000);
 
-setInterval(
-    updateCountdown,
-    1000
-);
 async function loadSiteVersion() {
-    const versionElement = document.getElementById("siteVersion");
+    const versionElement =
+        document.getElementById("siteVersion");
 
     try {
         const response = await fetch(
-            "https://api.github.com/repos/Essrzp/yes/commits/main"
+            "https://api.github.com/repos/Essrzp/yes/commits/main",
+            {
+                cache: "no-store"
+            }
         );
 
         if (!response.ok) {
-            throw new Error("GitHub request failed");
+            throw new Error();
         }
 
         const commit = await response.json();
 
-        const shortHash = commit.sha.substring(0, 7);
-        const date = new Date(commit.commit.committer.date);
+        const shortHash =
+            commit.sha.substring(0, 7);
 
-        const formattedDate = date.toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric"
-        });
+        const date =
+            new Date(
+                commit.commit.committer.date
+            );
 
-        const formattedTime = date.toLocaleTimeString("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit"
-        });
+        const formattedDate =
+            date.toLocaleDateString(
+                "en-GB",
+                {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric"
+                }
+            );
+
+        const formattedTime =
+            date.toLocaleTimeString(
+                "en-GB",
+                {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            );
 
         versionElement.textContent =
             `${shortHash} · ${formattedDate} · ${formattedTime}`;
 
-    } catch (error) {
-        versionElement.textContent = "AKUY";
+    } catch {
+        versionElement.textContent =
+            "Latest";
     }
 }
 
