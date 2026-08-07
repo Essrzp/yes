@@ -20,6 +20,9 @@
         background: #f4f1ea;
         color: #1d1d1d;
         font-family: Georgia, "Times New Roman", serif;
+        transition:
+            background 0.25s ease,
+            color 0.25s ease;
     }
 
     #progress {
@@ -29,7 +32,7 @@
         height: 4px;
         width: 0%;
         background: #111;
-        z-index: 999;
+        z-index: 9999;
     }
 
     .topbar {
@@ -38,22 +41,31 @@
         z-index: 100;
         background: rgba(244, 241, 234, 0.95);
         backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border-bottom: 1px solid #d8d3c9;
         padding: 14px 18px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 12px;
         font-family: Arial, sans-serif;
     }
 
     .topbar .title {
         font-weight: 700;
         font-size: 15px;
+        white-space: nowrap;
+    }
+
+    .topbar-buttons {
+        display: flex;
+        gap: 8px;
     }
 
     .topbar button {
         border: 1px solid #bbb4a8;
         background: transparent;
+        color: #1d1d1d;
         padding: 8px 12px;
         border-radius: 8px;
         font-size: 14px;
@@ -86,6 +98,12 @@
         color: #6b6760;
         margin-bottom: 70px;
         font-style: italic;
+    }
+
+    .story {
+        transition:
+            filter 0.12s ease,
+            transform 0.12s ease;
     }
 
     .story p {
@@ -145,6 +163,12 @@
         background: #ebe7de;
     }
 
+    #savedText {
+        margin-top: 6px;
+        color: #666;
+        line-height: 1.5;
+    }
+
     #continueBox button {
         margin-top: 12px;
         border: none;
@@ -158,16 +182,60 @@
     .resume {
         background: #ddd6c9;
         border-radius: 4px;
+        transition: background 0.25s ease;
     }
+
+    /* =========================
+       TOP NOTICE
+    ========================= */
+
+    .display-notice {
+        background: #deddd9;
+        color: #676767;
+        padding: 16px 18px 18px;
+        font-family: Arial, sans-serif;
+        border-bottom: 1px solid #cbc9c4;
+    }
+
+    .display-notice.hidden {
+        display: none;
+    }
+
+    .notice-text {
+        font-size: 15px;
+        line-height: 1.45;
+        margin-bottom: 12px;
+    }
+
+    .notice-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .notice-buttons button {
+        border: 0;
+        border-radius: 999px;
+        padding: 11px;
+        font-weight: 600;
+        font-size: 15px;
+        background: #efefef;
+        color: #222;
+        cursor: pointer;
+    }
+
+    /* =========================
+       PARTS MENU
+    ========================= */
 
     #partsMenu {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.35);
+        background: rgba(0, 0, 0, 0.35);
         display: none;
         justify-content: center;
         align-items: flex-end;
-        z-index: 1000;
+        z-index: 4000;
     }
 
     #partsMenu.open {
@@ -181,10 +249,28 @@
         border-radius: 18px 18px 0 0;
         padding: 24px;
         font-family: Arial, sans-serif;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .menu-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .menu h2 {
-        margin-top: 0;
+        margin: 0;
+    }
+
+    .menu-close {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        background: transparent;
+        font-size: 20px;
+        cursor: pointer;
     }
 
     .part-row {
@@ -198,6 +284,239 @@
         margin-top: 4px;
     }
 
+    /* =========================
+       SETTINGS
+    ========================= */
+
+    .settings-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 5000;
+        display: none;
+        background: rgba(0, 0, 0, 0.4);
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .settings-overlay.open {
+        display: flex;
+    }
+
+    .settings-panel {
+        background: #f4f1ea;
+        color: #1d1d1d;
+        width: 100%;
+        max-width: 720px;
+        padding: 24px 22px 35px;
+        border-radius: 22px 22px 0 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .settings-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .settings-header h2 {
+        margin: 0;
+    }
+
+    .settings-close {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        background: transparent;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .setting-row {
+        min-height: 72px;
+        border-bottom: 1px solid #d4d0c7;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .setting-title {
+        font-weight: 600;
+    }
+
+    .setting-description {
+        color: #777;
+        font-size: 12px;
+        margin-top: 3px;
+        line-height: 1.4;
+    }
+
+    /* SWITCH */
+
+    .switch {
+        position: relative;
+        width: 49px;
+        height: 29px;
+        flex-shrink: 0;
+    }
+
+    .switch input {
+        display: none;
+    }
+
+    .slider {
+        position: absolute;
+        inset: 0;
+        background: #bdbdbd;
+        border-radius: 99px;
+        transition: 0.2s;
+        cursor: pointer;
+    }
+
+    .slider::after {
+        content: "";
+        position: absolute;
+        height: 23px;
+        width: 23px;
+        left: 3px;
+        top: 3px;
+        background: white;
+        border-radius: 50%;
+        transition: 0.2s;
+    }
+
+    .switch input:checked + .slider {
+        background: #222;
+    }
+
+    .switch input:checked + .slider::after {
+        transform: translateX(20px);
+    }
+
+    .reset-button {
+        margin-top: 20px;
+        width: 100%;
+        border: 1px solid #d8aaa7;
+        background: #fff1ef;
+        color: #a62c28;
+        border-radius: 10px;
+        padding: 13px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* =========================
+       DARK MODE
+    ========================= */
+
+    body.dark {
+        background: #101113;
+        color: #e9e9e9;
+    }
+
+    body.dark #progress {
+        background: #f3f3f3;
+    }
+
+    body.dark .topbar {
+        background: rgba(16, 17, 19, 0.94);
+        border-color: #292a2d;
+    }
+
+    body.dark .topbar button {
+        color: #eee;
+        border-color: #444;
+    }
+
+    body.dark .story p,
+    body.dark .chapter {
+        color: #e4e4e4;
+    }
+
+    body.dark .subtitle,
+    body.dark .part,
+    body.dark .muted,
+    body.dark #savedText,
+    body.dark #countdown {
+        color: #929292;
+    }
+
+    body.dark .display-notice {
+        background: #27282b;
+        color: #aaa;
+        border-color: #393a3e;
+    }
+
+    body.dark .notice-buttons button {
+        background: #3a3b3f;
+        color: #eee;
+    }
+
+    body.dark .menu,
+    body.dark .settings-panel {
+        background: #17181b;
+        color: #eee;
+    }
+
+    body.dark .setting-row,
+    body.dark .part-row {
+        border-color: #303136;
+    }
+
+    body.dark .next {
+        border-color: #35363b;
+    }
+
+    body.dark #continueBox {
+        background: #1e1f23;
+        border-color: #35363b;
+    }
+
+    body.dark #continueBox button {
+        background: #eee;
+        color: #111;
+    }
+
+    body.dark .resume {
+        background: #34343b;
+    }
+
+    body.dark .settings-close,
+    body.dark .menu-close {
+        color: white;
+        border-color: #444;
+    }
+
+    body.dark .reset-button {
+        background: #2a1718;
+        border-color: #583234;
+        color: #ff8d8d;
+    }
+
+    /* =========================
+       MOTION BLUR
+    ========================= */
+
+    body.motion-blur.scrolling .story {
+        filter: blur(1.15px);
+        transform: translateY(1px);
+    }
+
+    body.motion-blur.scrolling .topbar {
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        body.motion-blur.scrolling .story {
+            filter: none;
+            transform: none;
+        }
+    }
+
     @media (max-width: 600px) {
         .story p {
             font-size: 18px;
@@ -207,283 +526,31 @@
             padding-left: 20px;
             padding-right: 20px;
         }
+
+        .topbar {
+            padding: 12px 14px;
+        }
+
+        .topbar .title {
+            font-size: 14px;
+        }
+
+        .topbar button {
+            font-size: 13px;
+            padding: 7px 10px;
+        }
     }
-    
-    /* ==========================================
-   DISPLAY NOTICE
-========================================== */
-
-.display-notice {
-    background: #deddd9;
-    color: #676767;
-    padding: 16px 18px 18px;
-    font-family: Arial, sans-serif;
-    border-bottom: 1px solid #cbc9c4;
-}
-
-.display-notice.hidden {
-    display: none;
-}
-
-.notice-text {
-    font-size: 15px;
-    line-height: 1.45;
-    margin-bottom: 12px;
-}
-
-.notice-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-
-.notice-buttons button {
-    border: 0;
-    border-radius: 999px;
-    padding: 11px;
-    font-weight: 600;
-    font-size: 15px;
-    background: #efefef;
-    color: #222;
-}
-
-
-/* ==========================================
-   SETTINGS
-========================================== */
-
-.settings-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 5000;
-    display: none;
-    background: rgba(0,0,0,.4);
-    align-items: flex-end;
-    justify-content: center;
-}
-
-.settings-overlay.open {
-    display: flex;
-}
-
-.settings-panel {
-    background: #f4f1ea;
-    color: #1d1d1d;
-    width: 100%;
-    max-width: 720px;
-    padding: 24px 22px 35px;
-    border-radius: 22px 22px 0 0;
-    font-family: Arial, sans-serif;
-}
-
-.settings-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.settings-header h2 {
-    margin: 0;
-}
-
-.settings-close {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    background: transparent;
-    font-size: 20px;
-}
-
-.setting-row {
-    min-height: 65px;
-    border-bottom: 1px solid #d4d0c7;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-}
-
-.setting-title {
-    font-weight: 600;
-}
-
-.setting-description {
-    color: #777;
-    font-size: 12px;
-    margin-top: 3px;
-}
-
-
-/* SWITCH */
-
-.switch {
-    position: relative;
-    width: 49px;
-    height: 29px;
-    flex-shrink: 0;
-}
-
-.switch input {
-    display: none;
-}
-
-.slider {
-    position: absolute;
-    inset: 0;
-    background: #bdbdbd;
-    border-radius: 99px;
-    transition: .2s;
-}
-
-.slider::after {
-    content: "";
-    position: absolute;
-    height: 23px;
-    width: 23px;
-    left: 3px;
-    top: 3px;
-    background: white;
-    border-radius: 50%;
-    transition: .2s;
-}
-
-.switch input:checked + .slider {
-    background: #222;
-}
-
-.switch input:checked + .slider::after {
-    transform: translateX(20px);
-}
-
-
-/* RESET BUTTON */
-
-.reset-button {
-    margin-top: 20px;
-    width: 100%;
-    border: 1px solid #d8aaa7;
-    background: #fff1ef;
-    color: #a62c28;
-    border-radius: 10px;
-    padding: 13px;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-
-/* ==========================================
-   DARK MODE
-========================================== */
-
-body.dark {
-    background: #101113;
-    color: #e9e9e9;
-}
-
-body.dark .topbar {
-    background: rgba(16,17,19,.94);
-    border-color: #292a2d;
-}
-
-body.dark .topbar button {
-    color: #eee;
-    border-color: #444;
-}
-
-body.dark .chapter {
-    color: #e4e4e4;
-}
-
-body.dark .story p {
-    color: #e4e4e4;
-}
-
-body.dark .subtitle,
-body.dark .part,
-body.dark .muted {
-    color: #929292;
-}
-
-body.dark .display-notice {
-    background: #27282b;
-    color: #aaa;
-    border-color: #393a3e;
-}
-
-body.dark .notice-buttons button {
-    background: #3a3b3f;
-    color: #eee;
-}
-
-body.dark .menu,
-body.dark .settings-panel {
-    background: #17181b;
-    color: #eee;
-}
-
-body.dark .setting-row,
-body.dark .part-row {
-    border-color: #303136;
-}
-
-body.dark .next {
-    border-color: #35363b;
-}
-
-body.dark #continueBox {
-    background: #1e1f23;
-    border-color: #35363b;
-}
-
-body.dark .resume {
-    background: #34343b;
-}
-
-
-/* ==========================================
-   MOTION BLUR WHILE SCROLLING
-========================================== */
-
-.chapter,
-.topbar {
-    transition:
-        filter .14s ease,
-        transform .14s ease;
-}
-
-body.motion-blur.scrolling .story {
-    filter: blur(1.15px);
-    transform: translateY(1px);
-}
-
-body.motion-blur.scrolling .topbar {
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-}
-
-
-/* Reduce motion accessibility */
-
-@media (prefers-reduced-motion: reduce) {
-    body.motion-blur.scrolling .story {
-        filter: none;
-        transform: none;
-    }
-}
 </style>
 </head>
 
 <body>
-<div class="display-notice" id="displayNotice">
 
+<div class="display-notice" id="displayNotice">
     <div class="notice-text">
         If this page is not displaying as expected, you can adjust reader display settings which may resolve issues.
     </div>
 
     <div class="notice-buttons">
-
         <button onclick="dismissNotice()">
             Dismiss
         </button>
@@ -491,20 +558,17 @@ body.motion-blur.scrolling .topbar {
         <button onclick="openSettings()">
             Reader Settings
         </button>
-
     </div>
-
 </div>
+
 <div id="progress"></div>
 
 <div class="topbar">
-
     <div class="title">
         AKUY | Part 1
     </div>
 
-    <div style="display:flex; gap:8px;">
-
+    <div class="topbar-buttons">
         <button onclick="openSettings()">
             Settings
         </button>
@@ -512,21 +576,27 @@ body.motion-blur.scrolling .topbar {
         <button onclick="openParts()">
             Parts
         </button>
-
     </div>
-
 </div>
 
 <main class="chapter">
 
     <div class="part">Part 1</div>
+
     <h1>Yet a Distortion</h1>
-    <div class="subtitle">Laduxiana Eris</div>
+
+    <div class="subtitle">
+        Laduxiana Eris
+    </div>
 
     <div id="continueBox">
         <div>You stopped around:</div>
+
         <div id="savedText"></div>
-        <button onclick="continueReading()">Continue reading</button>
+
+        <button onclick="continueReading()">
+            Continue reading
+        </button>
     </div>
 
     <div class="story" id="story">
@@ -536,7 +606,7 @@ body.motion-blur.scrolling .topbar {
         </p>
 
         <p>
-            Eris’s sister had hired the hitman. Eris had inherited ¥95,000,000 in her uncle’s company assets—65% of them. Eris had saved her uncle in a house fire a few years earlier, and he deeply appreciated that.
+            Eris’s sister had hired the hitman. Eris had inherited ¥95,000,000 in her uncle’s company assets 65% of them. Eris had saved her uncle in a house fire a few years earlier, and he deeply appreciated that.
         </p>
 
         <p>
@@ -596,7 +666,7 @@ body.motion-blur.scrolling .topbar {
         </p>
 
         <p class="dialogue">
-            “No. What I gave you should keep your consciousness—”
+            “No. What I gave you should keep your consciousness-”
         </p>
 
         <p>
@@ -671,7 +741,9 @@ body.motion-blur.scrolling .topbar {
             He turns around and leaves the room.
         </p>
 
-        <div class="gap">…</div>
+        <div class="gap">
+            …
+        </div>
 
         <p>
             Eris opens her eyes.
@@ -884,19 +956,34 @@ body.motion-blur.scrolling .topbar {
     </div>
 
     <div class="next">
-        <div class="next-title">Part 2</div>
-        <div>August 9, 2026 — 12:00 Netherlands time</div>
+        <div class="next-title">
+            Part 2
+        </div>
+
+        <div>
+            August 9, 2026 $ 12:00 Netherlands time
+        </div>
+
         <div id="countdown"></div>
     </div>
 
 </main>
 
+<!-- PARTS MENU -->
+
 <div id="partsMenu" onclick="closePartsOutside(event)">
     <div class="menu">
-        <h2>Parts</h2>
+
+        <div class="menu-head">
+            <h2>Parts</h2>
+
+            <button class="menu-close" onclick="closeParts()">
+                ×
+            </button>
+        </div>
 
         <div class="part-row">
-            <strong>Part 1 — Yet a Distortion</strong>
+            <strong>Part 1 $ Yet a Distortion</strong>
             <div class="muted">Available</div>
         </div>
 
@@ -909,65 +996,296 @@ body.motion-blur.scrolling .topbar {
             <strong>Part 3</strong>
             <div class="muted">TBA</div>
         </div>
+
+    </div>
+</div>
+
+<!-- SETTINGS PANEL -->
+
+<div
+    class="settings-overlay"
+    id="settingsOverlay"
+    onclick="settingsOutside(event)"
+>
+    <div class="settings-panel">
+
+        <div class="settings-header">
+            <h2>Reader Settings</h2>
+
+            <button
+                class="settings-close"
+                onclick="closeSettings()"
+            >
+                ×
+            </button>
+        </div>
+
+        <div class="setting-row">
+            <div>
+                <div class="setting-title">
+                    Dark mode
+                </div>
+
+                <div class="setting-description">
+                    Use a darker reading theme.
+                </div>
+            </div>
+
+            <label class="switch">
+                <input
+                    type="checkbox"
+                    id="darkModeToggle"
+                    onchange="toggleDarkMode()"
+                >
+
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row">
+            <div>
+                <div class="setting-title">
+                    Motion blur
+                </div>
+
+                <div class="setting-description">
+                    Slightly blurs the story while scrolling.
+                </div>
+            </div>
+
+            <label class="switch">
+                <input
+                    type="checkbox"
+                    id="motionBlurToggle"
+                    onchange="toggleMotionBlur()"
+                >
+
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <button
+            class="reset-button"
+            onclick="resetReadingProgress()"
+        >
+            Reset Last Read Position
+        </button>
+
     </div>
 </div>
 
 <script>
-const progress = document.getElementById("progress");
 
-window.addEventListener("scroll", () => {
+/* =========================
+   ELEMENTS
+========================= */
+
+const progress =
+    document.getElementById("progress");
+
+const paragraphs =
+    [...document.querySelectorAll(".story p")];
+
+const continueBox =
+    document.getElementById("continueBox");
+
+const savedTextElement =
+    document.getElementById("savedText");
+
+const darkToggle =
+    document.getElementById("darkModeToggle");
+
+const motionToggle =
+    document.getElementById("motionBlurToggle");
+
+const notice =
+    document.getElementById("displayNotice");
+
+
+/* =========================
+   LOAD SETTINGS
+========================= */
+
+if (
+    localStorage.getItem("akuyDarkMode") === "true"
+) {
+    document.body.classList.add("dark");
+    darkToggle.checked = true;
+}
+
+if (
+    localStorage.getItem("akuyMotionBlur") === "true"
+) {
+    document.body.classList.add("motion-blur");
+    motionToggle.checked = true;
+}
+
+if (
+    localStorage.getItem("akuyNoticeDismissed") === "true"
+) {
+    notice.classList.add("hidden");
+}
+
+
+/* =========================
+   READING PROGRESS BAR
+========================= */
+
+function updateProgressBar() {
+
     const max =
         document.documentElement.scrollHeight -
         window.innerHeight;
 
+    if (max <= 0) {
+        progress.style.width = "0%";
+        return;
+    }
+
     const percent =
-        (window.scrollY / max) * 100;
+        Math.min(
+            100,
+            Math.max(
+                0,
+                (window.scrollY / max) * 100
+            )
+        );
 
-    progress.style.width = percent + "%";
-});
+    progress.style.width =
+        percent + "%";
+}
 
-const paragraphs = [...document.querySelectorAll(".story p")];
+window.addEventListener(
+    "scroll",
+    updateProgressBar,
+    { passive: true }
+);
+
+updateProgressBar();
+
+
+/* =========================
+   LAST READ TRACKING
+========================= */
 
 paragraphs.forEach((p, i) => {
     p.dataset.id = i;
 });
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            localStorage.setItem(
-                "akuyLastParagraph",
-                entry.target.dataset.id
-            );
+const observer =
+    new IntersectionObserver(
+        entries => {
 
-            localStorage.setItem(
-                "akuyLastText",
-                entry.target.innerText
-            );
+            entries.forEach(entry => {
+
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+                const rect =
+                    entry.target.getBoundingClientRect();
+
+                const middle =
+                    window.innerHeight * 0.5;
+
+                if (
+                    rect.top < middle &&
+                    rect.bottom > middle
+                ) {
+
+                    localStorage.setItem(
+                        "akuyLastParagraph",
+                        entry.target.dataset.id
+                    );
+
+                    localStorage.setItem(
+                        "akuyLastText",
+                        entry.target.innerText.trim()
+                    );
+
+                }
+
+            });
+
+        },
+        {
+            threshold: [
+                0,
+                0.25,
+                0.5,
+                0.75,
+                1
+            ]
         }
-    });
-}, {
-    threshold: 0.6
+    );
+
+paragraphs.forEach(p => {
+    observer.observe(p);
 });
 
-paragraphs.forEach(p => observer.observe(p));
 
-const savedId = localStorage.getItem("akuyLastParagraph");
-const savedText = localStorage.getItem("akuyLastText");
+/* =========================
+   LOAD CONTINUE BOX
+========================= */
 
-if (savedId !== null && savedText) {
-    document.getElementById("continueBox").style.display = "block";
-    document.getElementById("savedText").innerText =
-        `"${savedText.slice(0, 120)}${savedText.length > 120 ? "..." : ""}"`;
+function loadSavedPosition() {
+
+    const savedId =
+        localStorage.getItem(
+            "akuyLastParagraph"
+        );
+
+    const savedText =
+        localStorage.getItem(
+            "akuyLastText"
+        );
+
+    if (
+        savedId !== null &&
+        savedText
+    ) {
+
+        continueBox.style.display =
+            "block";
+
+        savedTextElement.innerText =
+            `"${savedText.slice(0, 140)}${
+                savedText.length > 140
+                    ? "..."
+                    : ""
+            }"`;
+
+    } else {
+
+        continueBox.style.display =
+            "none";
+
+    }
+
 }
 
+loadSavedPosition();
+
+
 function continueReading() {
-    const id = localStorage.getItem("akuyLastParagraph");
+
+    const id =
+        localStorage.getItem(
+            "akuyLastParagraph"
+        );
+
+    if (id === null) {
+        return;
+    }
 
     const target =
-        document.querySelector(`[data-id="${id}"]`);
+        document.querySelector(
+            `[data-id="${id}"]`
+        );
 
-    if (!target) return;
+    if (!target) {
+        return;
+    }
 
     target.scrollIntoView({
         behavior: "smooth",
@@ -981,75 +1299,123 @@ function continueReading() {
     }, 2000);
 }
 
-function openParts() {
-    document.getElementById("partsMenu").classList.add("open");
+
+/* =========================
+   RESET LAST READ
+========================= */
+
+function resetReadingProgress() {
+
+    localStorage.removeItem(
+        "akuyLastParagraph"
+    );
+
+    localStorage.removeItem(
+        "akuyLastText"
+    );
+
+    continueBox.style.display =
+        "none";
+
+    savedTextElement.innerText =
+        "";
+
+    closeSettings();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+    alert(
+        "Last read position has been reset."
+    );
 }
+
+
+/* =========================
+   PARTS MENU
+========================= */
+
+function openParts() {
+
+    document
+        .getElementById("partsMenu")
+        .classList.add("open");
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+function closeParts() {
+
+    document
+        .getElementById("partsMenu")
+        .classList.remove("open");
+
+    document.body.style.overflow =
+        "";
+}
+
 
 function closePartsOutside(event) {
-    if (event.target.id === "partsMenu") {
-        document.getElementById("partsMenu").classList.remove("open");
-    }
-}
 
-const release = new Date("2026-08-09T12:00:00+02:00");
-
-function updateCountdown() {
-    let diff = release - new Date();
-
-    if (diff <= 0) {
-        document.getElementById("countdown").innerText =
-            "Part 2 release time reached";
-        return;
+    if (
+        event.target.id === "partsMenu"
+    ) {
+        closeParts();
     }
 
-    const d = Math.floor(diff / 86400000);
-    diff %= 86400000;
-
-    const h = Math.floor(diff / 3600000);
-    diff %= 3600000;
-
-    const m = Math.floor(diff / 60000);
-    diff %= 60000;
-
-    const s = Math.floor(diff / 1000);
-
-    document.getElementById("countdown").innerText =
-        `${d}d ${h}h ${m}m ${s}s`;
-}
-
-updateCountdown();
-setInterval(updateCountdown, 1000);
-
-/* ==========================================
-   READER SETTINGS
-========================================== */
-
-const darkToggle =
-    document.getElementById("darkModeToggle");
-
-const motionToggle =
-    document.getElementById("motionBlurToggle");
-
-
-/* LOAD SAVED SETTINGS */
-
-if (localStorage.getItem("akuyDarkMode") === "true") {
-    document.body.classList.add("dark");
-    darkToggle.checked = true;
 }
 
 
-if (localStorage.getItem("akuyMotionBlur") === "true") {
-    document.body.classList.add("motion-blur");
-    motionToggle.checked = true;
+/* =========================
+   SETTINGS
+========================= */
+
+function openSettings() {
+
+    document
+        .getElementById("settingsOverlay")
+        .classList.add("open");
+
+    document.body.style.overflow =
+        "hidden";
 }
 
 
-/* DARK MODE */
+function closeSettings() {
+
+    document
+        .getElementById("settingsOverlay")
+        .classList.remove("open");
+
+    document.body.style.overflow =
+        "";
+}
+
+
+function settingsOutside(event) {
+
+    if (
+        event.target.id ===
+        "settingsOverlay"
+    ) {
+        closeSettings();
+    }
+
+}
+
+
+/* =========================
+   DARK MODE
+========================= */
 
 function toggleDarkMode() {
 
-    const enabled = darkToggle.checked;
+    const enabled =
+        darkToggle.checked;
 
     document.body.classList.toggle(
         "dark",
@@ -1064,11 +1430,14 @@ function toggleDarkMode() {
 }
 
 
-/* MOTION BLUR */
+/* =========================
+   MOTION BLUR
+========================= */
 
 function toggleMotionBlur() {
 
-    const enabled = motionToggle.checked;
+    const enabled =
+        motionToggle.checked;
 
     document.body.classList.toggle(
         "motion-blur",
@@ -1082,12 +1451,7 @@ function toggleMotionBlur() {
 
 }
 
-
-/* ==========================================
-   SCROLL MOTION BLUR
-========================================== */
-
-let scrollTimer;
+let scrollTimer = null;
 
 window.addEventListener(
     "scroll",
@@ -1107,110 +1471,32 @@ window.addEventListener(
 
         clearTimeout(scrollTimer);
 
-        scrollTimer = setTimeout(
-            () => {
+        scrollTimer =
+            setTimeout(
+                () => {
 
-                document.body.classList.remove(
-                    "scrolling"
-                );
+                    document.body.classList.remove(
+                        "scrolling"
+                    );
 
-            },
-            110
-        );
+                },
+                110
+            );
 
     },
     { passive: true }
 );
 
 
-/* ==========================================
-   SETTINGS PANEL
-========================================== */
-
-function openSettings() {
-
-    document
-        .getElementById("settingsOverlay")
-        .classList.add("open");
-
-}
-
-
-function closeSettings() {
-
-    document
-        .getElementById("settingsOverlay")
-        .classList.remove("open");
-
-}
-
-
-function settingsOutside(event) {
-
-    if (
-        event.target.id ===
-        "settingsOverlay"
-    ) {
-        closeSettings();
-    }
-
-}
-
-
-/* ==========================================
-   RESET LAST READ
-========================================== */
-
-function resetReadingProgress() {
-
-    localStorage.removeItem(
-        "akuyLastParagraph"
-    );
-
-    localStorage.removeItem(
-        "akuyLastText"
-    );
-
-    const box =
-        document.getElementById(
-            "continueBox"
-        );
-
-    if (box) {
-        box.style.display = "none";
-    }
-
-    alert(
-        "Last read position has been reset."
-    );
-
-}
-
-
-/* ==========================================
-   TOP DISPLAY NOTICE
-========================================== */
-
-const notice =
-    document.getElementById(
-        "displayNotice"
-    );
-
-
-if (
-    localStorage.getItem(
-        "akuyNoticeDismissed"
-    ) === "true"
-) {
-
-    notice.classList.add("hidden");
-
-}
-
+/* =========================
+   TOP NOTICE
+========================= */
 
 function dismissNotice() {
 
-    notice.classList.add("hidden");
+    notice.classList.add(
+        "hidden"
+    );
 
     localStorage.setItem(
         "akuyNoticeDismissed",
@@ -1218,93 +1504,75 @@ function dismissNotice() {
     );
 
 }
+
+
+/* =========================
+   PART 2 COUNTDOWN
+========================= */
+
+const release =
+    new Date(
+        "2026-08-09T12:00:00+02:00"
+    );
+
+function updateCountdown() {
+
+    let diff =
+        release.getTime() -
+        Date.now();
+
+    const countdown =
+        document.getElementById(
+            "countdown"
+        );
+
+    if (diff <= 0) {
+
+        countdown.innerText =
+            "Part 2 release time reached";
+
+        return;
+    }
+
+    const d =
+        Math.floor(
+            diff / 86400000
+        );
+
+    diff %= 86400000;
+
+    const h =
+        Math.floor(
+            diff / 3600000
+        );
+
+    diff %= 3600000;
+
+    const m =
+        Math.floor(
+            diff / 60000
+        );
+
+    diff %= 60000;
+
+    const s =#
+        Math.floor(
+            diff / 1000
+        );
+
+    countdown.innerText =
+        `${d}d ${h}h ${m}m ${s}s`;
+
+}
+
+updateCountdown();
+
+setInterval(
+    updateCountdown,
+    1000
+);
+
 </script>
 
-<div
-    class="settings-overlay"
-    id="settingsOverlay"
-    onclick="settingsOutside(event)"
->
-
-    <div class="settings-panel">
-
-        <div class="settings-header">
-
-            <h2>Reader Settings</h2>
-
-            <button
-                class="settings-close"
-                onclick="closeSettings()"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-        <div class="setting-row">
-
-            <div>
-                <div class="setting-title">
-                    Dark mode
-                </div>
-
-                <div class="setting-description">
-                    Use a darker reading theme.
-                </div>
-            </div>
-
-            <label class="switch">
-
-                <input
-                    type="checkbox"
-                    id="darkModeToggle"
-                    onchange="toggleDarkMode()"
-                >
-
-                <span class="slider"></span>
-
-            </label>
-
-        </div>
-
-
-        <div class="setting-row">
-
-            <div>
-                <div class="setting-title">
-                    Motion blur
-                </div>
-
-                <div class="setting-description">
-                    Adds slight blur while scrolling.
-                </div>
-            </div>
-
-            <label class="switch">
-
-                <input
-                    type="checkbox"
-                    id="motionBlurToggle"
-                    onchange="toggleMotionBlur()"
-                >
-
-                <span class="slider"></span>
-
-            </label>
-
-        </div>
-
-
-        <button
-            class="reset-button"
-            onclick="resetReadingProgress()"
-        >
-            Reset Last Read Position
-        </button>
-
-    </div>
-
-</div>
 </body>
 </html>
