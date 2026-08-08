@@ -199,7 +199,7 @@ button {
 }
 
 .story {
-    transition: filter .12s ease, transform .12s ease;
+    transition: filter .12s ease;
 }
 
 .story p {
@@ -571,7 +571,6 @@ body.dark .menu-close {
 
 body.motion-blur.scrolling .story {
     filter: blur(1.15px);
-    transform: translateY(1px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -6275,7 +6274,7 @@ function saveReadingPosition() {
         );
     }
 
-    updateContinueBox(currentPart);
+    
 }
 
 function updateContinueBox(partNumber) {
