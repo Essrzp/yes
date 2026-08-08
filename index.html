@@ -1,0 +1,4460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AKUY</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #f4f1ea;
+    color: #1d1d1d;
+    font-family: Georgia, "Times New Roman", serif;
+    transition: background .25s ease, color .25s ease;
+}
+
+button {
+    font: inherit;
+}
+
+#progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background: #111;
+    z-index: 9999;
+}
+
+.display-notice {
+    background: #deddd9;
+    color: #676767;
+    padding: 16px 18px 18px;
+    font-family: Arial, sans-serif;
+    border-bottom: 1px solid #cbc9c4;
+}
+
+.display-notice.hidden {
+    display: none;
+}
+
+.notice-text {
+    font-size: 15px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+}
+
+.notice-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.notice-buttons button {
+    border: 0;
+    border-radius: 999px;
+    padding: 11px;
+    font-weight: 600;
+    font-size: 15px;
+    background: #efefef;
+    color: #222;
+    cursor: pointer;
+}
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(244,241,234,.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid #d8d3c9;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-family: Arial, sans-serif;
+}
+
+.topbar .title {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.site-version {
+    margin-top: 2px;
+    font-size: 10px;
+    color: #888;
+}
+
+.topbar-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.topbar button {
+    border: 1px solid #bbb4a8;
+    background: transparent;
+    color: #1d1d1d;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.cover-section {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 42px 24px 30px;
+}
+
+.cover-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 18px 55px rgba(0,0,0,.2);
+    transition: filter .2s ease;
+}
+
+.cover-info {
+    padding: 28px 2px 50px;
+}
+
+.cover-label {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.cover-info h1 {
+    margin: 0;
+    font-size: 36px;
+}
+
+.cover-description {
+    margin: 14px 0 0;
+    color: #69655e;
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+.start-reading {
+    margin-top: 24px;
+    border: 0;
+    background: #1d1d1d;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.chapter {
+    display: none;
+    max-width: 720px;
+    margin: auto;
+    padding: 70px 24px 120px;
+}
+
+.chapter.active {
+    display: block;
+}
+
+.part {
+    font-family: Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.chapter h1 {
+    font-size: clamp(38px, 9vw, 64px);
+    line-height: 1;
+    margin: 0 0 14px;
+}
+
+.subtitle {
+    font-size: 20px;
+    color: #6b6760;
+    margin-bottom: 70px;
+    font-style: italic;
+}
+
+.story {
+    transition: filter .12s ease;
+}
+
+.story p {
+    font-size: 20px;
+    line-height: 1.9;
+    margin: 0 0 28px;
+}
+
+.story p:first-of-type::first-letter {
+    float: left;
+    font-family:
+        "Snell Roundhand",
+        "Apple Chancery",
+        "Segoe Script",
+        "Brush Script MT",
+        cursive;
+    font-size: 5.4em;
+    line-height: .66;
+    font-weight: 500;
+    padding-right: 10px;
+    padding-top: 12px;
+    margin-bottom: -3px;
+}
+
+.story p.dialogue {
+    padding-left: 16px;
+}
+
+.gap {
+    text-align: center;
+    margin: 70px 0;
+    letter-spacing: .5em;
+    color: #888;
+}
+
+.end {
+    margin-top: 100px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.end small {
+    color: #777;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+}
+
+.next {
+    margin-top: 60px;
+    padding: 22px;
+    border: 1px solid #d1cbc0;
+    border-radius: 12px;
+    font-family: Arial, sans-serif;
+}
+
+.next-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.countdown {
+    margin-top: 8px;
+    color: #666;
+}
+
+.continue-box {
+    display: none;
+    margin-bottom: 50px;
+    padding: 18px;
+    border: 1px solid #d1cbc0;
+    border-radius: 12px;
+    font-family: Arial, sans-serif;
+    background: #ebe7de;
+}
+
+.saved-text {
+    margin-top: 6px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.continue-box button {
+    margin-top: 12px;
+    border: 0;
+    background: #111;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.resume {
+    background: #ddd6c9;
+    border-radius: 4px;
+    transition: background .25s ease;
+}
+
+#partsMenu {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    display: none;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 4000;
+}
+
+#partsMenu.open {
+    display: flex;
+}
+
+.menu {
+    width: 100%;
+    max-width: 720px;
+    background: #f4f1ea;
+    border-radius: 18px 18px 0 0;
+    padding: 24px;
+    font-family: Arial, sans-serif;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.menu-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu h2 {
+    margin: 0;
+}
+
+.menu-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.part-row {
+    width: 100%;
+    display: block;
+    text-align: left;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid #d1cbc0;
+    padding: 18px 0;
+    color: inherit;
+    cursor: pointer;
+}
+
+.part-row.locked {
+    cursor: default;
+    opacity: .55;
+}
+
+.part-row strong {
+    font-size: 15px;
+}
+
+.muted {
+    color: #888;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.settings-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: none;
+    background: rgba(0,0,0,.4);
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.settings-overlay.open {
+    display: flex;
+}
+
+.settings-panel {
+    background: #f4f1ea;
+    color: #1d1d1d;
+    width: 100%;
+    max-width: 720px;
+    padding: 24px 22px 35px;
+    border-radius: 22px 22px 0 0;
+    font-family: Arial, sans-serif;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.settings-header h2 {
+    margin: 0;
+}
+
+.settings-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.setting-row {
+    min-height: 72px;
+    border-bottom: 1px solid #d4d0c7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.setting-title {
+    font-weight: 600;
+}
+
+.setting-description {
+    color: #777;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.switch {
+    position: relative;
+    width: 49px;
+    height: 29px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #bdbdbd;
+    border-radius: 99px;
+    transition: .2s;
+    cursor: pointer;
+}
+
+.slider::after {
+    content: "";
+    position: absolute;
+    width: 23px;
+    height: 23px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: .2s;
+}
+
+.switch input:checked + .slider {
+    background: #222;
+}
+
+.switch input:checked + .slider::after {
+    transform: translateX(20px);
+}
+
+.reset-button {
+    margin-top: 20px;
+    width: 100%;
+    border: 1px solid #d8aaa7;
+    background: #fff1ef;
+    color: #a62c28;
+    border-radius: 10px;
+    padding: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+body.blur-images img {
+    filter: blur(18px);
+}
+
+body.dark {
+    background: #101113;
+    color: #e9e9e9;
+}
+
+body.dark #progress {
+    background: white;
+}
+
+body.dark .topbar {
+    background: rgba(16,17,19,.94);
+    border-color: #292a2d;
+}
+
+body.dark .topbar button {
+    color: #eee;
+    border-color: #444;
+}
+
+body.dark .story p,
+body.dark .chapter {
+    color: #e4e4e4;
+}
+
+body.dark .subtitle,
+body.dark .part,
+body.dark .muted,
+body.dark .saved-text,
+body.dark .countdown,
+body.dark .cover-description {
+    color: #929292;
+}
+
+body.dark .display-notice {
+    background: #27282b;
+    color: #aaa;
+    border-color: #393a3e;
+}
+
+body.dark .notice-buttons button {
+    background: #3a3b3f;
+    color: #eee;
+}
+
+body.dark .menu,
+body.dark .settings-panel {
+    background: #17181b;
+    color: #eee;
+}
+
+body.dark .setting-row,
+body.dark .part-row {
+    border-color: #303136;
+}
+
+body.dark .next {
+    border-color: #35363b;
+}
+
+body.dark .continue-box {
+    background: #1e1f23;
+    border-color: #35363b;
+}
+
+body.dark .continue-box button {
+    background: #eee;
+    color: #111;
+}
+
+body.dark .resume {
+    background: #34343b;
+}
+
+body.dark .start-reading {
+    background: #eee;
+    color: #111;
+}
+
+body.dark .settings-close,
+body.dark .menu-close {
+    color: white;
+    border-color: #444;
+}
+
+body.motion-blur.scrolling .story {
+    filter: blur(1.15px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.motion-blur.scrolling .story {
+        filter: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .story p {
+        font-size: 18px;
+    }
+
+    .chapter,
+    .cover-section {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .topbar {
+        padding: 12px 14px;
+    }
+
+    .topbar button {
+        font-size: 13px;
+        padding: 7px 9px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="display-notice" id="displayNotice">
+    <div class="notice-text">
+        If this page is not displaying as expected, you can adjust reader display settings which may resolve issues.
+    </div>
+
+    <div class="notice-buttons">
+        <button onclick="dismissNotice()">Dismiss</button>
+        <button onclick="openSettings()">Reader Settings</button>
+    </div>
+</div>
+
+<div id="progress"></div>
+
+<div class="topbar">
+    <div>
+        <div class="title" id="topTitle">AKUY</div>
+        <div class="site-version" id="siteVersion">Loading version...</div>
+    </div>
+
+    <div class="topbar-buttons">
+        <button onclick="openSettings()">Settings</button>
+        <button onclick="openParts()">Parts</button>
+    </div>
+</div>
+
+<section class="cover-section" id="cover">
+
+    <img
+        src="Untitled23_20260807194657.png"
+        alt="AKUY cover"
+        class="cover-image"
+    >
+
+    <div class="cover-info">
+        <div class="cover-label">AKUY</div>
+
+        <h1>Yet a Distortion</h1>
+
+        <p class="cover-description">
+            She woke up among the graves.<br>
+            But nothing and no one made sense.
+        </p>
+
+        <button class="start-reading" onclick="showPart(1)">
+            Start Reading
+        </button>
+    </div>
+
+</section>
+
+<main class="chapter" id="part1">
+
+<div class="part">Part 1</div>
+<h1>Yet a Distortion</h1>
+<div class="subtitle">Laduxiana Eris</div>
+
+<div class="continue-box" id="continue1">
+    <div>You stopped around:</div>
+    <div class="saved-text" id="savedText1"></div>
+    <button onclick="continueReading(1)">Continue reading</button>
+</div>
+
+<div class="story" id="story1">
+
+<p>
+Eris was walking along a road in 제천시 (Jecheon), South Korea, distracted, when a hitman aimed for a lethal shot. Just as he fired, someone unexpectedly crossed into his line of fire. He instinctively adjusted his aim at the last moment, causing the bullet to miss its intended location and strike Eris in the upper arm instead.
+</p>
+
+<p>
+Eris’s sister had hired the hitman. Eris had inherited ¥95,000,000 in her uncle’s company assets 65% of them. Eris had saved her uncle in a house fire a few years earlier, and he deeply appreciated that.
+</p>
+
+<p>
+Eris quickly begins losing blood from the wound and eventually loses consciousness.
+</p>
+
+<p>
+An unknown man whose nickname is Dr. Surm happens to be nearby and witnesses the shooting.
+</p>
+
+<p>
+Dr. Surm realizes that her condition is rapidly deteriorating. After helping her in the usual way, he realizes she needs urgent medical attention. Emergency services are called while Dr. Surm continues trying to stabilize her.
+</p>
+
+<p>
+Dr. Surm reaches into his cape pocket and takes out a small sealed bag. He opens it and takes out an ERY-tab containing a small crystal.
+</p>
+
+<p>
+He looks at it for a moment and mumbles,
+</p>
+
+<p class="dialogue">
+“ERY-tab 3007… Damn it, I swore I would never use this again…”
+</p>
+
+<p>
+He hesitates and looks back at Eris. Realizing the situation, he continues,
+</p>
+
+<p class="dialogue">
+“…Lord forgive me.”
+</p>
+
+<p>
+Despite his hesitation, Dr. Surm decides that keeping his promise is not worth letting someone die when he may still have a way to save her.
+</p>
+
+<p>
+He carefully places the ERY-tab underneath her tongue, making sure it remains there instead of being swallowed.
+</p>
+
+<p>
+He watches closely for the response he expects from it while continuing to help her, but nothing obvious happens.
+</p>
+
+<p>
+The ambulance arrives, and Eris is rushed to the hospital.
+</p>
+
+<p>
+During the emergency transport, Eris briefly regains consciousness. Through her fading vision, she can barely make out Dr. Surm nearby.
+</p>
+
+<p class="dialogue">
+“Am I dead?”
+</p>
+
+<p class="dialogue">
+“No. What I gave you should keep your consciousness ”
+</p>
+
+<p>
+Before Dr. Surm can finish, Eris loses consciousness again.
+</p>
+
+<p>
+At the hospital, doctors immediately attempt to stabilize her.
+</p>
+
+<p>
+Eris survives, but she does not regain consciousness. She is declared to be in a coma.
+</p>
+
+<p>
+Dr. Surm stays long enough to see that she survived. He knows the ERY-tab has been given to her, but he cannot know exactly how her body will react to it.
+</p>
+
+<p>
+Eventually, he disappears from the hospital without explanation.
+</p>
+
+<p>
+Her friends and family are informed and begin visiting her. Her sister comes too, acting like she truly loved Eris and is devastated by what happened.
+</p>
+
+<p>
+Two days later, Dr. Surm returns to the hospital as a visitor. At first, the receptionist refuses to let him see Eris because he has no known relationship with her.
+</p>
+
+<p>
+However, an older member of the hospital staff recognizes him from his past as a doctor.
+</p>
+
+<p>
+After a short private conversation between them, Dr. Surm is granted permission to visit Eris.
+</p>
+
+<p>
+What exactly was said, and why his former connection to the hospital was enough to grant him access, remains unknown.
+</p>
+
+<p>
+During a moment when he is able to examine her without her family around, he walks into her room.
+</p>
+
+<p>
+He approaches Eris and checks the ERY-tab he had already placed underneath her tongue during the shooting.
+</p>
+
+<p>
+The crystal is no longer simply sitting there like before.
+</p>
+
+<p>
+Her body has begun absorbing and slowly breaking it down.
+</p>
+
+<p>
+Dr. Surm looks at Eris for a moment.
+</p>
+
+<p>
+He doesn’t seem relieved.
+</p>
+
+<p>
+But he doesn’t seem surprised either.
+</p>
+
+<p>
+He turns around and leaves the room.
+</p>
+
+<div class="gap">…</div>
+
+<p>Eris opens her eyes.</p>
+
+<p>Above her is a grey sky.</p>
+
+<p>She remains still for a few seconds.</p>
+
+<p>Cold air brushes against her face.</p>
+
+<p>She sits up.</p>
+
+<p>There is grass beneath her hands. It is slightly wet.</p>
+
+<p>Around her are rows of stones rising from the ground.</p>
+
+<p>
+Some stand straight. Others lean to one side. A few have fallen completely and are partly covered by grass and dirt.
+</p>
+
+<p>There are markings carved into them.</p>
+
+<p>Eris looks at one.</p>
+
+<p>She cannot read it.</p>
+
+<p>She doesn’t find this particularly strange.</p>
+
+<p>She stands up and brushes some of the dirt from her clothes.</p>
+
+<p>There is no gunshot wound on her arm.</p>
+
+<p>She doesn’t check for one.</p>
+
+<p>She doesn’t remember having one.</p>
+
+<p>She looks around the grave field.</p>
+
+<p>She understands what the stones are.</p>
+
+<p>Graves.</p>
+
+<p>She knows what graves are.</p>
+
+<p>She knows people are buried beneath them.</p>
+
+<p>
+She knows how to walk. How to breathe. How to eat and drink. She knows Korean. She understands ordinary objects and basic things about being human.
+</p>
+
+<p>
+But she doesn’t wonder how she arrived here.
+</p>
+
+<p>
+There is no other place in her mind that she believes she should be.
+</p>
+
+<p>
+For Eris, this is simply where she woke up.
+</p>
+
+<p>
+She begins walking between the graves.
+</p>
+
+<p>
+Some are old enough that their markings have nearly disappeared. Others look much newer.
+</p>
+
+<p>
+At the edge of the grave field is a narrow dirt path.
+</p>
+
+<p>
+Eris follows it.
+</p>
+
+<p>
+She hasn’t gone far when she hears something behind her.
+</p>
+
+<p>A voice.</p>
+
+<p>She stops.</p>
+
+<p>Someone speaks again.</p>
+
+<p>Eris turns around.</p>
+
+<p>
+A person is standing several meters away from her near one of the graves.
+</p>
+
+<p>
+They say something to her.
+</p>
+
+<p>
+Eris stares at them.
+</p>
+
+<p>
+She heard every sound clearly.
+</p>
+
+<p>
+But none of it meant anything.
+</p>
+
+<p>
+The person speaks again, slower this time.
+</p>
+
+<p>
+Eris’s expression changes slightly.
+</p>
+
+<p>
+She knows what speaking is.
+</p>
+
+<p>
+She knows they’re trying to communicate with her.
+</p>
+
+<p>
+She knows Korean.
+</p>
+
+<p>
+So why can’t she understand them?
+</p>
+
+<p>
+The person waits for an answer.
+</p>
+
+<p>
+Eris opens her mouth.
+</p>
+
+<p class="dialogue">
+“…뭐라고?”
+</p>
+
+<p>
+The person stares back at her.
+</p>
+
+<p>
+Neither of them understands the other.
+</p>
+
+<p>
+For the first time since opening her eyes, Eris feels that something isn’t right.
+</p>
+
+</div>
+
+<div class="end">
+    <small>End of Part 1</small>
+</div>
+
+<div class="next">
+    <div class="next-title">Part 2   Who am I?</div>
+    <div>Available now</div>
+
+    <button class="start-reading" onclick="showPart(2)">
+        Read Part 2
+    </button>
+</div>
+
+</main>
+
+<main class="chapter" id="part2">
+
+<div class="part">Part 2</div>
+<h1>Who am I?</h1>
+<div class="subtitle">Laduxiana Eris</div>
+
+<div class="continue-box" id="continue2">
+    <div>You stopped around:</div>
+    <div class="saved-text" id="savedText2"></div>
+    <button onclick="continueReading(2)">Continue reading</button>
+</div>
+
+<div class="story" id="story2">
+
+<p>
+The man near the grave speaks again. Eris watches him carefully. She understands that he is trying to communicate with her, but every sound that leaves his mouth is meaningless.
+</p>
+
+<p>
+The man points toward Eris, then toward the ground beneath them. He raises his eyebrows slightly.
+</p>
+
+<p>Eris stares at him.</p>
+
+<p>
+The man repeats the gesture. He points at her, then at the ground.
+</p>
+
+<p>
+Eris looks down. There is nothing unusual there. Just grass. She looks back at him.
+</p>
+
+<p>
+The man sighs and points toward a wooden sign near the edge of the graveyard. Several unfamiliar symbols are carved into it. Among them are two symbols:
+</p>
+
+<p class="dialogue">٤٥</p>
+
+<p>Beside them are two more characters.</p>
+
+<p class="dialogue">DV</p>
+
+<p>Eris looks at the sign. She cannot read any of it.</p>
+
+<p>
+The man points at the sign again, then gestures toward the dirt path leading away from the graveyard. Eris walks toward the sign. She looks at its front, then behind it. Nothing. She places a hand against the wooden post and looks back at him.
+</p>
+
+<p>
+The man stares at her for a moment before shaking his head.
+</p>
+
+<p>
+He tries again. He points at Eris, then toward the ground, then toward the distant lights beyond the graveyard. Finally, he points at Eris once more and tilts his head questioningly.
+</p>
+
+<p>
+This time, Eris thinks she understands.
+</p>
+
+<p class="dialogue">
+Are you from here?
+</p>
+
+<p>
+She looks toward the distant lights and then back at him. She nods.
+</p>
+
+<p>
+The man’s expression changes. He had expected almost anything except that. He says something else, but Eris gives him the same blank stare. He asks another question. Nothing.
+</p>
+
+<p>
+The man looks at her for several seconds. His expression softens slightly as he glances at the graves surrounding them and then back at Eris. Whatever conclusion he reaches, it seems enough for him.
+</p>
+
+<p>
+He doesn’t ask anything else.
+</p>
+
+<p>
+Instead, he picks up the tools he had left near one of the graves and returns to his work.
+</p>
+
+<p>
+Eris watches him leave. She doesn’t follow. She doesn’t know where else she would go.
+</p>
+
+<p>
+Hours pass. The grey sky darkens until the graveyard becomes difficult to see beyond a few rows of stones. Eris eventually sits beneath a large tree near its edge.
+</p>
+
+<p>
+The cold bothers her. She pulls her knees closer to herself and, for the first time, properly looks down at her body.
+</p>
+
+<p>
+She isn’t wearing anything.
+</p>
+
+<p>
+She knows what clothing is. She knows people normally wear it. But she doesn’t remember ever owning any.
+</p>
+
+<p>
+The thought bothers her for only a moment. She looks toward the path again. Nobody is there.
+</p>
+
+<p>
+Eventually, exhaustion becomes stronger than the cold.
+</p>
+
+<p>
+Eris closes her eyes.
+</p>
+
+<div class="gap">…</div>
+
+<p>
+Voices wake her.
+</p>
+
+<p>
+Eris opens her eyes. It’s still dark.
+</p>
+
+<p>
+Three figures stand several meters away. Travelers. One of them carries a covered lantern while another has a large bag strapped across his back. They’re talking among themselves.
+</p>
+
+<p>
+Eris doesn’t understand them either.
+</p>
+
+<p>
+But she notices something almost immediately. Their words don’t sound like the graveyard worker’s words. The language is different.
+</p>
+
+<p>
+One of the travelers notices that Eris is awake and says something sharply.
+</p>
+
+<p>
+Eris sits up.
+</p>
+
+<p>
+The traveler gestures toward her body, then toward the graveyard. His expression makes it obvious that he isn’t happy.
+</p>
+
+<p>
+Eris looks at herself, then at him. She doesn’t respond.
+</p>
+
+<p>
+The travelers exchange a few words. One steps closer and speaks again. Eris remains where she is.
+</p>
+
+<p>
+Nothing.
+</p>
+
+<p>
+His frustration grows. He reaches down and grabs Eris by the wrist.
+</p>
+
+<p>
+The moment his hand touches her, his entire body freezes.
+</p>
+
+<p>
+Something moves through his mana gate. It isn’t pain. It is something deeper and instantly recognizable: a pulse from Eris’s mana interacting with his own.
+</p>
+
+<p>
+Normal mana flows evenly. Stable. Parallel.
+</p>
+
+<p>
+Hers doesn’t.
+</p>
+
+<p>
+It shifts, bends, returns and shifts again.
+</p>
+
+<p>
+The traveler immediately releases her.
+</p>
+
+<p>
+Eris looks down at her wrist and then back at him. She doesn’t understand why he suddenly stopped.
+</p>
+
+<p>
+The other two travelers notice his expression. One asks him something, but he doesn’t answer immediately. He keeps looking at Eris.
+</p>
+
+<p>
+Then he reaches forward again, this time carefully, and places two fingers against her arm.
+</p>
+
+<p>
+The pulse returns.
+</p>
+
+<p>
+His eyes narrow.
+</p>
+
+<p>
+He says something quietly.
+</p>
+
+<p>
+The mood between the three changes almost immediately. The irritation they had shown before is gone. They begin talking quickly among themselves while occasionally looking toward Eris.
+</p>
+
+<p>
+Eris watches them.
+</p>
+
+<p>
+She understands none of it.
+</p>
+
+<p>
+Eventually, one of the travelers removes part of his outer clothing and throws it toward her. Eris catches it awkwardly.
+</p>
+
+<p>
+He gestures for her to cover herself.
+</p>
+
+<p>
+She does.
+</p>
+
+<p>
+Then he points toward the road, at himself, at the other travelers, and finally at Eris before pointing down the road again.
+</p>
+
+<p>
+Eris understands enough.
+</p>
+
+<p class="dialogue">
+Come with us.
+</p>
+
+<p>
+She stands.
+</p>
+
+<p>
+She doesn’t know these people. She doesn’t know where they’re going. But she doesn’t know anywhere else either.
+</p>
+
+<p>
+So she follows.
+</p>
+
+<p>
+They walk for hours.
+</p>
+
+<p>
+The graveyard eventually disappears behind them. Eris watches everything around her as they travel: the roads, the lanterns, the travelers’ clothing and the distant structures she can barely make out in the darkness.
+</p>
+
+<p>
+Occasionally, the travelers speak to her.
+</p>
+
+<p>
+Eventually, they stop trying.
+</p>
+
+<p>
+Eris doesn’t find any of this impossible. There is no remembered world for her to compare it to. No home she thinks she has lost. No family she thinks she should return to.
+</p>
+
+<p>No Jecheon.</p>
+<p>No hospital.</p>
+<p>No gunshot.</p>
+<p>No Dr. Surm.</p>
+
+<p>
+There are only fragments of knowledge without memories attached to them.
+</p>
+
+<p>
+She knows what a road is. She knows what a tree is. She knows what a person is. She knows that she herself is a person.
+</p>
+
+<p>
+But as they continue walking, something begins bothering her.
+</p>
+
+<p>
+She notices that each traveler responds when another calls to them. Different sounds seem to correspond to different people.
+</p>
+
+<p>Names.</p>
+
+<p>
+Eris understands the concept.
+</p>
+
+<p>
+She slows slightly.
+</p>
+
+<p>
+She knows people have names.
+</p>
+
+<p>
+Then what is hers?
+</p>
+
+<p>
+Eris searches her memory.
+</p>
+
+<p>Nothing.</p>
+
+<p>
+She tries again, concentrating harder this time.
+</p>
+
+<p>Nothing.</p>
+
+<p>
+For the first time since waking in the graveyard, she deliberately attempts to remember something about herself.
+</p>
+
+<p>
+Her expression tightens.
+</p>
+
+<p>Nothing comes.</p>
+
+<p>
+One of the travelers notices she has stopped. He calls out to her and gestures for her to continue.
+</p>
+
+<p>
+Eris follows.
+</p>
+
+<p>
+But the question doesn’t leave her.
+</p>
+
+<p class="dialogue">
+What is my name?
+</p>
+
+<p>
+By morning, they reach a settlement.
+</p>
+
+<p>
+Eris notices people staring at her as the travelers lead her through the streets. They keep her between them.
+</p>
+
+<p>
+One traveler speaks to a guard. The guard looks at Eris, then back at him. A longer conversation follows before they’re eventually allowed through.
+</p>
+
+<p>
+They don’t take Eris toward the markets. They don’t stop somewhere to eat. Instead, they lead her farther into the settlement toward an old stone building.
+</p>
+
+<p>
+People nearby seem to avoid standing directly in front of its entrance.
+</p>
+
+<p>
+Above the doorway is a symbol Eris doesn’t recognize.
+</p>
+
+<p>
+One of the travelers knocks.
+</p>
+
+<p>Nothing happens.</p>
+
+<p>He knocks again.</p>
+
+<p>The door opens.</p>
+
+<p>A woman stands inside.</p>
+
+<p>
+The travelers begin speaking immediately. The woman listens without much reaction until her eyes move toward Eris.
+</p>
+
+<p>
+For a moment, neither does anything.
+</p>
+
+<p>
+Then Eris feels something strange.
+</p>
+
+<p>
+Not the pulse from earlier.
+</p>
+
+<p>
+Something different.
+</p>
+
+<p>
+The woman looks directly into her eyes.
+</p>
+
+<p>A voice speaks.</p>
+
+<p>Not through Eris’s ears.</p>
+
+<p>Inside her mind.</p>
+
+<p class="dialogue">
+“You cannot understand them.”
+</p>
+
+<p>
+Eris’s eyes widen and she instinctively steps backward. The travelers react, but the woman raises one hand and they stop.
+</p>
+
+<p>
+The voice returns.
+</p>
+
+<p class="dialogue">
+“Do not be frightened.”
+</p>
+
+<p>
+Eris stares at her. For the first time since waking in the graveyard, somebody has spoken words she can understand.
+</p>
+
+<p class="dialogue">
+“…You can understand me?”
+</p>
+
+<p>
+The woman’s mouth doesn’t move.
+</p>
+
+<p class="dialogue">
+“No.”
+</p>
+
+<p>
+Eris freezes.
+</p>
+
+<p class="dialogue">
+“I cannot understand your language.”
+</p>
+
+<p>
+There is a short pause.
+</p>
+
+<p class="dialogue">
+“I am making your mind understand mine.”
+</p>
+
+<p>
+Eris looks toward the travelers and then back at the woman.
+</p>
+
+<p class="dialogue">
+“Where am I?”
+</p>
+
+<p>
+The woman doesn’t answer the question.
+</p>
+
+<p>
+Her attention shifts toward something Eris cannot see.
+</p>
+
+<p>
+Something inside her.
+</p>
+
+<p>
+Eris feels pressure in her chest, then somewhere deeper. It isn’t physical.
+</p>
+
+<p>
+The woman is examining her mana.
+</p>
+
+<p>
+Her expression changes slightly.
+</p>
+
+<p>
+She sees the unstable flow.
+</p>
+
+<p>
+Then she sees something beneath it.
+</p>
+
+<p>
+An engraving.
+</p>
+
+<p>
+Something that has belonged to Eris from the moment she first existed.
+</p>
+
+<p>Birth.</p>
+<p>Lineage.</p>
+<p>A sigil.</p>
+
+<p>
+And finally
+</p>
+
+<p>
+A name.
+</p>
+
+<p>
+The woman stops.
+</p>
+
+<p>
+Eris notices immediately.
+</p>
+
+<p class="dialogue">
+“What?”
+</p>
+
+<p>No response.</p>
+
+<p>
+Eris takes a step closer.
+</p>
+
+<p class="dialogue">
+“What did you see?”
+</p>
+
+<p>
+The woman looks directly at her.
+</p>
+
+<p class="dialogue">
+“You do not know your own name.”
+</p>
+
+<p>
+Eris says nothing.
+</p>
+
+<p>
+The travelers glance between the two of them, unable to hear the conversation taking place inside Eris’s mind.
+</p>
+
+<p>
+Eris slowly shakes her head.
+</p>
+
+<p class="dialogue">
+“No.”
+</p>
+
+<p>
+The woman looks into her mana once more and then back into Eris’s eyes.
+</p>
+
+<p class="dialogue">
+“I do.”
+</p>
+
+<p>
+Eris’s breathing stops for a moment.
+</p>
+
+<p>
+The woman begins to speak.
+</p>
+
+<p class="dialogue">
+“Your name is…”
+</p>
+
+</div>
+
+<div class="end">
+    <small>End of Part 2</small>
+</div>
+
+<div class="next">
+    <div class="next-title">Part 3   Unfortunate Place</div>
+    <div>Available now</div>
+
+    <button class="start-reading" onclick="showPart(3)">
+        Read Part 3
+    </button>
+</div>
+
+</main>
+
+<main class="chapter" id="part3">
+
+<div class="part">Part 3</div>
+<h1>Unfortunate Place</h1>
+<div class="subtitle">Laduxiana Eris</div>
+
+<div class="continue-box" id="continue3">
+    <div>You stopped around:</div>
+    <div class="saved-text" id="savedText3"></div>
+    <button onclick="continueReading(3)">Continue reading</button>
+</div>
+
+<div class="story" id="story3">
+
+<p>“Your name is…”</p>
+<p>The woman looks directly into Eris’s eyes.</p>
+<p class="dialogue">“Laduxiana Eris.”</p>
+
+<p>
+For a moment, Eris does nothing. Then something changes. Not around her. Inside her. The name doesn’t feel like new information. It feels like something that had always existed somewhere inside her, hidden behind a door she hadn’t known how to open.
+</p>
+
+<p>Laduxiana Eris.</p>
+
+<p>
+She repeats it silently, and suddenly other things exist beside it. Twenty-seven. June twenty-fourth. She understands what an age is. She knows that twenty-seven years belong to her. She understands what a birthday is and knows that June twenty-fourth is hers. But there is nothing behind any of it. No memory of turning twenty-seven. No memory of turning twenty-six. No birthdays. No faces. No places. Just information.
+</p>
+
+<p>Eris looks at the woman.</p>
+<p class="dialogue">“…Eris.”</p>
+<p>The woman continues watching her.</p>
+<p class="dialogue">“My name is Eris.”</p>
+<p class="dialogue">“Yes.”</p>
+
+<p>
+Eris looks down at her hands for a moment. It feels strange to finally have something that belongs to her. A name. She looks back up.
+</p>
+
+<p class="dialogue">“What else?”</p>
+
+<p>
+The woman doesn’t answer immediately. Her attention moves back toward Eris’s mana engraving. Eris feels the same pressure return. It moves through somewhere deeper than her body, somewhere she still doesn’t understand.
+</p>
+
+<p>
+The woman examines the engraving again. Birth. Lineage. Personal sigil. Name. Nothing appears damaged. Nothing appears altered. Nothing appears false.
+</p>
+
+<p>Laduxiana Eris is exactly what the engraving says she is.</p>
+
+<p>
+Then the woman looks beyond it, at the mana moving around it. Her expression changes.
+</p>
+
+<p>The flow bends. Returns. Bends again. It never travels evenly.</p>
+
+<p>
+The woman’s eyes narrow. For several seconds, she says nothing.
+</p>
+
+<p>Eris notices.</p>
+<p class="dialogue">“What?”</p>
+
+<p>
+The woman ignores the question and examines the flow again. One of the travelers says something from behind Eris. The woman turns toward him.
+</p>
+
+<p>This time, she speaks aloud.</p>
+
+<p>
+Eris hears the words clearly and understands none of them.
+</p>
+
+<p>
+The traveler’s expression changes almost immediately. He looks at Eris, then at the woman, then says something quickly. The second traveler joins in. The third stays silent, staring at Eris as if she has suddenly become something different from the person they brought through the door.
+</p>
+
+<p>Eris looks between them.</p>
+<p class="dialogue">“What are you saying?”</p>
+<p>Nobody answers her.</p>
+
+<p>
+The woman speaks again. One of the travelers takes a step backward.
+</p>
+
+<p>Eris notices.</p>
+<p class="dialogue">“What did you tell them?”</p>
+
+<p>
+The woman finally looks at her again. Her voice returns inside Eris’s mind.
+</p>
+
+<p class="dialogue">“Your mana current is irregular.”</p>
+<p>Eris waits.</p>
+<p>The woman says nothing else.</p>
+<p class="dialogue">“…And?”</p>
+
+<p class="dialogue">
+“In Varethis, there is a name for people whose mana moves as yours does.”
+</p>
+
+<p>
+Eris looks down at herself as though she might somehow see it.
+</p>
+
+<p class="dialogue">“What name?”</p>
+<p class="dialogue">“Suvra.”</p>
+<p>The word means nothing to her.</p>
+<p class="dialogue">“What does that mean?”</p>
+<p>The woman hesitates.</p>
+<p class="dialogue">“Stained.”</p>
+
+<p>Eris looks back at her.</p>
+<p class="dialogue">“I don’t understand.”</p>
+<p class="dialogue">“You do not need to yet.”</p>
+
+<p>
+One of the travelers speaks again. His voice is quieter now. The woman answers him.
+</p>
+
+<p>Eris turns toward her.</p>
+<p class="dialogue">“Stop doing that.”</p>
+
+<p>The woman’s eyes move back toward Eris.</p>
+<p class="dialogue">“I accepted payment before examining you.”</p>
+<p>Eris stares at her.</p>
+<p class="dialogue">“So?”</p>
+<p class="dialogue">“My oath requires me to provide the complete result.”</p>
+<p class="dialogue">“What oath?”</p>
+
+<p>The woman doesn’t answer.</p>
+
+<p>
+Outside, someone knocks on the door. The travelers immediately look toward it. The woman says something, and the door opens.
+</p>
+
+<p>Two guards enter.</p>
+
+<p>
+Eris recognizes them as guards only because of the way they are dressed and the weapons at their sides. One speaks to the woman. She answers. He looks toward Eris, his eyes remaining on her for several seconds before he says one word.
+</p>
+
+<p class="dialogue">“Suvra.”</p>
+
+<p>
+Eris recognizes it now. She doesn’t know exactly what it means, but she understands that it is about her.
+</p>
+
+<p>One of the guards gestures toward the door.</p>
+<p>Eris doesn’t move.</p>
+<p class="dialogue">“Where are they taking me?”</p>
+<p>The woman looks at her.</p>
+<p class="dialogue">“For holding.”</p>
+<p class="dialogue">“For how long?”</p>
+
+<p>The woman doesn’t answer.</p>
+
+<p>
+The guard gestures again. Eris looks at the travelers. None of them meet her eyes.
+</p>
+
+<p>Then she walks toward the door.</p>
+
+<p>
+As she passes the first guard, he watches her carefully. The second doesn’t stand as close.
+</p>
+
+<p>
+Outside, several people have gathered farther down the street. Eris doesn’t know whether they were already there or whether they came after hearing something. A few notice her.
+</p>
+
+<p>Someone says the same word.</p>
+<p class="dialogue">“Suvra.”</p>
+<p>Another person repeats it.</p>
+
+<p>
+Eris keeps walking. She doesn’t understand why they look at her like that.
+</p>
+
+<p>
+She is taken through Dervane until the streets become narrower and the buildings more tightly packed together. Eventually, the guards lead her into another stone structure.
+</p>
+
+<p>This one has bars.</p>
+<p>Eris finally understands.</p>
+<p>A prison.</p>
+
+<p>
+She is searched, given rough clothing, and taken down a corridor lined with cells. Several prisoners look toward her as she passes.
+</p>
+
+<p>
+A guard speaks to another man standing near the end of the corridor. Eris catches only one sound she recognizes.
+</p>
+
+<p class="dialogue">“Suvra.”</p>
+
+<p>The man looks at her immediately. His expression hardens.</p>
+<p>He unlocks a cell.</p>
+<p>Eris is pushed inside.</p>
+
+<p>
+Three people are already there. A man sits against the wall with his arms resting over his knees. Another prisoner lies on one of the thin sleeping mats. The third sits alone near the far corner, staring at the floor.
+</p>
+
+<p>The door closes behind Eris.</p>
+<p>Nobody speaks to her at first.</p>
+
+<p>
+She stands near the bars until the first man eventually says something.
+</p>
+
+<p>Eris turns toward him.</p>
+<p class="dialogue">“I don’t understand you.”</p>
+
+<p>He gives her a blank look.</p>
+<p>Eris points toward herself.</p>
+<p class="dialogue">“Eris.”</p>
+<p>The man watches her.</p>
+<p>She points again.</p>
+<p class="dialogue">“Eris.”</p>
+
+<p>
+He seems to understand. He points toward himself and says his own name.
+</p>
+
+<p>Eris doesn’t catch it.</p>
+<p>He repeats it.</p>
+<p>She tries to imitate the sound.</p>
+<p>Badly.</p>
+
+<p>
+The prisoner lying down laughs. Eris looks at him. He says something.
+</p>
+
+<p>She understands none of it.</p>
+
+<p>The days begin to pass.</p>
+
+<p>
+Eris doesn’t know how many at first. There are no clocks she can read. She begins counting by sleep, by meals, by the periods where light appears through a small opening high in the wall and disappears again.
+</p>
+
+<p>
+The prisoners slowly realize that Eris truly cannot understand them. At first, they find it amusing. Then irritating. Eventually, one of them begins pointing at things.
+</p>
+
+<p>A cup.</p>
+<p>He says a word.</p>
+<p>Eris repeats it.</p>
+<p>He points toward the water inside.</p>
+<p>Another word.</p>
+<p>Eris repeats that too.</p>
+<p>He shakes his head.</p>
+<p>She says it again.</p>
+<p>He shakes his head harder.</p>
+<p>Eris frowns.</p>
+<p>The other prisoner laughs.</p>
+
+<p>
+By the third or fourth day, Eris knows almost nothing.
+</p>
+
+<p>But almost nothing is more than nothing.</p>
+
+<p>
+She learns the sounds for yes and no. Water. Food. Stop. Come. You. Me. Name.
+</p>
+
+<p>
+She hears the word Dervane repeatedly enough to understand that it refers to the place around them. Later she hears Varethis.
+</p>
+
+<p>
+A prisoner points around them, then outward beyond the walls.
+</p>
+
+<p class="dialogue">“Varethis.”</p>
+<p>Eris repeats it.</p>
+<p>He nods.</p>
+
+<p>
+Then he points toward himself and says a short sentence. He repeats it several times, slowly. Eventually, Eris begins separating the words.
+</p>
+
+<p>I.</p>
+<p>Am.</p>
+<p>From.</p>
+
+<p>
+He says the name of somewhere she doesn’t recognize, then points toward Eris.
+</p>
+
+<p>She thinks for a moment.</p>
+<p class="dialogue">“I…”</p>
+<p>The prisoner nods quickly.</p>
+<p>Eris continues.</p>
+<p class="dialogue">“I am…”</p>
+<p>Another nod.</p>
+<p>She points toward herself.</p>
+<p class="dialogue">“Eris.”</p>
+
+<p>
+The prisoner shakes his head and repeats the sentence again, emphasizing the final word.
+</p>
+
+<p>Eris finally understands.</p>
+<p>Where are you from?</p>
+
+<p>She tries again.</p>
+<p class="dialogue">“I am from…”</p>
+<p>Nothing follows.</p>
+
+<p>The others wait.</p>
+<p>Eris looks toward the floor.</p>
+<p>She understands the question now.</p>
+<p>That is the problem.</p>
+<p>She has no answer.</p>
+
+<p>
+Dervane is where she arrived after following strangers. Varethis is apparently the country around her. But neither feels like an answer.
+</p>
+
+<p>
+There is still no place inside her mind that belongs to her.
+</p>
+
+<p>Eris finally shakes her head.</p>
+<p class="dialogue">“I don’t know.”</p>
+
+<p>The prisoners don’t understand the sentence.</p>
+<p>But they understand her expression.</p>
+<p>Nobody asks again.</p>
+
+<p>
+During the week, Eris slowly learns fragments about the people sharing the cell with her. Not through conversation. She still cannot have one. Mostly through gestures, repeated words, and arguments between the prisoners.
+</p>
+
+<p>
+One of the men is there because of something involving an oath. Eris hears the same word many times.
+</p>
+
+<p>Oath.</p>
+
+<p>
+Sometimes another word accompanies it.
+</p>
+
+<p>Child.</p>
+<p>Then death.</p>
+
+<p>
+She never manages to understand the entire story, only that a child died and the man’s punishment is connected somehow to oath disobedience.
+</p>
+
+<p>The second prisoner is easier to understand.</p>
+
+<p>
+He keeps drawing the same strange symbol into the dirt with his finger.
+</p>
+
+<p>A sigil.</p>
+
+<p>
+Then he crosses it out and draws another one over it.
+</p>
+
+<p>Fake.</p>
+<p>False.</p>
+<p>Altered.</p>
+
+<p>
+Eris eventually understands that he tried to falsify one.
+</p>
+
+<p>
+The third prisoner tells her nothing. Whenever the others discuss why they are imprisoned, he stays silent. Whenever they point toward him and ask something, he ignores them.
+</p>
+
+<p>Eris stops trying too.</p>
+
+<p>
+There is one thing the prisoners all understand about Eris before she understands it herself.
+</p>
+
+<p>
+Whenever a guard passes her cell, sometimes they make a gesture toward her.
+</p>
+
+<p>A hand across the neck.</p>
+
+<p>
+Sometimes one of the prisoners copies it afterward.
+</p>
+
+<p>
+The first time, Eris assumes it is a threat.
+</p>
+
+<p>
+The second time, she becomes less certain.
+</p>
+
+<p>
+By the fourth time, she understands what the gesture means.
+</p>
+
+<p>Death.</p>
+
+<p>
+What she doesn’t understand is when.
+</p>
+
+<p>
+She doesn’t know whether she is meant to remain here for weeks. Months. Years. She doesn’t even completely understand what crime she supposedly committed.
+</p>
+
+<p>
+Nobody has asked her anything since the Warden examined her.
+</p>
+
+<p>Nobody has explained anything.</p>
+
+<p>
+Sometimes she lies awake thinking about the gesture.
+</p>
+
+<p>A hand crossing the neck.</p>
+
+<p>
+She knows she doesn’t want it to happen. Her body reacts to the thought before her mind does. Her chest tightens. Her fingers become cold. She imagines pain and immediately stops thinking about it.
+</p>
+
+<p>
+But something is missing from the fear.
+</p>
+
+<p>
+Eris understands that death means she will stop existing. She understands that it cannot be undone. Yet there is no life behind her that she feels is being stolen.
+</p>
+
+<p>No person she is desperate to return to.</p>
+<p>No home.</p>
+<p>No memory of being loved.</p>
+<p>No memory of loving anyone.</p>
+
+<p>
+As far as Eris can remember, she opened her eyes in a graveyard less than a week ago.
+</p>
+
+<p>
+Sometimes the thought of dying frightens her.
+</p>
+
+<p>
+Sometimes it simply feels strange.
+</p>
+
+<p>
+On what Eris believes is the seventh day, footsteps stop outside the cell.
+</p>
+
+<p>She looks up.</p>
+<p>The guard unlocks the door.</p>
+<p>Behind him stands the woman from the stone building.</p>
+<p>The Warden.</p>
+
+<p>
+Eris gets to her feet immediately. The other prisoners become quiet.
+</p>
+
+<p>
+The woman enters. The guard closes the door behind her but remains outside.
+</p>
+
+<p>Eris walks closer.</p>
+<p class="dialogue">“You.”</p>
+<p>The Warden looks at her.</p>
+<p>Eris points toward herself.</p>
+<p class="dialogue">“Eris.”</p>
+
+<p>The Warden’s expression changes slightly.</p>
+<p class="dialogue">“You have begun learning.”</p>
+
+<p>Her voice is inside Eris’s mind again.</p>
+
+<p>
+Eris almost feels relief simply because she can finally understand someone completely.
+</p>
+
+<p class="dialogue">“Barely.”</p>
+<p>The Warden looks around the cell.</p>
+<p>Eris doesn’t waste time.</p>
+<p class="dialogue">“Why am I here?”</p>
+<p class="dialogue">“You were confirmed.”</p>
+<p class="dialogue">“As what?”</p>
+<p class="dialogue">“Suvra.”</p>
+<p class="dialogue">“I know that word now. I still don’t know what it means.”</p>
+
+<p>The Warden studies her for a moment.</p>
+
+<p class="dialogue">
+“It is what people here call those born with a current that does not move in the accepted pattern.”
+</p>
+
+<p>Eris looks at her.</p>
+<p class="dialogue">“That’s it?”</p>
+<p class="dialogue">“To you.”</p>
+<p class="dialogue">“What does that mean?”</p>
+
+<p class="dialogue">
+“To the Pure Sigil Doctrine, the current is considered a corruption of the human sigil.”
+</p>
+
+<p>Eris’s expression tightens.</p>
+<p class="dialogue">“But you checked mine.”</p>
+<p class="dialogue">“Yes.”</p>
+<p class="dialogue">“And?”</p>
+<p class="dialogue">“You are human.”</p>
+
+<p>Eris waits.</p>
+<p>The Warden says nothing more.</p>
+
+<p class="dialogue">“Then tell them.”</p>
+<p class="dialogue">“I did.”</p>
+
+<p>Eris stares at her.</p>
+
+<p>
+Something inside her finally shifts.
+</p>
+
+<p>Not fear.</p>
+<p>Anger.</p>
+
+<p class="dialogue">“Then why am I still here?”</p>
+<p class="dialogue">“Because your humanity is not disputed.”</p>
+
+<p>Eris says nothing.</p>
+<p>The Warden continues.</p>
+<p class="dialogue">“The current itself is the offense.”</p>
+<p class="dialogue">“That doesn’t make sense.”</p>
+<p class="dialogue">“It does not need to make sense to me.”</p>
+<p class="dialogue">“You work for them?”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Then help me.”</p>
+<p class="dialogue">“I cannot.”</p>
+<p class="dialogue">“Why?”</p>
+
+<p>The Warden looks at her calmly.</p>
+<p class="dialogue">“My oath.”</p>
+
+<p>Eris remembers the word from the prisoners.</p>
+<p class="dialogue">“Oath.”</p>
+
+<p class="dialogue">
+“A promise engraved into mana. I accepted mine willingly. I examine. I report what I see. I conceal nothing from the party that paid for the reading.”
+</p>
+
+<p class="dialogue">“You can’t break it?”</p>
+<p class="dialogue">“I can disobey it.”</p>
+
+<p>Eris waits.</p>
+<p class="dialogue">“But?”</p>
+<p class="dialogue">“I would become an oath offender.”</p>
+
+<p>
+Eris thinks of the man in the cell. The word suddenly feels heavier.
+</p>
+
+<p>She looks toward the bars.</p>
+
+<p class="dialogue">
+“So everybody just does what an engraving tells them?”
+</p>
+
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“That sounds exactly like what you just said.”</p>
+
+<p>The Warden does not respond.</p>
+
+<p>Eris looks back at her.</p>
+
+<p>
+For the first time, she realizes the woman did not come simply to answer questions.
+</p>
+
+<p class="dialogue">“Why are you here?”</p>
+
+<p>The Warden remains silent for several seconds.</p>
+
+<p>
+Eris feels that same discomfort return. She remembers the guards. The throat gesture. The prisoners copying it.
+</p>
+
+<p>
+She asks the question she has been unable to ask anyone properly all week.
+</p>
+
+<p class="dialogue">“How long am I staying here?”</p>
+
+<p>The Warden looks directly into her eyes.</p>
+<p class="dialogue">“You are not being kept here.”</p>
+
+<p>Eris frowns.</p>
+<p class="dialogue">“What?”</p>
+
+<p>The Warden’s voice remains calm.</p>
+<p class="dialogue">“Your holding period ends tomorrow.”</p>
+
+<p>
+Eris feels a small amount of relief before she can stop herself.
+</p>
+
+<p>
+Then she notices the woman’s expression.
+</p>
+
+<p>The relief disappears.</p>
+
+<p>Eris says nothing.</p>
+
+<p>The Warden continues.</p>
+
+<p class="dialogue">
+“Tomorrow morning, the Pure Sigil Doctrine will take custody of you.”
+</p>
+
+<p>Eris remembers the gesture again.</p>
+
+<p>
+Her hand unconsciously moves toward her neck.
+</p>
+
+<p>The Warden notices.</p>
+
+<p>Eris looks at her.</p>
+<p class="dialogue">“They’re going to kill me.”</p>
+<p class="dialogue">“Yes.”</p>
+
+<p>The answer comes too easily.</p>
+
+<p>
+Eris’s fingers tighten around the fabric covering her legs. She knows what death is. She knows she should be terrified.
+</p>
+
+<p>And she is afraid.</p>
+
+<p>
+But the fear still feels incomplete, like her mind is trying to protect a life it cannot remember having.
+</p>
+
+<p>She looks at the Warden.</p>
+<p class="dialogue">“How?”</p>
+
+<p>
+For the first time since entering the cell, the Warden hesitates.
+</p>
+
+<p>
+Then her voice enters Eris’s mind one final time.
+</p>
+
+<p class="dialogue">
+“Tomorrow, they will remove your head.”
+</p>
+
+</div>
+
+<div class="end">
+    <small>End of Part 3</small>
+</div>
+
+<div class="next">
+    <div class="next-title">Part 4   If That’s What I Am</div>
+    <div>Available now</div>
+
+    <button class="start-reading" onclick="showPart(4)">
+        Read Part 4
+    </button>
+</div>
+
+</main>
+
+<main class="chapter" id="part4">
+
+<div class="part">Part 4</div>
+<h1>If That’s What I Am</h1>
+<div class="subtitle">Laduxiana Eris</div>
+
+<div class="continue-box" id="continue4">
+    <div>You stopped around:</div>
+    <div class="saved-text" id="savedText4"></div>
+    <button onclick="continueReading(4)">Continue reading</button>
+</div>
+
+<div class="story" id="story4">
+
+<p>
+For several seconds after the Warden finishes speaking, Eris doesn’t move. Her hand is still resting near her neck.
+</p>
+
+<p class="dialogue">
+“Tomorrow, they will remove your head.”
+</p>
+
+<p>
+She understands every word. That is almost what makes it strange.
+</p>
+
+<p>
+Eris looks through the bars toward the empty corridor. Somewhere outside this building, people are sleeping. Eating. Talking. Preparing for another ordinary morning. And when that morning comes, somebody intends to walk into this cell, take her somewhere else and kill her because of something moving inside her body that she cannot even feel.
+</p>
+
+<p>She lowers her hand.</p>
+<p class="dialogue">“Why?”</p>
+
+<p>The Warden watches her.</p>
+<p class="dialogue">“You already know why.”</p>
+
+<p class="dialogue">“No. I know a word.”</p>
+
+<p>Eris points toward herself.</p>
+<p class="dialogue">“Suvra. Apparently that word means I die tomorrow.”</p>
+
+<p>The Warden’s expression remains unchanged.</p>
+<p class="dialogue">“You said I’m human.”</p>
+<p class="dialogue">“Yes.”</p>
+<p class="dialogue">“My name is real.”</p>
+<p class="dialogue">“Yes.”</p>
+<p class="dialogue">“My lineage?”</p>
+<p class="dialogue">“Real.”</p>
+<p class="dialogue">“My sigil?”</p>
+<p class="dialogue">“Human.”</p>
+
+<p>Eris stares at her.</p>
+<p class="dialogue">“Then explain it.”</p>
+
+<p>
+The Warden is silent for a moment before looking toward Eris’s chest.
+</p>
+
+<p class="dialogue">
+“Mana is not simply something inside the body. It is part of the connection between conscious intention and action. Your body has instincts. Pain. Fear. Reflex. Hesitation. Mana is what allows intention to move through those things.”
+</p>
+
+<p>Eris frowns slightly.</p>
+
+<p class="dialogue">
+“If someone is afraid to move, their body may tell them to remain still. Their intention may tell them to run. A stable current carries that intention cleanly. It does not make the person faster. It does not make them stronger. It simply carries what they have decided.”
+</p>
+
+<p class="dialogue">“So everybody needs it to move?”</p>
+
+<p class="dialogue">
+“No. A corpse is not created when mana disappears. Your muscles and nerves remain physical. Mana is part of conscious control, not the existence of movement itself.”
+</p>
+
+<p>Eris tries to understand.</p>
+<p class="dialogue">“And mine?”</p>
+<p class="dialogue">“Returns.”</p>
+
+<p>
+The Warden raises one hand and moves two fingers forward. Then one curves backward before continuing.
+</p>
+
+<p class="dialogue">
+“Your intention passes into the current. The current bends against itself before completing the action. Sometimes the effect is so small you would never notice. Sometimes your body may hesitate when your mind has already decided. Sometimes instinct may briefly overpower a choice you believe you have already made.”
+</p>
+
+<p>Eris looks at her hands.</p>
+
+<p>The Warden continues.</p>
+
+<p class="dialogue">
+“The traveler who touched you in the graveyard felt the returning current against his own. That is why he released you.”
+</p>
+
+<p class="dialogue">“Did I hurt him?”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Can I?”</p>
+<p class="dialogue">“Not merely because your current returns.”</p>
+<p class="dialogue">“Does it corrupt him?”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Change him?”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Break his mana?”</p>
+<p class="dialogue">“No.”</p>
+
+<p>Eris looks back at her.</p>
+
+<p class="dialogue">
+“Then why does everybody act like I’m carrying a disease?”
+</p>
+
+<p class="dialogue">
+“Because what I have told you is what can be observed.”
+</p>
+
+<p class="dialogue">“And the rest?”</p>
+<p class="dialogue">“What people believe.”</p>
+
+<p>Eris goes quiet.</p>
+
+<p>The Warden lowers her hand.</p>
+
+<p class="dialogue">
+“The Pure Sigil Doctrine teaches that intention should have one origin. One person. One will. When a current appears to carry an action forward and then oppose itself, they do not see an irregularity. They see evidence.”
+</p>
+
+<p class="dialogue">“Evidence of what?”</p>
+<p class="dialogue">“Another will.”</p>
+
+<p>Eris doesn’t understand at first.</p>
+<p>Then she does.</p>
+<p>Her expression changes.</p>
+
+<p>The Warden continues carefully.</p>
+<p class="dialogue">“Something sharing the person.”</p>
+<p class="dialogue">“A second person?”</p>
+<p class="dialogue">“The Doctrine would not call it a person.”</p>
+
+<p>Eris waits.</p>
+<p class="dialogue">“A demon.”</p>
+
+<p>The word arrives inside her mind with complete clarity.</p>
+<p>Eris stares at the Warden.</p>
+<p class="dialogue">“A demon.”</p>
+<p class="dialogue">“That is the closest concept your mind has for what they mean.”</p>
+<p class="dialogue">“And you believe that?”</p>
+<p class="dialogue">“I did not say that.”</p>
+<p class="dialogue">“Do they know it?”</p>
+<p class="dialogue">“They believe it.”</p>
+<p class="dialogue">“That isn’t what I asked.”</p>
+
+<p>The Warden says nothing.</p>
+<p>Eris steps closer.</p>
+<p class="dialogue">“Has anyone seen one?”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Removed one?”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Spoken to one?”</p>
+<p class="dialogue">“There are accounts.”</p>
+<p class="dialogue">“Accounts.”</p>
+<p class="dialogue">“Yes.”</p>
+<p class="dialogue">“Proof?”</p>
+
+<p>The Warden’s gaze remains on her.</p>
+<p class="dialogue">“No.”</p>
+
+<p>
+Eris gives a short laugh, but there is nothing amused about it.
+</p>
+
+<p class="dialogue">
+“So tomorrow they cut my head off because my body hesitates strangely and somebody hundreds of years ago decided that means there’s a demon inside me.”
+</p>
+
+<p class="dialogue">“That is not how they would describe it.”</p>
+<p class="dialogue">“I don’t care how they describe it.”</p>
+
+<p>
+One of the prisoners shifts against the wall. They cannot hear the Warden’s voice inside Eris’s mind, but they can hear Eris.
+</p>
+
+<p>
+The Warden glances toward them before looking back at her.
+</p>
+
+<p class="dialogue">
+“There are old incidents associated with people recorded as Suvra. Broken military oaths. Guards abandoning positions. Workers failing engraved obligations at moments when failure caused deaths. Violent behavior people claimed occurred against the individual’s intention. Settlements where several unexplained events happened around people later identified as Suvra.”
+</p>
+
+<p class="dialogue">“Did being Suvra cause any of it?”</p>
+<p class="dialogue">“No one alive can answer that.”</p>
+<p class="dialogue">“And yet they act like the answer is yes.”</p>
+<p class="dialogue">“Yes.”</p>
+
+<p>Eris looks away.</p>
+
+<p>
+For some reason, she expected the explanation to make everything clearer. Instead it makes the situation feel more ridiculous.
+</p>
+
+<p class="dialogue">“What are they saying about me?”</p>
+
+<p>The Warden doesn’t answer.</p>
+<p>Eris looks at her again.</p>
+<p class="dialogue">“Outside.”</p>
+<p class="dialogue">“You do not need to know.”</p>
+<p class="dialogue">“I asked.”</p>
+<p class="dialogue">“It will not help you.”</p>
+<p class="dialogue">“I’m going to die tomorrow. I think I can decide what helps me.”</p>
+
+<p>The Warden studies her for several seconds.</p>
+<p class="dialogue">“Some call you stained.”</p>
+
+<p>Eris already knows that.</p>
+
+<p class="dialogue">“Some say your current means you are inhabited.”</p>
+<p class="dialogue">“Inhabited.”</p>
+<p class="dialogue">“Yes.”</p>
+<p class="dialogue">“By a demon.”</p>
+<p class="dialogue">“Yes.”</p>
+
+<p>Eris looks toward the stone floor.</p>
+
+<p>The Warden continues, quieter now.</p>
+
+<p class="dialogue">
+“Some believe Suvra should never be allowed near oath engravings. Some believe children born with returning currents should be separated immediately. Some believe your existence itself damages the order that makes human intention human.”
+</p>
+
+<p>Eris raises her eyes.</p>
+<p class="dialogue">“Do they say I’m dangerous?”</p>
+<p class="dialogue">“Yes.”</p>
+<p class="dialogue">“Do they say I should die?”</p>
+
+<p>The Warden hesitates.</p>
+<p>Eris sees enough in that hesitation.</p>
+<p class="dialogue">“Say it.”</p>
+<p class="dialogue">“Yes.”</p>
+
+<p>Something inside Eris should probably break.</p>
+<p>It doesn’t.</p>
+
+<p>
+She is angry, but even that feels strangely distant. These people hate something about her that she only learned existed several days ago. They speak as if they know what she is while she cannot remember a single thing about herself before waking in wet grass.
+</p>
+
+<p>She looks down at her hands.</p>
+<p class="dialogue">“What if they’re right?”</p>
+
+<p>The Warden’s eyes narrow.</p>
+
+<p>Eris continues before she can answer.</p>
+<p class="dialogue">“I don’t remember being human.”</p>
+<p class="dialogue">“Your engraving confirms that you are.”</p>
+<p class="dialogue">“It confirms I was born human.”</p>
+<p class="dialogue">“Yes.”</p>
+<p class="dialogue">“That isn’t the same thing.”</p>
+<p class="dialogue">“It is considerably more evidence than strangers shouting at you.”</p>
+
+<p>Eris ignores that.</p>
+
+<p class="dialogue">
+“I don’t know what I did before I woke up. I don’t know what kind of person I was. I don’t even know if I liked people.”
+</p>
+
+<p class="dialogue">“You are confusing absence with proof.”</p>
+<p class="dialogue">“Maybe.”</p>
+
+<p>The Warden steps slightly closer.</p>
+
+<p class="dialogue">
+“Do not let people who know nothing about you decide what your missing memories contain.”
+</p>
+
+<p>Eris stares at her.</p>
+
+<p>Then she points through the bars.</p>
+<p class="dialogue">“They already did.”</p>
+
+<p>The Warden doesn’t answer.</p>
+
+<p>Eris looks at her for another moment before speaking again.</p>
+<p class="dialogue">“Protect me.”</p>
+
+<p>The Warden’s expression changes slightly.</p>
+<p class="dialogue">“From tomorrow?”</p>
+<p class="dialogue">“From them.”</p>
+<p class="dialogue">“I cannot stop the Doctrine from taking custody of you.”</p>
+<p class="dialogue">“Then help me.”</p>
+<p class="dialogue">“With what?”</p>
+<p class="dialogue">“I don’t know yet.”</p>
+<p class="dialogue">“That is not a useful request.”</p>
+<p class="dialogue">“I’ll pay you.”</p>
+
+<p>The Warden looks at her.</p>
+
+<p>Eris realizes immediately that she owns nothing.</p>
+<p>Not even the clothes she is wearing.</p>
+<p class="dialogue">“When I can.”</p>
+<p class="dialogue">“You do not know what currency is used here.”</p>
+<p class="dialogue">“I’ll learn.”</p>
+<p class="dialogue">“You are scheduled to die tomorrow.”</p>
+<p class="dialogue">“Then you’re taking a bad deal.”</p>
+
+<p>For the first time, the corner of the Warden’s mouth moves.</p>
+<p>Barely.</p>
+<p>Eris catches it.</p>
+<p class="dialogue">“You almost smiled.”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“You did.”</p>
+<p class="dialogue">“I did not.”</p>
+<p>Eris stares at her.</p>
+<p class="dialogue">“That was definitely a smile.”</p>
+<p class="dialogue">“You are facing execution and arguing about my face.”</p>
+<p class="dialogue">“I’m multitasking.”</p>
+
+<p>
+The Warden’s expression becomes blank again, which somehow makes it worse.
+</p>
+
+<p>Eris continues.</p>
+
+<p class="dialogue">
+“Translate for me. Tell me what people are saying. Tell me what I don’t understand. Help me when you can. If I survive, I’ll pay you.”
+</p>
+
+<p class="dialogue">“No oath.”</p>
+<p>Eris frowns.</p>
+<p class="dialogue">“What?”</p>
+<p class="dialogue">“I will not engrave that promise.”</p>
+<p class="dialogue">“Why?”</p>
+<p class="dialogue">“Because you do not understand enough about mana oaths to consent to one.”</p>
+
+<p>
+Eris thinks about the prisoner who was supposedly here because of oath disobedience.
+</p>
+
+<p class="dialogue">“Fine.”</p>
+
+<p class="dialogue">
+“If we meet again and you are alive, I will translate when I reasonably can. I will explain what I know. I will not falsify readings. I will not conceal information required by an existing oath. And I will not place myself under an engraving for you.”
+</p>
+
+<p class="dialogue">“That last part sounded personal.”</p>
+<p class="dialogue">“It is experience.”</p>
+
+<p>Eris looks at her for a moment.</p>
+<p class="dialogue">“Fine.”</p>
+
+<p>The Warden turns toward the cell door.</p>
+
+<p>Before the guard opens it, Eris speaks.</p>
+
+<p class="dialogue">
+“If I really had a demon inside me, would you know?”
+</p>
+
+<p>The Warden stops.</p>
+<p class="dialogue">“No.”</p>
+
+<p>That answer surprises Eris.</p>
+
+<p>The Warden looks back at her.</p>
+<p class="dialogue">“And neither would they.”</p>
+
+<p>The cell closes after she leaves.</p>
+
+<p>For a long time, nobody speaks.</p>
+
+<p>Eventually Eris lies down.</p>
+
+<p>
+She expects fear to keep her awake. Instead she feels calm in a way that almost worries her. Tomorrow she is supposed to die, yet she has no childhood to mourn, no home to miss and no face she desperately wants to see again.
+</p>
+
+<p>As far as she remembers, she has existed for seven days.</p>
+
+<p>
+Maybe that is why death feels less like losing a life and more like being told she is not allowed to begin one.
+</p>
+
+<p>That thought bothers her much more.</p>
+
+<p>Sometime deep into the night, something touches her ankle.</p>
+
+<p>Eris opens her eyes.</p>
+<p>The cell is almost completely dark.</p>
+
+<p>
+The prisoner who never explains why he is here is crouched beside her. She still doesn’t know his name properly. Every time she tries saying it, he either corrects her or gives up.
+</p>
+
+<p>He raises one finger to his lips.</p>
+<p>Quiet.</p>
+<p>Eris sits up.</p>
+
+<p>
+The other two prisoners are already awake. The man imprisoned for falsifying a sigil is kneeling beside the cell door with a thin piece of metal between his fingers. The oath offender is watching the corridor.
+</p>
+
+<p>Eris looks between them.</p>
+
+<p>The sigil forger twists the metal.</p>
+<p>A tiny click.</p>
+<p>Everybody freezes.</p>
+<p>Nothing happens.</p>
+<p>He tries again.</p>
+<p>Another click.</p>
+<p>The lock opens.</p>
+
+<p>
+For several seconds, Eris simply stares at the gap between the door and the frame.
+</p>
+
+<p>The quiet prisoner points toward her.</p>
+<p>Then outside.</p>
+
+<p>
+Eris knows enough of their language now to understand the single whispered word he gives her.
+</p>
+
+<p class="dialogue">“Come.”</p>
+
+<p>She looks down at the sleeping mat.</p>
+<p>Tomorrow morning they will open this door anyway.</p>
+<p>If she remains here, she dies.</p>
+<p>If she walks through it now, she becomes a fugitive.</p>
+
+<p>Eris stands.</p>
+
+<p>
+That is the first decision that feels entirely hers since waking in the graveyard.
+</p>
+
+<p>She walks out.</p>
+
+<p>
+The prisoners move quickly through the corridor. The sigil forger leads, which immediately tells Eris this is not an escape he invented tonight. He seems to know when to stop, which corners to avoid and which doors matter.
+</p>
+
+<p>
+They reach the end of the corridor when a guard steps around the corner.
+</p>
+
+<p>For half a second, nobody moves.</p>
+<p>Then everything happens at once.</p>
+
+<p>
+The oath offender grabs the guard around the shoulders. The quiet prisoner catches his arm before he reaches the weapon at his waist. The guard slams one of them against the wall and begins shouting.
+</p>
+
+<p>The sigil forger rushes for the keys.</p>
+
+<p>Eris stands completely still.</p>
+<p>Her mind tells her to move.</p>
+<p>Her body does not.</p>
+<p>For one horrible instant, she feels it.</p>
+<p>Not another voice.</p>
+<p>Not another person.</p>
+<p>
+Her own intention pushing forward while something inside the action seems to fold backward.
+</p>
+
+<p>Move.</p>
+<p>Nothing.</p>
+<p>Then it releases.</p>
+
+<p>The guard pulls one arm free.</p>
+
+<p>
+The quiet prisoner looks at Eris and shouts a word she knows.
+</p>
+
+<p class="dialogue">“HELP!”</p>
+
+<p>
+Eris lunges forward and grabs the guard’s wrist with both hands.
+</p>
+
+<p>She is terrible at it.</p>
+
+<p>
+The guard jerks his arm and throws Eris sideways hard enough that her shoulder hits the stone wall. Pain shoots through her arm.
+</p>
+
+<p>The others manage to force him down.</p>
+
+<p>The sigil forger tears the keys from his belt.</p>
+
+<p>Nobody waits.</p>
+<p>They run.</p>
+<p>Down another corridor. Through a storage room. Up narrow stairs.</p>
+<p>A door opens.</p>
+<p>Cold rain hits Eris directly in the face.</p>
+<p>Outside.</p>
+
+<p>The four of them disappear into Dervane.</p>
+
+<p>
+Rain has turned the narrow streets into streams of mud. Eris follows the others between buildings, slipping repeatedly as voices begin shouting behind them. Lantern light moves near the prison.
+</p>
+
+<p>They know.</p>
+<p>Eris runs harder.</p>
+
+<p>
+She has no training. No endurance beyond what her body already had. Her lungs begin hurting almost immediately and her injured shoulder burns every time her arm moves.
+</p>
+
+<p>The others are faster.</p>
+<p>She refuses to stop.</p>
+
+<p>Lightning flashes over Dervane.</p>
+
+<p>For an instant, the entire street turns white.</p>
+
+<p>Something explodes inside Eris’s memory.</p>
+
+<p>A sound.</p>
+<p>Sharp.</p>
+<p>Impossible.</p>
+<p>Not thunder.</p>
+<p>A gunshot.</p>
+
+<p>She stops.</p>
+
+<p>The others keep moving several steps before realizing.</p>
+
+<p>Rain pours over her face.</p>
+
+<p>Eris sees another road.</p>
+<p>Not Dervane.</p>
+<p>Smooth pavement.</p>
+<p>Tall signs she understands without knowing why.</p>
+<p>Glass.</p>
+<p>Cars.</p>
+<p>A woman.</p>
+
+<p>
+The image tears apart before Eris can see her properly.
+</p>
+
+<p>Another flash.</p>
+<p>A raised arm.</p>
+<p>Something black.</p>
+<p>The sound again.</p>
+<p>Then pain.</p>
+<p>Her upper arm.</p>
+
+<p>Eris gasps and grabs it.</p>
+<p>There is nothing there.</p>
+<p>No wound.</p>
+<p>No blood.</p>
+<p>But she remembers blood.</p>
+<p>A ridiculous amount of it.</p>
+
+<p>Her breathing breaks.</p>
+
+<p>Another image appears.</p>
+<p>A woman’s face.</p>
+<p>Older than a stranger should feel.</p>
+<p>Familiar enough to hurt.</p>
+
+<p>Her mouth moves before she understands the word.</p>
+
+<p class="dialogue">“…sister?”</p>
+
+<p>The memory disappears.</p>
+
+<p>Eris drops to one knee in the mud.</p>
+
+<p>She tries to bring it back.</p>
+<p>Nothing.</p>
+<p>Road.</p>
+<p>Gunshot.</p>
+<p>Woman.</p>
+<p>Blood.</p>
+<p>Then nothing.</p>
+
+<p>The quiet prisoner runs back toward her and grabs her shoulder.</p>
+
+<p>Eris flinches violently away from him.</p>
+
+<p>He speaks quickly.</p>
+<p>She cannot understand any of it.</p>
+
+<p>Then shouting echoes from the street behind them.</p>
+<p>Lanterns.</p>
+<p>Guards.</p>
+
+<p>The prisoner points into the darkness.</p>
+<p class="dialogue">“RUN.”</p>
+
+<p>That word she understands.</p>
+
+<p>
+Adrenaline tears through whatever had started happening inside her head.
+</p>
+
+<p>Eris stands.</p>
+<p>She runs.</p>
+
+<p>
+By the time they finally stop, Dervane is little more than scattered light through rain behind them.
+</p>
+
+<p>
+They shelter inside an abandoned stone building at the edge of an overgrown field. Half the roof has collapsed. Water runs down one wall and pools across the floor, but it is dark enough to hide them.
+</p>
+
+<p>Eris sits with her back against the stone.</p>
+
+<p>Her hand is still wrapped around her upper arm.</p>
+
+<p>Slowly, she removes it.</p>
+<p>Nothing.</p>
+<p>She presses the spot.</p>
+<p>No pain except from where the guard threw her into the wall.</p>
+
+<p>The quiet prisoner sits across from her.</p>
+
+<p>For once, he doesn’t ask what happened.</p>
+
+<p>The sigil forger does.</p>
+
+<p>
+Eris doesn’t understand most of the sentence. She recognizes only fragments.
+</p>
+
+<p>You.</p>
+<p>Stop.</p>
+<p>Why.</p>
+
+<p>She shakes her head.</p>
+<p class="dialogue">“I don’t know.”</p>
+
+<p>He doesn’t understand her answer.</p>
+<p>Eventually he stops trying.</p>
+
+<p>The four remain hidden until the rain weakens.</p>
+
+<p>Then the arguing begins.</p>
+
+<p>
+The sigil forger speaks first. He points toward Dervane, then toward the three others. His voice is quick and angry. The oath offender argues back.
+</p>
+
+<p>Eris catches almost nothing.</p>
+
+<p>Then she hears one word.</p>
+<p>Suvra.</p>
+
+<p>Everyone looks at her.</p>
+
+<p>The sigil forger points at Eris and says something longer.</p>
+
+<p>She recognizes another word.</p>
+<p>Search.</p>
+
+<p>Then another.</p>
+<p>Doctrine.</p>
+
+<p>He points at himself.</p>
+<p class="dialogue">“No.”</p>
+
+<p>Eris understands.</p>
+<p>He does not want to remain near her.</p>
+
+<p>
+The oath offender looks disgusted and says something back, but the forger has already made his decision. He collects what little he stole during the escape and moves toward the opening in the wall.
+</p>
+
+<p>Before leaving, he looks at Eris.</p>
+<p>Not hatred.</p>
+<p>Fear.</p>
+
+<p>He points toward her.</p>
+<p class="dialogue">“Suvra.”</p>
+<p>Then at himself.</p>
+<p class="dialogue">“No.”</p>
+
+<p>He disappears into the dark.</p>
+
+<p>Eris watches him leave.</p>
+<p>She doesn’t blame him.</p>
+<p>That almost annoys her more.</p>
+
+<p>
+The oath offender remains with them for several more hours, but before morning he leaves too. Unlike the first man, he doesn’t point at Eris or call her Suvra. He speaks briefly with the quiet prisoner, touches Eris once on the shoulder and walks toward a different road.
+</p>
+
+<p>Eris watches him disappear.</p>
+<p>Now there are two.</p>
+
+<p>
+Her and the one person who spent the entire week refusing to explain why he was imprisoned.
+</p>
+
+<p>Eris points toward him.</p>
+<p class="dialogue">“You.”</p>
+
+<p>He looks at her.</p>
+
+<p>She gestures down the road the others used.</p>
+<p class="dialogue">“Go?”</p>
+
+<p>He shakes his head.</p>
+<p class="dialogue">“No.”</p>
+
+<p>She points toward herself.</p>
+<p class="dialogue">“Suvra.”</p>
+
+<p>He shrugs.</p>
+
+<p>Eris stares at him.</p>
+
+<p>He lies back against the wall and closes his eyes.</p>
+
+<p>She almost laughs.</p>
+
+<p>By morning, search parties have spread beyond Dervane.</p>
+
+<p>
+Eris and the prisoner remain hidden, moving only when distant voices get too close. Every few hours they hear riders or groups passing along the larger roads.
+</p>
+
+<p>Near midday, footsteps enter the ruined structure.</p>
+
+<p>
+The quiet prisoner is awake instantly. He grabs a broken length of wood and stands in front of Eris.
+</p>
+
+<p>A woman steps through the opening.</p>
+<p>The Warden.</p>
+
+<p>Eris stares at her.</p>
+<p class="dialogue">“You.”</p>
+
+<p>The Warden’s voice appears inside her mind.</p>
+<p class="dialogue">“That is becoming your preferred greeting.”</p>
+<p class="dialogue">“You found me.”</p>
+<p class="dialogue">“Yes.”</p>
+<p class="dialogue">“How?”</p>
+
+<p class="dialogue">
+“You escaped from the oldest prison in Dervane through a route prisoners have used four times in the last eleven years.”
+</p>
+
+<p>Eris glances toward the quiet prisoner.</p>
+<p>He looks away.</p>
+
+<p class="dialogue">“So the brilliant escape route wasn’t new.”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Did you tell the guards?”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Why?”</p>
+<p class="dialogue">“You asked me for protection.”</p>
+
+<p>Eris slowly stands.</p>
+<p class="dialogue">“You actually meant it.”</p>
+<p class="dialogue">“I generally mean things I say.”</p>
+
+<p>Eris looks at her muddy clothing, then back toward the Warden.</p>
+
+<p class="dialogue">“How much do I owe you now?”</p>
+<p class="dialogue">“More.”</p>
+<p class="dialogue">“Fine.”</p>
+
+<p>The Warden glances toward the prisoner.</p>
+<p class="dialogue">“He is staying with you?”</p>
+
+<p>Eris points at him.</p>
+<p class="dialogue">“Apparently.”</p>
+<p class="dialogue">“You do not know his name.”</p>
+<p class="dialogue">“I almost know his name.”</p>
+
+<p>The prisoner says it.</p>
+
+<p>Eris tries repeating it.</p>
+
+<p>He immediately shakes his head.</p>
+
+<p>The Warden looks at her.</p>
+<p class="dialogue">“You do not know his name.”</p>
+<p class="dialogue">“Shut up.”</p>
+<p class="dialogue">“I am beginning to understand why the others left.”</p>
+
+<p>Eris looks at her suspiciously.</p>
+<p class="dialogue">“That was a joke.”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“That was definitely a joke.”</p>
+
+<p>The Warden turns toward the exit.</p>
+<p class="dialogue">“You cannot remain here.”</p>
+
+<p>Eris follows.</p>
+
+<p>
+They return toward Dervane by smaller paths and enter through the poorer outer streets, where buildings are crowded so tightly that search patrols cannot see far ahead. The Warden gives Eris a heavy outer covering and tells her to keep her face lowered.
+</p>
+
+<p>It works for several streets.</p>
+<p>Then someone notices.</p>
+
+<p>An older woman carrying a basket stops walking.</p>
+
+<p>She looks at Eris.</p>
+<p>Then at a notice nailed to a wooden wall.</p>
+<p>Her expression changes.</p>
+
+<p>She pulls the young boy beside her closer.</p>
+
+<p>Eris hears the word immediately.</p>
+<p class="dialogue">“Suvra.”</p>
+
+<p>A man across the street turns.</p>
+<p>Another person notices.</p>
+
+<p>The quiet prisoner moves closer to Eris.</p>
+
+<p class="dialogue">“Keep walking,” the Warden tells her.</p>
+
+<p>Eris does.</p>
+
+<p>Someone says something behind them.</p>
+
+<p class="dialogue">“What did she say?”</p>
+<p class="dialogue">“Keep walking.”</p>
+<p class="dialogue">“I’m paying you.”</p>
+<p class="dialogue">“You have not paid me anything.”</p>
+<p class="dialogue">“Future payment.”</p>
+<p class="dialogue">“That is not improving the situation.”</p>
+
+<p>Another voice.</p>
+
+<p>Eris looks toward the Warden.</p>
+<p class="dialogue">“Translate.”</p>
+
+<p>The Warden hesitates.</p>
+
+<p>Then her voice enters Eris’s mind.</p>
+<p class="dialogue">“Do not let it touch the child.”</p>
+
+<p>Eris’s eyes move toward the woman.</p>
+
+<p>The boy is staring at her.</p>
+<p>Not hate.</p>
+<p>Curiosity.</p>
+
+<p>His mother pulls him farther away.</p>
+
+<p>Another man shouts.</p>
+
+<p class="dialogue">“What did he say?”</p>
+<p class="dialogue">“Dangerous.”</p>
+
+<p>Another voice.</p>
+
+<p class="dialogue">“What about that one?”</p>
+<p class="dialogue">“Kill it before somebody gets stained.”</p>
+
+<p>
+Something strikes the ground near Eris and bursts apart.
+</p>
+
+<p>Rotten fruit splashes mud across her foot.</p>
+
+<p>The quiet prisoner turns toward the person who threw it.</p>
+
+<p>Eris grabs his sleeve.</p>
+<p class="dialogue">“No.”</p>
+
+<p>He looks at her.</p>
+
+<p>She doesn’t know enough words to explain.</p>
+<p>She simply shakes her head.</p>
+
+<p>They continue.</p>
+
+<p>The crowd becomes louder.</p>
+<p>Suvra.</p>
+<p>Suvra.</p>
+<p>Suvra.</p>
+
+<p>Eris hears it from people who have never met her.</p>
+
+<p>Someone spits near her feet.</p>
+
+<p>
+An older man begins shouting so loudly that the Warden stops.
+</p>
+
+<p class="dialogue">“What is he saying?”</p>
+
+<p>The Warden looks toward him.</p>
+<p class="dialogue">“Translate.”</p>
+
+<p class="dialogue">“He says people like you caused Ovaren.”</p>
+<p class="dialogue">“What’s Ovaren?”</p>
+<p class="dialogue">“A settlement.”</p>
+<p class="dialogue">“What happened?”</p>
+<p class="dialogue">“Most of it burned approximately one hundred and forty years ago. Hundreds died.”</p>
+<p class="dialogue">“And?”</p>
+<p class="dialogue">“Several residents were later recorded as Suvra.”</p>
+
+<p>Eris waits.</p>
+<p class="dialogue">“That’s it?”</p>
+
+<p class="dialogue">
+“The Doctrine teaches that their distorted intentions caused repeated oath failures during the fire. Guards abandoned routes they had sworn to hold. Water crews ignored assigned sectors. One account claims a Suvra gatekeeper opened an evacuation barrier against direct orders and caused a crush.”
+</p>
+
+<p class="dialogue">“Did being Suvra make them do it?”</p>
+<p class="dialogue">“We already discussed this.”</p>
+<p class="dialogue">“So nobody knows.”</p>
+<p class="dialogue">“No one knows.”</p>
+
+<p>Eris looks back toward the man screaming at her.</p>
+
+<p class="dialogue">“He thinks I did that?”</p>
+<p class="dialogue">“He thinks what you are did.”</p>
+
+<p>“What I am.”</p>
+
+<p>The phrase remains in her mind.</p>
+
+<p>Someone farther back yells another word.</p>
+
+<p>Eris recognizes its meaning before the Warden translates.</p>
+
+<p>Demon.</p>
+
+<p>Another person repeats it.</p>
+<p>Then another.</p>
+
+<p>Eris looks around.</p>
+<p>Demon.</p>
+
+<p>She touches the inside of her wrist without realizing it.</p>
+
+<p>The traveler had grabbed her there.</p>
+<p>That was when everything changed.</p>
+
+<p>Before that she had been a confused woman in a graveyard.</p>
+<p>After that she became Suvra.</p>
+<p>Stained.</p>
+<p>Dangerous.</p>
+<p>Demon.</p>
+
+<p>Something strange settles over her anger.</p>
+<p>Not acceptance exactly.</p>
+<p>Curiosity.</p>
+
+<p>
+She has spent every day since waking trying to understand who she is.
+</p>
+
+<p>The first answer was Eris.</p>
+<p>The second was Suvra.</p>
+<p>Now everyone seems determined to give her a third.</p>
+<p>Demon.</p>
+
+<p>Eris continues walking.</p>
+
+<p>After a while she speaks quietly.</p>
+<p class="dialogue">“What if I am?”</p>
+
+<p>The Warden looks at her.</p>
+<p class="dialogue">“A demon.”</p>
+<p class="dialogue">“You are not.”</p>
+<p class="dialogue">“You don’t know that.”</p>
+<p class="dialogue">“I know you are human.”</p>
+<p class="dialogue">“You keep saying that like humans can’t become something else.”</p>
+
+<p>The Warden stops walking.</p>
+
+<p>Eris takes another step before noticing.</p>
+<p class="dialogue">“What?”</p>
+
+<p>The Warden looks directly at her.</p>
+
+<p class="dialogue">
+“They are humiliating you until their explanation becomes easier to accept than your own uncertainty.”
+</p>
+
+<p>Eris stares back.</p>
+<p class="dialogue">“I don’t have an explanation.”</p>
+<p class="dialogue">“That does not make theirs correct.”</p>
+
+<p>Eris looks toward the people behind them.</p>
+<p class="dialogue">“If that’s what they call me, why wouldn’t I be that?”</p>
+<p class="dialogue">
+“Because they do not get to manufacture evidence by convincing you to behave according to their accusation.”
+</p>
+
+<p>Eris says nothing.</p>
+
+<p>The Warden continues walking.</p>
+<p>Eris follows.</p>
+
+<p>
+They eventually reach a narrow repair shop hidden between two larger buildings. Nothing about it looks important. Old metal pieces hang behind the front window, and the sign above the door is so faded Eris cannot read even if she knew the language.
+</p>
+
+<p>The Warden leads them around the back.</p>
+<p>She knocks in a specific rhythm.</p>
+
+<p>A small opening appears in the door.</p>
+
+<p>Someone speaks.</p>
+<p>The Warden answers.</p>
+
+<p>The opening closes.</p>
+
+<p>Several seconds later, the door unlocks.</p>
+
+<p>They are led downstairs.</p>
+
+<p>
+The room beneath the shop is much larger than the building above suggests. Shelves are packed with papers, clothing, metal seals, small carved plates and items Eris cannot identify.
+</p>
+
+<p>The man behind the table is old, thin and missing several teeth.</p>
+
+<p>His eyes move first to the prisoner.</p>
+<p>Then to Eris.</p>
+
+<p>He immediately says,</p>
+<p class="dialogue">“Suvra.”</p>
+
+<p>Eris sighs.</p>
+<p>Even without translation she understands his tone.</p>
+
+<p>The Warden begins speaking with him.</p>
+
+<p>Eris catches fragments now.</p>
+<p>Money.</p>
+<p>Search.</p>
+<p>Clothing.</p>
+<p>Road.</p>
+<p>Tomorrow.</p>
+
+<p>The dealer looks toward Eris repeatedly.</p>
+
+<p>The Warden says something.</p>
+<p>He laughs.</p>
+
+<p>Eris points at him.</p>
+<p class="dialogue">“What did he say?”</p>
+<p class="dialogue">“He says your presence multiplies his price.”</p>
+<p class="dialogue">“Tell him I hate him.”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Why?”</p>
+<p class="dialogue">“Because I am attempting to make him charge less.”</p>
+<p class="dialogue">“Tell him after.”</p>
+
+<p>The Warden ignores her.</p>
+
+<p>While they negotiate, Eris walks around the room.</p>
+
+<p>She stops near one of the shelves.</p>
+
+<p>A symbol has been carved into the wood.</p>
+
+<p>A circle split down the centre.</p>
+<p>One half consists of clean lines.</p>
+<p>The other contains several marks bending backward over themselves.</p>
+
+<p>Someone later tried to scratch it away.</p>
+
+<p>Eris touches it.</p>
+
+<p>The dealer immediately says something.</p>
+
+<p>The Warden turns.</p>
+
+<p class="dialogue">“What is this?”</p>
+<p class="dialogue">“Leave it.”</p>
+<p class="dialogue">“That means it’s interesting.”</p>
+<p class="dialogue">“It means leave it.”</p>
+
+<p>Eris points toward the mark.</p>
+<p class="dialogue">“Suvra?”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Doctrine?”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Then what?”</p>
+
+<p>The Warden is quiet.</p>
+
+<p>The dealer looks amused.</p>
+
+<p>He says something else.</p>
+
+<p>Eris watches him.</p>
+<p class="dialogue">“What did he say?”</p>
+<p class="dialogue">“He asked whether you know what you are pointing at.”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“He assumed as much.”</p>
+
+<p>Eris looks at the symbol again.</p>
+
+<p class="dialogue">“What is it?”</p>
+
+<p>The Warden finally answers.</p>
+
+<p class="dialogue">
+“An old mark associated with groups that reject the Pure Sigil Doctrine’s divine order.”
+</p>
+
+<p class="dialogue">“Religion?”</p>
+<p class="dialogue">“Some.”</p>
+<p class="dialogue">“Do they believe in demons?”</p>
+<p class="dialogue">“Some believe what the Doctrine calls demons are not evil.”</p>
+
+<p>Eris turns toward her.</p>
+<p class="dialogue">“Some worship them?”</p>
+
+<p>The Warden’s expression hardens slightly.</p>
+
+<p class="dialogue">
+“Some worship the figure the Doctrine considers the enemy of ordered intention.”
+</p>
+
+<p>Eris doesn’t know the Varethian name.</p>
+
+<p>
+But the concept crosses through the Warden’s mental translation and becomes something Eris does know.
+</p>
+
+<p>Satan.</p>
+
+<p>She freezes.</p>
+<p class="dialogue">“Satan.”</p>
+
+<p>The Warden looks at her strangely.</p>
+<p class="dialogue">“That is apparently the word your mind assigns to it.”</p>
+
+<p class="dialogue">“And people follow him?”</p>
+<p class="dialogue">“There are sects.”</p>
+<p class="dialogue">“Are they Suvra?”</p>
+<p class="dialogue">“Some are.”</p>
+<p class="dialogue">“And the rest?”</p>
+<p class="dialogue">“Ordinary currents.”</p>
+
+<p>Eris looks toward the symbol again.</p>
+
+<p>The dealer is still watching her.</p>
+
+<p class="dialogue">“What do they call the followers?”</p>
+
+<p>The Warden gives her the Varethian word.</p>
+
+<p>Eris repeats it badly.</p>
+
+<p>The dealer laughs.</p>
+
+<p>She tries again.</p>
+
+<p>The Warden corrects her pronunciation.</p>
+
+<p>Eris turns toward the man.</p>
+
+<p>The Warden immediately realizes what she is doing.</p>
+<p class="dialogue">“No.”</p>
+
+<p>Eris looks back.</p>
+<p class="dialogue">“What?”</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“You said you’d translate.”</p>
+<p class="dialogue">“I am translating.”</p>
+<p class="dialogue">“Teach me how to ask him something.”</p>
+<p class="dialogue">“What?”</p>
+
+<p>Eris points toward the scratched symbol.</p>
+
+<p>The Warden’s eyes narrow.</p>
+<p class="dialogue">“What?”</p>
+<p class="dialogue">“How do I ask what I need to do to become one?”</p>
+
+<p>The Warden says nothing.</p>
+<p>Eris waits.</p>
+<p class="dialogue">“No.”</p>
+<p class="dialogue">“Why?”</p>
+<p class="dialogue">“Because you learned this belief exists less than a minute ago.”</p>
+<p class="dialogue">“And?”</p>
+<p class="dialogue">“You do not know what they believe.”</p>
+<p class="dialogue">“That’s why I’m asking.”</p>
+<p class="dialogue">“You are reacting to humiliation.”</p>
+<p class="dialogue">“Probably.”</p>
+<p class="dialogue">“That is an extraordinarily poor reason to adopt a religion.”</p>
+<p class="dialogue">“I’m not adopting anything yet.”</p>
+<p class="dialogue">“You just asked what is required.”</p>
+<p class="dialogue">“Yes.”</p>
+
+<p>The Warden stares at her.</p>
+
+<p>Eris folds her arms.</p>
+<p class="dialogue">“Future payment.”</p>
+<p class="dialogue">“That phrase has become meaningless.”</p>
+<p class="dialogue">“Still worked before.”</p>
+<p class="dialogue">“No.”</p>
+
+<p>Eris points toward the dealer.</p>
+<p class="dialogue">“Teach me the sentence.”</p>
+
+<p>The Warden looks at her for several long seconds.</p>
+
+<p>Then she speaks slowly in Varethian.</p>
+
+<p>Eris listens.</p>
+<p>She repeats it.</p>
+<p>Wrong.</p>
+
+<p>The Warden corrects two sounds.</p>
+
+<p>Eris tries again.</p>
+
+<p>The prisoner behind her is staring now.</p>
+
+<p>The dealer has stopped pretending not to listen.</p>
+
+<p>The Warden repeats the sentence once more.</p>
+
+<p>Eris says it again.</p>
+
+<p>This time, the Warden does not correct her.</p>
+
+<p>Eris turns.</p>
+
+<p>For one moment she hesitates.</p>
+
+<p>A week ago she woke up without a name.</p>
+<p>Then somebody gave her one.</p>
+<p>Eris.</p>
+<p>After that, society gave her another.</p>
+<p>Suvra.</p>
+<p>Now they were giving her something else.</p>
+<p>Demon.</p>
+
+<p>Maybe they were wrong.</p>
+<p>Maybe the Warden was right.</p>
+
+<p>
+Maybe Eris was simply angry enough to grab the first identity that frightened the people who hated her.
+</p>
+
+<p>She didn’t know.</p>
+
+<p>
+But for once, she wanted to choose which direction she walked instead of waiting for somebody else to drag her there.
+</p>
+
+<p>Eris looks directly at the dealer.</p>
+
+<p>In rough, broken Varethian, she asks,</p>
+
+<p class="dialogue">“What does it require to become a Satanist?”</p>
+
+<p>The dealer’s smile disappears.</p>
+
+</div>
+
+<div class="end">
+    <small>End of Part 4</small>
+</div>
+
+<div class="next">
+    <div class="next-title">Part 5</div>
+
+    <div>
+        August 9, 2026   12:00 UTC+2
+    </div>
+
+    <div class="countdown" id="countdown5"></div>
+</div>
+
+</main>
+
+<div id="partsMenu" onclick="closePartsOutside(event)">
+
+    <div class="menu">
+
+        <div class="menu-head">
+            <h2>Parts</h2>
+
+            <button class="menu-close" onclick="closeParts()">
+                ×
+            </button>
+        </div>
+
+        <button class="part-row" onclick="showPart(1)">
+            <strong>Part 1   Yet a Distortion</strong>
+            <div class="muted">Available</div>
+        </button>
+
+        <button class="part-row" onclick="showPart(2)">
+            <strong>Part 2   Who am I?</strong>
+            <div class="muted">Available</div>
+        </button>
+
+        <button class="part-row" onclick="showPart(3)">
+            <strong>Part 3   Unfortunate Place</strong>
+            <div class="muted">Available</div>
+        </button>
+
+        <button class="part-row" onclick="showPart(4)">
+            <strong>Part 4   If That’s What I Am</strong>
+            <div class="muted">Available</div>
+        </button>
+
+        <button class="part-row locked">
+            <strong>Part 5</strong>
+            <div class="muted" id="part5MenuStatus">
+                Coming August 9
+            </div>
+        </button>
+
+    </div>
+
+</div>
+
+<div
+    class="settings-overlay"
+    id="settingsOverlay"
+    onclick="settingsOutside(event)"
+>
+
+    <div class="settings-panel">
+
+        <div class="settings-header">
+            <h2>Reader Settings</h2>
+
+            <button
+                class="settings-close"
+                onclick="closeSettings()"
+            >
+                ×
+            </button>
+        </div>
+
+        <div class="setting-row">
+
+            <div>
+                <div class="setting-title">
+                    Dark mode
+                </div>
+
+                <div class="setting-description">
+                    Use a darker reading theme.
+                </div>
+            </div>
+
+            <label class="switch">
+
+                <input
+                    type="checkbox"
+                    id="darkModeToggle"
+                    onchange="toggleDarkMode()"
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+        <div class="setting-row">
+
+            <div>
+                <div class="setting-title">
+                    Motion blur
+                </div>
+
+                <div class="setting-description">
+                    Slightly blurs the story while scrolling.
+                </div>
+            </div>
+
+            <label class="switch">
+
+                <input
+                    type="checkbox"
+                    id="motionBlurToggle"
+                    onchange="toggleMotionBlur()"
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+        <div class="setting-row">
+
+            <div>
+                <div class="setting-title">
+                    Blur images
+                </div>
+
+                <div class="setting-description">
+                    Blur all images in the reader.
+                </div>
+            </div>
+
+            <label class="switch">
+
+                <input
+                    type="checkbox"
+                    id="blurImagesToggle"
+                    onchange="toggleBlurImages()"
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+        <button
+            class="reset-button"
+            onclick="resetReadingProgress()"
+        >
+            Reset Last Read Positions
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+const progress = document.getElementById("progress");
+const notice = document.getElementById("displayNotice");
+const darkToggle = document.getElementById("darkModeToggle");
+const motionToggle = document.getElementById("motionBlurToggle");
+const blurImagesToggle = document.getElementById("blurImagesToggle");
+
+const PART_5_RELEASE =
+    new Date("2026-08-09T12:00:00+02:00");
+
+let currentPart = null;
+let scrollTimeout = null;
+let saveTimeout = null;
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+function loadSettings() {
+    const darkEnabled =
+        localStorage.getItem("akuyDarkMode") === "true";
+
+    const motionEnabled =
+        localStorage.getItem("akuyMotionBlur") === "true";
+
+    const blurImagesEnabled =
+        localStorage.getItem("akuyBlurImages") === "true";
+
+    document.body.classList.toggle(
+        "dark",
+        darkEnabled
+    );
+
+    document.body.classList.toggle(
+        "motion-blur",
+        motionEnabled
+    );
+
+    document.body.classList.toggle(
+        "blur-images",
+        blurImagesEnabled
+    );
+
+    darkToggle.checked = darkEnabled;
+    motionToggle.checked = motionEnabled;
+    blurImagesToggle.checked = blurImagesEnabled;
+
+    if (
+        localStorage.getItem(
+            "akuyNoticeDismissed"
+        ) === "true"
+    ) {
+        notice.classList.add("hidden");
+    }
+}
+
+function toggleDarkMode() {
+    const enabled = darkToggle.checked;
+
+    document.body.classList.toggle(
+        "dark",
+        enabled
+    );
+
+    localStorage.setItem(
+        "akuyDarkMode",
+        enabled
+    );
+}
+
+function toggleMotionBlur() {
+    const enabled = motionToggle.checked;
+
+    document.body.classList.toggle(
+        "motion-blur",
+        enabled
+    );
+
+    localStorage.setItem(
+        "akuyMotionBlur",
+        enabled
+    );
+}
+
+function toggleBlurImages() {
+    const enabled = blurImagesToggle.checked;
+
+    document.body.classList.toggle(
+        "blur-images",
+        enabled
+    );
+
+    localStorage.setItem(
+        "akuyBlurImages",
+        enabled
+    );
+}
+
+function dismissNotice() {
+    notice.classList.add("hidden");
+
+    localStorage.setItem(
+        "akuyNoticeDismissed",
+        "true"
+    );
+}
+
+
+/* =========================
+   SETTINGS MENU
+========================= */
+
+function openSettings() {
+    document
+        .getElementById("settingsOverlay")
+        .classList.add("open");
+
+    document.body.style.overflow = "hidden";
+}
+
+function closeSettings() {
+    document
+        .getElementById("settingsOverlay")
+        .classList.remove("open");
+
+    document.body.style.overflow = "";
+}
+
+function settingsOutside(event) {
+    if (
+        event.target.id ===
+        "settingsOverlay"
+    ) {
+        closeSettings();
+    }
+}
+
+
+/* =========================
+   PARTS MENU
+========================= */
+
+function openParts() {
+    document
+        .getElementById("partsMenu")
+        .classList.add("open");
+
+    document.body.style.overflow = "hidden";
+}
+
+function closeParts() {
+    document
+        .getElementById("partsMenu")
+        .classList.remove("open");
+
+    document.body.style.overflow = "";
+}
+
+function closePartsOutside(event) {
+    if (
+        event.target.id ===
+        "partsMenu"
+    ) {
+        closeParts();
+    }
+}
+
+
+/* =========================
+   SHOW PART
+========================= */
+
+function showPart(partNumber) {
+    const chapter =
+        document.getElementById(
+            `part${partNumber}`
+        );
+
+    if (!chapter) return;
+
+    saveReadingPosition();
+
+    document
+        .querySelectorAll(".chapter")
+        .forEach(part => {
+            part.classList.remove("active");
+        });
+
+    document
+        .getElementById("cover")
+        .style.display = "none";
+
+    chapter.classList.add("active");
+
+    currentPart = partNumber;
+
+    localStorage.setItem(
+        "akuyCurrentPart",
+        partNumber
+    );
+
+    document
+        .getElementById("topTitle")
+        .textContent =
+        `AKUY   Part ${partNumber}`;
+
+    closeParts();
+    closeSettings();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
+
+    updateContinueBox(partNumber);
+    updateProgress();
+
+    setTimeout(() => {
+        updateContinueBox(partNumber);
+    }, 100);
+}
+
+
+/* =========================
+   SAVED READING POSITION
+========================= */
+
+function getStoryParagraphs(partNumber) {
+    const story =
+        document.getElementById(
+            `story${partNumber}`
+        );
+
+    if (!story) return [];
+
+    return Array.from(
+        story.querySelectorAll("p")
+    );
+}
+
+function findCurrentParagraph(partNumber) {
+    const paragraphs =
+        getStoryParagraphs(partNumber);
+
+    if (!paragraphs.length) return 0;
+
+    const targetY =
+        window.innerHeight * 0.32;
+
+    let closestIndex = 0;
+    let closestDistance = Infinity;
+
+    paragraphs.forEach(
+        (paragraph, index) => {
+            const rect =
+                paragraph.getBoundingClientRect();
+
+            const distance =
+                Math.abs(
+                    rect.top - targetY
+                );
+
+            if (
+                distance < closestDistance &&
+                rect.bottom > 0
+            ) {
+                closestDistance = distance;
+                closestIndex = index;
+            }
+        }
+    );
+
+    return closestIndex;
+}
+
+function saveReadingPosition() {
+    if (!currentPart) return;
+
+    const paragraphs =
+        getStoryParagraphs(currentPart);
+
+    if (!paragraphs.length) return;
+
+    const index =
+        findCurrentParagraph(currentPart);
+
+    const paragraph =
+        paragraphs[index];
+
+    localStorage.setItem(
+        `akuyPart${currentPart}Paragraph`,
+        index
+    );
+
+    localStorage.setItem(
+        `akuyPart${currentPart}Scroll`,
+        window.scrollY
+    );
+
+    if (paragraph) {
+        let preview =
+            paragraph.textContent
+                .trim()
+                .replace(/\s+/g, " ");
+
+        if (preview.length > 135) {
+            preview =
+                preview.slice(0, 135) +
+                "…";
+        }
+
+        localStorage.setItem(
+            `akuyPart${currentPart}Preview`,
+            preview
+        );
+    }
+
+    /*
+        Important:
+        Do not update the visible continue box here.
+        Changing content above the reader while scrolling
+        can make mobile browsers adjust/anchor the page.
+    */
+}
+
+function updateContinueBox(partNumber) {
+    const box =
+        document.getElementById(
+            `continue${partNumber}`
+        );
+
+    const savedText =
+        document.getElementById(
+            `savedText${partNumber}`
+        );
+
+    if (!box || !savedText) return;
+
+    const savedIndex =
+        localStorage.getItem(
+            `akuyPart${partNumber}Paragraph`
+        );
+
+    const preview =
+        localStorage.getItem(
+            `akuyPart${partNumber}Preview`
+        );
+
+    if (
+        savedIndex === null ||
+        Number(savedIndex) < 2 ||
+        !preview
+    ) {
+        box.style.display = "none";
+        return;
+    }
+
+    savedText.textContent =
+        `“${preview}”`;
+
+    box.style.display = "block";
+}
+
+function continueReading(partNumber) {
+    const paragraphs =
+        getStoryParagraphs(partNumber);
+
+    const savedIndex =
+        Number(
+            localStorage.getItem(
+                `akuyPart${partNumber}Paragraph`
+            )
+        );
+
+    if (
+        !paragraphs.length ||
+        Number.isNaN(savedIndex)
+    ) {
+        return;
+    }
+
+    const target =
+        paragraphs[
+            Math.min(
+                savedIndex,
+                paragraphs.length - 1
+            )
+        ];
+
+    if (!target) return;
+
+    document
+        .querySelectorAll(".resume")
+        .forEach(element => {
+            element.classList.remove(
+                "resume"
+            );
+        });
+
+    target.classList.add("resume");
+
+    target.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    setTimeout(() => {
+        target.classList.remove("resume");
+    }, 2200);
+}
+
+function resetReadingProgress() {
+    for (let i = 1; i <= 20; i++) {
+        localStorage.removeItem(
+            `akuyPart${i}Paragraph`
+        );
+
+        localStorage.removeItem(
+            `akuyPart${i}Scroll`
+        );
+
+        localStorage.removeItem(
+            `akuyPart${i}Preview`
+        );
+    }
+
+    localStorage.removeItem(
+        "akuyCurrentPart"
+    );
+
+    document
+        .querySelectorAll(
+            ".continue-box"
+        )
+        .forEach(box => {
+            box.style.display = "none";
+        });
+
+    closeSettings();
+}
+
+
+/* =========================
+   READING PROGRESS BAR
+========================= */
+
+function updateProgress() {
+    if (!currentPart) {
+        progress.style.width = "0%";
+        return;
+    }
+
+    const chapter =
+        document.getElementById(
+            `part${currentPart}`
+        );
+
+    if (!chapter) return;
+
+    const rect =
+        chapter.getBoundingClientRect();
+
+    const chapterTop =
+        window.scrollY + rect.top;
+
+    const chapterHeight =
+        chapter.offsetHeight;
+
+    const viewportHeight =
+        window.innerHeight;
+
+    const readableDistance =
+        Math.max(
+            chapterHeight -
+            viewportHeight,
+            1
+        );
+
+    const travelled =
+        window.scrollY -
+        chapterTop;
+
+    const percentage =
+        Math.min(
+            100,
+            Math.max(
+                0,
+                (
+                    travelled /
+                    readableDistance
+                ) * 100
+            )
+        );
+
+    progress.style.width =
+        `${percentage}%`;
+}
+
+
+/* =========================
+   MOTION BLUR
+========================= */
+
+function handleMotionBlur() {
+    if (
+        !document.body.classList.contains(
+            "motion-blur"
+        )
+    ) {
+        return;
+    }
+
+    document.body.classList.add(
+        "scrolling"
+    );
+
+    clearTimeout(scrollTimeout);
+
+    scrollTimeout =
+        setTimeout(() => {
+            document.body.classList.remove(
+                "scrolling"
+            );
+        }, 110);
+}
+
+
+/* =========================
+   SCROLL EVENTS
+========================= */
+
+function handleScroll() {
+    updateProgress();
+    handleMotionBlur();
+
+    clearTimeout(saveTimeout);
+
+    saveTimeout =
+        setTimeout(() => {
+            saveReadingPosition();
+        }, 350);
+}
+
+window.addEventListener(
+    "scroll",
+    handleScroll,
+    { passive: true }
+);
+
+window.addEventListener(
+    "resize",
+    updateProgress
+);
+
+window.addEventListener(
+    "beforeunload",
+    saveReadingPosition
+);
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+        if (document.hidden) {
+            saveReadingPosition();
+        }
+    }
+);
+
+
+/* =========================
+   PART 5 COUNTDOWN
+========================= */
+
+function formatCountdown(ms) {
+    const totalSeconds =
+        Math.max(
+            0,
+            Math.floor(ms / 1000)
+        );
+
+    const days =
+        Math.floor(
+            totalSeconds / 86400
+        );
+
+    const hours =
+        Math.floor(
+            (totalSeconds % 86400) /
+            3600
+        );
+
+    const minutes =
+        Math.floor(
+            (totalSeconds % 3600) /
+            60
+        );
+
+    const seconds =
+        totalSeconds % 60;
+
+    const pieces = [];
+
+    if (days > 0) {
+        pieces.push(
+            `${days}d`
+        );
+    }
+
+    pieces.push(
+        `${String(hours).padStart(
+            2,
+            "0"
+        )}h`
+    );
+
+    pieces.push(
+        `${String(minutes).padStart(
+            2,
+            "0"
+        )}m`
+    );
+
+    pieces.push(
+        `${String(seconds).padStart(
+            2,
+            "0"
+        )}s`
+    );
+
+    return pieces.join(" ");
+}
+
+function updatePart5Countdown() {
+    const countdown =
+        document.getElementById(
+            "countdown5"
+        );
+
+    const menuStatus =
+        document.getElementById(
+            "part5MenuStatus"
+        );
+
+    const now = new Date();
+
+    const difference =
+        PART_5_RELEASE.getTime() -
+        now.getTime();
+
+    if (difference <= 0) {
+        if (countdown) {
+            countdown.textContent =
+                "Release time reached.";
+        }
+
+        if (menuStatus) {
+            menuStatus.textContent =
+                "Release time reached";
+        }
+
+        return;
+    }
+
+    const formatted =
+        formatCountdown(
+            difference
+        );
+
+    if (countdown) {
+        countdown.textContent =
+            `Releases in ${formatted}`;
+    }
+
+    if (menuStatus) {
+        menuStatus.textContent =
+            `Coming in ${formatted}`;
+    }
+}
+
+updatePart5Countdown();
+
+setInterval(
+    updatePart5Countdown,
+    1000
+);
+
+
+/* =========================
+   KEYBOARD CONTROLS
+========================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+        if (event.key === "Escape") {
+            closeSettings();
+            closeParts();
+        }
+    }
+);
+
+
+/* =========================
+   SITE VERSION
+========================= */
+
+function setSiteVersion() {
+    const version =
+        document.getElementById(
+            "siteVersion"
+        );
+
+    if (!version) return;
+
+    version.textContent =
+        "Reader v1.5 • Part 4";
+}
+
+
+/* =========================
+   INITIAL PAGE LOAD
+========================= */
+
+function initializeReader() {
+    loadSettings();
+    setSiteVersion();
+
+    for (let i = 1; i <= 4; i++) {
+        updateContinueBox(i);
+    }
+
+    updateProgress();
+}
+
+initializeReader();
+</script>
+
+</body>
+</html>
